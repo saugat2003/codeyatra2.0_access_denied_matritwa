@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matritwa - Patient Detail View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#54cf17",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#162111",
+                        "danger": "#ef4444",
+                        "warning": "#f59e0b"
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<!-- Header Navigation -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined text-slate-700 dark:text-slate-300">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold">Patient Detail</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary p-2 bg-primary/10 rounded-full">sync</span>
+<button class="p-2 hover:bg-primary/10 rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</header>
+<main class="max-w-md mx-auto pb-32">
+<!-- Patient Profile Card -->
+<section class="p-4">
+<div class="bg-white dark:bg-slate-900 rounded-xl p-5 shadow-sm border border-primary/5">
+<div class="flex gap-4 items-center">
+<div class="relative">
+<div class="size-20 rounded-full bg-cover bg-center border-2 border-primary" data-alt="Portrait of a smiling young South Asian woman" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuASUTb02P4u9NmQyqfK1SbJNJCAWXA_quGcCrFQ04ZGpTUNFXJHo6RIrx5lHlPcrDM-AoGCpcWhX2NhGkV2umJL-BIrbqfV9khXURI_k4Gne0bT2CpFMbSrob9AaUiIWsVwHyuu3xWgrOeGh1W77n1kP87JocChp6J1Be-Wv_JeFhKRARElawatE81C6zPCUqTpN4Zb6N-g386_HdKLge6JvyjrHObXX-W3ORUOs6MlqlWBZhscZPPgifK62tW2_ctAj2n0rE3wJv4')"></div>
+<div class="absolute -bottom-1 -right-1 bg-danger text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">High Risk</div>
+</div>
+<div class="flex-1">
+<h2 class="text-xl font-bold leading-tight">Sita Sharma, 24</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span>
+                            Ward 4 - Ramkot
+                        </p>
+<div class="mt-2 flex flex-wrap gap-2">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-medium">
+<span class="material-symbols-outlined text-xs">warning</span> Anemia
+                            </span>
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-xs font-medium">
+<span class="material-symbols-outlined text-xs">block</span> Penicillin Allergy
+                            </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Maternity Status Tracker -->
+<section class="px-4 mb-6">
+<h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-3 px-1">Maternity Status</h3>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-primary/10 dark:bg-primary/5 rounded-xl p-4 border border-primary/20">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary">pregnancy</span>
+<span class="text-xs font-semibold text-primary uppercase">Pregnancy</span>
+</div>
+<p class="text-2xl font-black text-slate-800 dark:text-slate-100">Week 28</p>
+<div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-primary h-full w-[70%]"></div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-2 mb-1 text-slate-400">
+<span class="material-symbols-outlined text-xs">calendar_today</span>
+<span class="text-xs font-semibold uppercase">Est. Delivery</span>
+</div>
+<p class="text-lg font-bold text-slate-800 dark:text-slate-100">Oct 15, 2024</p>
+<p class="text-xs text-slate-500 mt-1">~ 84 days to go</p>
+</div>
+</div>
+</section>
+<!-- Longitudinal Tracker Timeline -->
+<section class="px-4 mb-6">
+<h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-3 px-1">Care Timeline</h3>
+<div class="bg-white dark:bg-slate-900 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-800 overflow-x-auto">
+<div class="flex items-center min-w-[500px] py-4 relative">
+<!-- Progress Line Background -->
+<div class="absolute top-[34px] left-0 w-full h-1 bg-slate-100 dark:bg-slate-800 -z-10"></div>
+<!-- Completed Progress Line -->
+<div class="absolute top-[34px] left-0 w-[50%] h-1 bg-primary -z-10"></div>
+<!-- Timeline Item 1 -->
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="size-8 rounded-full bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm fill-icon">check_circle</span>
+</div>
+<span class="text-[10px] font-bold uppercase text-slate-400">1st ANC</span>
+<span class="text-[9px] text-slate-400 italic">May 12</span>
+</div>
+<!-- Timeline Item 2 -->
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="size-8 rounded-full bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm fill-icon">check_circle</span>
+</div>
+<span class="text-[10px] font-bold uppercase text-slate-400">2nd ANC</span>
+<span class="text-[9px] text-slate-400 italic">June 20</span>
+</div>
+<!-- Timeline Item 3 (Current) -->
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="size-10 rounded-full bg-white dark:bg-slate-900 border-2 border-primary flex items-center justify-center text-primary animate-pulse">
+<span class="material-symbols-outlined">hourglass_empty</span>
+</div>
+<span class="text-[10px] font-bold uppercase text-primary">3rd ANC</span>
+<span class="text-[9px] text-primary font-bold">Due Now</span>
+</div>
+<!-- Timeline Item 4 -->
+<div class="flex-1 flex flex-col items-center gap-2 opacity-40">
+<div class="size-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500">
+<span class="material-symbols-outlined text-sm">event</span>
+</div>
+<span class="text-[10px] font-bold uppercase text-slate-500">4th ANC</span>
+<span class="text-[9px] text-slate-500 italic">Sept 05</span>
+</div>
+<!-- Timeline Item 5 -->
+<div class="flex-1 flex flex-col items-center gap-2 opacity-40">
+<div class="size-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500">
+<span class="material-symbols-outlined text-sm">baby_changing_station</span>
+</div>
+<span class="text-[10px] font-bold uppercase text-slate-500">Delivery</span>
+<span class="text-[9px] text-slate-500 italic">Oct 15</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Vaccination Schedule -->
+<section class="px-4 mb-6">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="text-sm font-bold uppercase tracking-widest text-slate-400">Vaccination Status</h3>
+<span class="text-xs font-bold text-primary">60% Complete</span>
+</div>
+<div class="space-y-3">
+<!-- Vaccination Item 1 -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-xl shadow-sm border-l-4 border-primary">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary fill-icon">vaccines</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">BCG Vaccine</h4>
+<p class="text-xs text-slate-400 italic">Administered May 12, 2024</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary fill-icon">verified</span>
+</div>
+<!-- Vaccination Item 2 -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-slate-900 rounded-xl shadow-sm border-l-4 border-warning">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-warning/10 rounded-lg">
+<span class="material-symbols-outlined text-warning">vaccines</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">Pentavalent 1</h4>
+<p class="text-xs text-warning font-semibold">Scheduled: June 10, 2024</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-warning">schedule</span>
+</div>
+<!-- Vaccination Item 3 -->
+<div class="flex items-center justify-between p-4 bg-slate-100 dark:bg-slate-800/50 rounded-xl border-l-4 border-slate-300 dark:border-slate-700">
+<div class="flex items-center gap-3 opacity-60">
+<div class="p-2 bg-slate-200 dark:bg-slate-700 rounded-lg">
+<span class="material-symbols-outlined text-slate-500">vaccines</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">PCV 1</h4>
+<p class="text-xs text-slate-500 italic">Pending birth records</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-600">radio_button_unchecked</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-4 pt-4 pb-8 z-50">
+<div class="max-w-md mx-auto grid grid-cols-1 gap-3">
+<button class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 flex items-center justify-center gap-2 text-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add_circle</span>
+                Log Health Visit
+            </button>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex-1 bg-danger text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 text-sm uppercase tracking-wide active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-xl">emergency_home</span>
+                    Danger Sign
+                </button>
+<button class="flex-1 bg-slate-800 dark:bg-slate-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 text-sm uppercase tracking-wide active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-xl">medical_services</span>
+                    Msg Doctor
+                </button>
+</div>
+</div>
+</div>
+<!-- Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 hidden md:flex border-t border-slate-100 bg-white dark:bg-slate-900 p-2 justify-around z-50">
+<a class="flex flex-col items-center gap-1 p-2 text-primary" href="#">
+<span class="material-symbols-outlined fill-icon">house</span>
+<span class="text-[10px] font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-400" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="text-[10px] font-bold">Patients</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-400" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="text-[10px] font-bold">Schedule</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-400" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="text-[10px] font-bold">Alerts</span>
+</a>
+</nav>
+</body></html>
