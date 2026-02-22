@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matritwa - Doctor's Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#54cf17",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#162111",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            background-color: rgba(246, 248, 246, 0.85);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Header Section -->
+<header class="px-6 pt-8 pb-4 flex items-center justify-between sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-10">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="size-12 rounded-full border-2 border-primary overflow-hidden">
+<img alt="Dr. Sarah Jenkins" class="w-full h-full object-cover" data-alt="Professional female doctor portrait with smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_GDwUSx5ac_fMBr9GFDLSlBlxn-mh9aI1EgPgWk40JyKIkBDWZ2eFKgh2vY-c3We6_rRv36xapTkFOCnDo0mepIGrkhg5h87Q0KhG7XWC33kjKw-MsscSJk1pOcOVdLxQm-713ZT1_KRRCvWFvsqPXJdMnn2iazNmngw-dl8OkXnr6u5RAeJggTosQqhkf_aZ9d1iSJC_FjLjSzZCmqocBYdc_Tv_l5jtkol4rlrB9ti6Yo2Be-vDSrhH0pQvHAlNIl_q6IdWmVg"/>
+</div>
+<div class="absolute bottom-0 right-0 size-3.5 bg-primary border-2 border-background-light dark:border-background-dark rounded-full"></div>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-tight">Dr. Sarah Jenkins</h1>
+<p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
+<span class="size-1.5 bg-primary rounded-full animate-pulse"></span>
+                    Online • Obstetrician
+                </p>
+</div>
+</div>
+<button class="size-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="px-6 space-y-8">
+<!-- Today's Stats -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-base font-semibold">Today's Stats</h2>
+<span class="text-xs font-medium text-primary">View Report</span>
+</div>
+<div class="grid grid-cols-3 gap-3">
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
+<p class="text-2xl font-bold text-slate-900 dark:text-white">12</p>
+<p class="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Pending</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
+<p class="text-2xl font-bold text-primary">45</p>
+<p class="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Active</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
+<p class="text-2xl font-bold text-slate-900 dark:text-white">08</p>
+<p class="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Solved</p>
+</div>
+</div>
+</section>
+<!-- Critical Alerts -->
+<section>
+<div class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-xl p-4 flex gap-4 items-start shadow-sm">
+<div class="size-10 rounded-lg bg-red-500 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-white">emergency</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h3 class="font-bold text-red-700 dark:text-red-400">2 SOS Alerts</h3>
+<span class="text-[10px] font-bold bg-red-500 text-white px-2 py-0.5 rounded-full uppercase">Urgent</span>
+</div>
+<p class="text-sm text-red-600 dark:text-red-300 mt-1">Patient #8821: Critical Fetal HR drop detected 4m ago.</p>
+<div class="mt-3 flex gap-2">
+<button class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors">Take Action</button>
+<button class="bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 text-xs font-bold px-4 py-2 rounded-lg border border-red-200 dark:border-red-900/50">Details</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Consultation Requests -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-base font-semibold">Consultation Requests</h2>
+<button class="text-xs font-medium text-slate-500">See All</button>
+</div>
+<div class="space-y-3">
+<!-- Request Item 1 -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4">
+<div class="size-12 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 border border-slate-100 dark:border-slate-700">
+<span class="material-symbols-outlined text-slate-400">person</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<h4 class="font-bold text-sm truncate">Patient #MT-902</h4>
+<span class="px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold uppercase">High Risk</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">"Experienced mild cramping and dizziness since morning..."</p>
+</div>
+<button class="size-9 bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center rounded-lg transition-colors shrink-0">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<!-- Request Item 2 -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4">
+<div class="size-12 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 border border-slate-100 dark:border-slate-700">
+<span class="material-symbols-outlined text-slate-400">person</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<h4 class="font-bold text-sm truncate">Patient #MT-415</h4>
+<span class="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[10px] font-bold uppercase">Moderate</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">"Routine checkup regarding the 2nd trimester dietary plan."</p>
+</div>
+<button class="size-9 bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center rounded-lg transition-colors shrink-0">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- High-Risk Patients Tracking -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-base font-semibold">High-Risk Tracking</h2>
+<div class="flex gap-2">
+<span class="size-2 bg-red-500 rounded-full"></span>
+<span class="size-2 bg-slate-200 dark:bg-slate-700 rounded-full"></span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50">
+<th class="p-4 text-[10px] font-bold uppercase text-slate-400 tracking-wider">Patient ID</th>
+<th class="p-4 text-[10px] font-bold uppercase text-slate-400 tracking-wider text-center">Vitals</th>
+<th class="p-4 text-[10px] font-bold uppercase text-slate-400 tracking-wider text-right">Last Checked</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr>
+<td class="p-4 text-sm font-bold">#MT-8821</td>
+<td class="p-4">
+<div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+<div class="bg-red-500 h-full w-[85%]"></div>
+</div>
+</td>
+<td class="p-4 text-xs text-slate-500 dark:text-slate-400 text-right">4m ago</td>
+</tr>
+<tr>
+<td class="p-4 text-sm font-bold">#MT-7762</td>
+<td class="p-4">
+<div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full w-[60%]"></div>
+</div>
+</td>
+<td class="p-4 text-xs text-slate-500 dark:text-slate-400 text-right">22m ago</td>
+</tr>
+<tr>
+<td class="p-4 text-sm font-bold">#MT-1029</td>
+<td class="p-4">
+<div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+<div class="bg-red-500 h-full w-[92%]"></div>
+</div>
+</td>
+<td class="p-4 text-xs text-slate-500 dark:text-slate-400 text-right">1h ago</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 glass-nav border-t border-slate-200 dark:border-slate-800 px-6 py-3 pb-6 flex justify-between items-center z-20">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-[28px] font-variation-fill">grid_view</span>
+<span class="text-[10px] font-bold">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[28px]">chat_bubble</span>
+<span class="text-[10px] font-bold">Consults</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[28px]">group</span>
+<span class="text-[10px] font-bold">Patients</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[28px]">person_outline</span>
+<span class="text-[10px] font-bold">Profile</span>
+</a>
+</nav>
+<!-- Dark Mode Toggle (Hidden utility) -->
+<button class="fixed bottom-24 right-6 size-12 bg-white dark:bg-slate-800 rounded-full shadow-lg border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 z-30" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+</body></html>
