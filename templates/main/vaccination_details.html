@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vaccination Detail Popup - Matritwa</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#54cf17",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#162111",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<!-- Mock Background: Health Streaks Screen -->
+<div class="fixed inset-0 z-0 overflow-y-auto p-4 md:p-8 filter blur-sm grayscale-[0.2]">
+<div class="max-w-md mx-auto space-y-6 opacity-60 pointer-events-none">
+<header class="flex justify-between items-center py-4">
+<h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Health Streaks</h1>
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">local_fire_department</span>
+</div>
+</header>
+<div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
+<div class="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded mb-4"></div>
+<div class="grid grid-cols-7 gap-2">
+<div class="h-10 bg-primary/40 rounded-lg"></div>
+<div class="h-10 bg-primary/40 rounded-lg"></div>
+<div class="h-10 bg-primary rounded-lg"></div>
+<div class="h-10 bg-slate-100 dark:bg-slate-700 rounded-lg"></div>
+<div class="h-10 bg-slate-100 dark:bg-slate-700 rounded-lg"></div>
+<div class="h-10 bg-slate-100 dark:bg-slate-700 rounded-lg"></div>
+<div class="h-10 bg-slate-100 dark:bg-slate-700 rounded-lg"></div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="h-20 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700"></div>
+<div class="h-20 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700"></div>
+<div class="h-20 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700"></div>
+</div>
+</div>
+</div>
+<!-- Modal Backdrop -->
+<div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] flex items-end sm:items-center justify-center">
+<!-- Bottom Sheet / Modal Container -->
+<div class="w-full max-w-lg bg-white dark:bg-slate-900 rounded-t-xl sm:rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300">
+<!-- BottomSheetHandle for mobile feel -->
+<div class="flex h-6 w-full items-center justify-center sm:hidden">
+<div class="h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+</div>
+<!-- Header Section -->
+<div class="px-6 py-4 flex items-start justify-between">
+<div class="space-y-1">
+<h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">BCG Vaccine</h2>
+<div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary dark:bg-primary/20">
+                        Upcoming • Next Week
+                    </div>
+</div>
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">close</span>
+</button>
+</div>
+<!-- Content Area -->
+<div class="px-6 pb-8 space-y-6">
+<!-- Hero Image/Pattern -->
+<div class="relative h-40 w-full rounded-xl bg-primary/5 overflow-hidden flex items-center justify-center">
+<img class="w-full h-full object-cover opacity-80" data-alt="Abstract medical health themed illustration with soft green gradients" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFLtpyu-AsqoX5uaEHROi2uAijXBM8ZLNfPZr0lLHWezYJ3T2_aLAWTUeAowf_eLdh6_q5-fmu6FMGy7SOQjHxBXFDZyzIytvJLBfcCTFA33PsD3gBFnc52TV6cwOlQaFgkZqDVGaEcc_WxfDrQlF6P0mauk--txY9s5VBhidsF0_IW3AjopaaErl4SS1cvQvV6L9qOU3XtC7sfNSu2UKC0dGcPi1f4YNZtVibxw17kG98A_8dxRSfrr8LIKrro7nBbN9U4k69AUk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent dark:from-slate-900/40"></div>
+</div>
+<!-- Description Box -->
+<div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
+<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Protects against tuberculosis. Essential for newborns to ensure early immunity against severe forms of TB.
+                    </p>
+</div>
+<!-- Info Rows -->
+<div class="space-y-4">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">calendar_today</span>
+</div>
+<div>
+<p class="text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">Scheduled Date</p>
+<p class="text-base font-semibold text-slate-900 dark:text-slate-100">October 28, 2023</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">location_on</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">Location</p>
+<p class="text-base font-semibold text-slate-900 dark:text-slate-100">City General Hospital - Wing B</p>
+<p class="text-sm text-slate-500" data-location="City General Hospital, Wing B">2nd Floor, Pediatric Department</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">info</span>
+</div>
+<div>
+<p class="text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">Instructions</p>
+<p class="text-sm font-medium text-slate-700 dark:text-slate-200">Bring your child's health card and previous immunization records.</p>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="pt-4 space-y-3">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">event</span>
+                        Add to Calendar
+                    </button>
+<button class="w-full bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-bold py-4 rounded-xl transition-all">
+                        Mark as Completed
+                    </button>
+<button class="w-full py-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 font-medium text-sm transition-colors">
+                        Not Now
+                    </button>
+</div>
+</div>
+</div>
+</div>
+</body></html>
