@@ -1,0 +1,5 @@
+django>=5.1,<5.2
+python-decouple>=3.8
+pillow>=10.0
+gunicorn>=21.2
+django-cors-headers>=4.3
