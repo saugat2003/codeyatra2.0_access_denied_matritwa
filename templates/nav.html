@@ -34,7 +34,32 @@
         </li>
 
         {% if user.is_authenticated %}
-          {% if user.is_doctor %}
+          {% if user.is_patient %}
+            <li class="navbar__item">
+              <a href="{% url 'main:dashboard' %}" class="navbar__link">Dashboard</a>
+            </li>
+            <li class="navbar__item navbar__dropdown">
+              <a href="#" class="navbar__link navbar__dropdown-toggle" aria-haspopup="true" aria-expanded="false">Health ▾</a>
+              <ul class="navbar__dropdown-menu">
+                <li><a href="{% url 'main:pregnancy_timeline' %}">Pregnancy Timeline</a></li>
+                <li><a href="{% url 'main:health_streaks' %}">Health Streaks</a></li>
+                <li><a href="{% url 'main:symptom_checker' %}">Symptom Checker</a></li>
+                <li><a href="{% url 'main:vaccination_details' %}">Vaccinations</a></li>
+              </ul>
+            </li>
+            <li class="navbar__item navbar__dropdown">
+              <a href="#" class="navbar__link navbar__dropdown-toggle" aria-haspopup="true" aria-expanded="false">More ▾</a>
+              <ul class="navbar__dropdown-menu">
+                <li><a href="{% url 'main:reminders' %}">Reminders</a></li>
+                <li><a href="{% url 'main:emergency_contacts' %}">Emergency Contacts</a></li>
+                <li><a href="{% url 'main:doctor_consultation' %}">Consultation</a></li>
+                <li><a href="{% url 'main:awareness_education' %}">Education</a></li>
+              </ul>
+            </li>
+            <li class="navbar__item">
+              <a href="{% url 'main:emergency_sos' %}" class="navbar__link navbar__link--sos">🆘 SOS</a>
+            </li>
+          {% elif user.is_doctor %}
             <li class="navbar__item">
               <a href="{% url 'main:index' %}" class="navbar__link">Dashboard</a>
             </li>
@@ -44,7 +69,7 @@
             </li>
           {% else %}
             <li class="navbar__item">
-              <a href="{% url 'main:index' %}" class="navbar__link">Dashboard</a>
+              <a href="{% url 'main:dashboard' %}" class="navbar__link">Dashboard</a>
             </li>
           {% endif %}
         {% endif %}

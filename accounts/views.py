@@ -106,7 +106,7 @@ def _role_redirect(user):
         return redirect("main:index")   # swap for doctors_dashboard when ready
     if user.role == User.Role.FCHV:
         return redirect("main:index")   # swap for fchv_dashboard when ready
-    return redirect("main:index")
+    return redirect("main:dashboard")
 
 
 def _get_onboarding_form(user):

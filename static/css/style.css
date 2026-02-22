@@ -39,3 +39,54 @@ footer {
     padding: 1rem 0;
     margin-top: auto;
 }
+
+/* ─── Navbar ─── */
+.navbar { background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.06); position: sticky; top: 0; z-index: 1000; }
+.navbar__container { max-width: 1200px; margin: 0 auto; padding: .6rem 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
+.navbar__brand { display: flex; align-items: center; gap: .5rem; text-decoration: none; }
+.navbar__logo { height: 32px; width: auto; }
+.navbar__brand-name { font-size: 1.15rem; font-weight: 700; color: #e03131; }
+.navbar__toggle { display: none; background: none; border: none; cursor: pointer; padding: .25rem; }
+.navbar__toggle-bar { display: block; width: 22px; height: 2px; background: #333; margin: 4px 0; border-radius: 2px; }
+.navbar__menu { display: flex; align-items: center; gap: 1.5rem; }
+.navbar__nav { display: flex; list-style: none; gap: .25rem; align-items: center; }
+.navbar__item { position: relative; }
+.navbar__link { padding: .4rem .65rem; border-radius: 6px; text-decoration: none; font-size: .9rem; font-weight: 500; color: #555; white-space: nowrap; }
+.navbar__link:hover { background: #f1f3f5; color: #333; }
+.navbar__link--sos { background: #e03131; color: #fff !important; font-weight: 700; }
+.navbar__link--sos:hover { background: #c92a2a; }
+.navbar__auth { display: flex; align-items: center; gap: .5rem; }
+.navbar__user-greeting { font-size: .85rem; color: #666; }
+.btn { text-decoration: none; padding: .4rem .85rem; border-radius: 6px; font-size: .85rem; font-weight: 600; }
+.btn--sm { padding: .35rem .7rem; font-size: .8rem; }
+.btn--primary { background: #e03131; color: #fff; }
+.btn--primary:hover { background: #c92a2a; }
+.btn--outline { border: 1px solid #dee2e6; color: #555; background: transparent; }
+.btn--outline:hover { background: #f1f3f5; }
+.btn--ghost { color: #555; background: transparent; }
+.btn--ghost:hover { background: #f1f3f5; }
+
+/* Dropdown */
+.navbar__dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.12); min-width: 200px; padding: .4rem 0; list-style: none; z-index: 100; }
+.navbar__dropdown:hover .navbar__dropdown-menu { display: block; }
+.navbar__dropdown-menu li a { display: block; padding: .45rem 1rem; font-size: .85rem; color: #555; text-decoration: none; }
+.navbar__dropdown-menu li a:hover { background: #f8f0ff; color: #7048e8; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar__toggle { display: block; }
+  .navbar__menu { display: none; width: 100%; flex-direction: column; align-items: stretch; gap: .5rem; }
+  .navbar__menu--open { display: flex; }
+  .navbar__nav { flex-direction: column; }
+  .navbar__dropdown-menu { position: static; box-shadow: none; padding-left: 1rem; }
+  .navbar__dropdown:hover .navbar__dropdown-menu { display: block; }
+  .navbar__auth { justify-content: center; padding-top: .5rem; border-top: 1px solid #f1f3f5; }
+}
+
+/* ─── Flash Messages ─── */
+.messages { list-style: none; padding: .5rem 1rem; max-width: 1200px; margin: 0 auto; }
+.messages li { padding: .6rem 1rem; border-radius: 8px; margin-bottom: .5rem; font-size: .9rem; }
+.messages .success { background: #d3f9d8; color: #2b8a3e; }
+.messages .error { background: #ffe3e3; color: #c92a2a; }
+.messages .warning { background: #fff3bf; color: #e67700; }
+.messages .info { background: #e7f5ff; color: #1971c2; }
