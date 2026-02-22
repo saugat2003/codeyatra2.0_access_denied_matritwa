@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sign In — Matritwa{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card__logo">
+      <img src="{% static 'images/logo.png' %}" alt="Matritwa" onerror="this.style.display='none'">
+      <h1 class="brand-name">Matritwa</h1>
+      <p class="brand-tagline">Safe motherhood starts here</p>
+    </div>
+
+    <h2 class="auth-card__title">Welcome Back</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert--{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" novalidate class="auth-form">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">Email Address</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <span class="form-error">{{ form.username.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+        {% if form.password.errors %}
+          <span class="form-error">{{ form.password.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="alert alert--error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <button type="submit" class="btn btn--primary btn--full">
+        Sign In &rarr;
+      </button>
+    </form>
+
+    <p class="auth-card__footer">
+      Don't have an account?
+      <a href="{% url 'accounts:register' %}">Register now</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

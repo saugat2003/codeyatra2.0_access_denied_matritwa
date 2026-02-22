@@ -1,0 +1,89 @@
+{% load static %}
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+  <div class="navbar__container">
+
+    <!-- Brand -->
+    <a href="{% url 'main:index' %}" class="navbar__brand">
+      <img
+        src="{% static 'images/logo.png' %}"
+        alt="Matritwa logo"
+        class="navbar__logo"
+        onerror="this.style.display='none'"
+      >
+      <span class="navbar__brand-name">Matritwa</span>
+    </a>
+
+    <!-- Hamburger (mobile) -->
+    <button
+      class="navbar__toggle"
+      id="navbarToggle"
+      aria-expanded="false"
+      aria-controls="navbarMenu"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+      <span class="navbar__toggle-bar"></span>
+    </button>
+
+    <!-- Menu -->
+    <div class="navbar__menu" id="navbarMenu">
+      <ul class="navbar__nav">
+        <li class="navbar__item">
+          <a href="{% url 'main:index' %}" class="navbar__link">Home</a>
+        </li>
+
+        {% if user.is_authenticated %}
+          {% if user.is_doctor %}
+            <li class="navbar__item">
+              <a href="{% url 'main:index' %}" class="navbar__link">Dashboard</a>
+            </li>
+          {% elif user.is_fchv %}
+            <li class="navbar__item">
+              <a href="{% url 'main:index' %}" class="navbar__link">Dashboard</a>
+            </li>
+          {% else %}
+            <li class="navbar__item">
+              <a href="{% url 'main:index' %}" class="navbar__link">Dashboard</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      </ul>
+
+      <!-- Auth buttons -->
+      <div class="navbar__auth">
+        {% if user.is_authenticated %}
+          <span class="navbar__user-greeting">
+            Hi, {{ user.get_short_name }}
+          </span>
+          <a href="{% url 'accounts:logout' %}" class="btn btn--outline btn--sm">
+            Log Out
+          </a>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="btn btn--ghost btn--sm">
+            Sign In
+          </a>
+          <a href="{% url 'accounts:register' %}" class="btn btn--primary btn--sm">
+            Register
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<script>
+  // Simple hamburger toggle
+  (function () {
+    const toggle = document.getElementById('navbarToggle');
+    const menu   = document.getElementById('navbarMenu');
+    if (toggle && menu) {
+      toggle.addEventListener('click', function () {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        menu.classList.toggle('navbar__menu--open');
+      });
+    }
+  })();
+</script>
