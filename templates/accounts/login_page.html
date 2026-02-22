@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In | Matritwa{% endblock %}
+
+{% block body_class %}flex items-center justify-center p-0 sm:p-4{% endblock %}
+
+{% block content %}
+<!-- iOS Mobile Frame -->
+<div class="w-full max-w-md bg-background-light dark:bg-background-dark min-h-screen sm:min-h-[800px] sm:rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative">
+
+    <!-- Status Bar -->
+    <div class="h-12 w-full shrink-0"></div>
+
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-2 shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center size-10 rounded-full bg-primary/20 text-primary-dark dark:text-primary">
+                <span class="material-symbols-outlined text-[28px]">spa</span>
+            </div>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Matritwa</h1>
+        </div>
+        <button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform">
+            <span class="material-symbols-outlined text-[20px] text-slate-600 dark:text-slate-400">language</span>
+            <span class="text-sm font-medium text-slate-700 dark:text-slate-200">नेपाली</span>
+        </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto no-scrollbar flex flex-col px-6 pt-6 pb-8">
+
+        <!-- Welcome Text -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold leading-tight text-slate-900 dark:text-white mb-2">Welcome back</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-base">Sign in to continue your maternal health journey.</p>
+        </div>
+
+        <!-- Login Form -->
+        <form method="post" action="{% url 'accounts:login' %}" class="space-y-5">
+            {% csrf_token %}
+
+            <!-- Username / Phone -->
+            <div class="space-y-2">
+                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 block" for="id_username">
+                    Phone number / ID
+                </label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[22px]">person</span>
+                    <input id="id_username" name="username" type="text" autocomplete="username"
+                        placeholder="Enter your ID or phone"
+                        class="w-full h-14 pl-12 pr-4 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none text-base placeholder:text-slate-400 dark:placeholder:text-slate-600" />
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300" for="id_password">Password</label>
+                    <a href="#" class="text-xs font-bold uppercase tracking-wider text-primary hover:text-primary-dark transition-colors">Forgot?</a>
+                </div>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[22px]">lock</span>
+                    <input id="id_password" name="password" type="password" autocomplete="current-password"
+                        placeholder="••••••••"
+                        class="w-full h-14 pl-12 pr-14 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none text-base" />
+                    <button type="button"
+                        onclick="var i=this.previousElementSibling;i.type=i.type==='password'?'text':'password'"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                        <span class="material-symbols-outlined text-[22px]">visibility</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit"
+                class="w-full h-14 bg-primary hover:bg-primary-dark text-slate-900 font-bold text-lg rounded-xl shadow-lg shadow-primary/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-2">
+                Sign In
+                <span class="material-symbols-outlined text-[22px]">login</span>
+            </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-4 my-8">
+            <div class="h-px flex-1 bg-slate-200 dark:bg-slate-700"></div>
+            <span class="text-xs font-medium text-slate-400 uppercase tracking-widest">or</span>
+            <div class="h-px flex-1 bg-slate-200 dark:bg-slate-700"></div>
+        </div>
+
+        <!-- Register Link -->
+        <div class="text-center space-y-4">
+            <p class="text-sm text-slate-500 dark:text-slate-400">New to Matritwa?</p>
+            <a href="{% url 'accounts:register' %}"
+               class="flex items-center justify-center gap-2 w-full h-14 bg-surface-light dark:bg-surface-dark border-2 border-slate-200 dark:border-slate-700 hover:border-primary/50 text-slate-700 dark:text-slate-200 font-semibold rounded-xl transition-all active:scale-[0.98] no-underline">
+                <span class="material-symbols-outlined text-primary text-[22px]">person_add</span>
+                Create Account
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <div class="px-6 pb-8 text-center shrink-0">
+        <p class="text-xs text-slate-400 dark:text-slate-600">Supported by the Department of Health Services</p>
+    </div>
+
+    <!-- iOS Home Indicator -->
+    <div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-slate-300 dark:bg-slate-600 rounded-full"></div>
+</div>
+{% endblock %}

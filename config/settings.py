@@ -42,7 +42,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Local apps
-    "main.apps.MainConfig",
+    "accounts.apps.AccountsConfig",
+    "healthcare.apps.HealthcareConfig",
+    "mother.apps.MainConfig",
+
 ]
 
 MIDDLEWARE = [
@@ -68,7 +71,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "main.context_processors.app_metadata",
             ],
         },
     },
@@ -156,3 +158,8 @@ LOGGING = {
         "level": "INFO",
     },
 }
+
+# Auth
+LOGIN_URL = "accounts:login"
+LOGIN_REDIRECT_URL = "healthcare:dashboard"
+LOGOUT_REDIRECT_URL = "accounts:login"

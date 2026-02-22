@@ -1,25 +1,83 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="{% block html_class %}{% endblock %}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Matritwa{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <!-- Brand config -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary":           "#2bee6c",
+                        "primary-dark":      "#1fa84c",
+                        "accent-peach":      "#ffe4d6",
+                        "background-light":  "#f6f8f6",
+                        "background-dark":   "#102216",
+                        "surface-light":     "#ffffff",
+                        "surface-dark":      "#1c3024",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg":      "1rem",
+                        "xl":      "1.5rem",
+                        "2xl":     "2rem",
+                        "full":    "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Base styles -->
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            min-height: max(884px, 100dvh);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon { font-variation-settings: 'FILL' 1; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Django messages */
+        .messages { list-style: none; padding: 0; margin: 0; }
+        .messages li { padding: .75rem 1rem; font-size: .875rem; text-align: center; }
+        .messages li.success { background: #d1fae5; color: #065f46; }
+        .messages li.error   { background: #fee2e2; color: #991b1b; }
+        .messages li.warning { background: #fef3c7; color: #92400e; }
+        .messages li.info    { background: #dbeafe; color: #1e40af; }
+    </style>
+
     {% block extra_css %}{% endblock %}
 </head>
-<body>
-    <header>
-        {% block header %}{% endblock %}
-    </header>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased {% block body_class %}{% endblock %}">
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+    {% if messages %}
+    <ul class="messages fixed top-0 inset-x-0 z-50">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
-    <footer>
-        {% block footer %}{% endblock %}
-    </footer>
+    {% block content %}{% endblock %}
 
     {% block extra_js %}{% endblock %}
 </body>

@@ -12,7 +12,9 @@ from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("main.urls", namespace="main")),
+    path("accounts/", include("accounts.urls", namespace="accounts")),
+    path("healthcare/", include("healthcare.urls", namespace="healthcare")),
+    path("", include("mother.urls", namespace="main")),
 ]
 
 # Serve media files during development
