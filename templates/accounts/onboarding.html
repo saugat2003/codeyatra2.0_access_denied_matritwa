@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Complete Your Profile — Matritwa{% endblock %}
+
+{% block content %}
+<section class="onboarding-page">
+  <div class="onboarding-card">
+
+    <div class="onboarding-card__header">
+      <span class="onboarding-badge">Onboarding</span>
+      <h2>Set Up Your Profile</h2>
+      <p>You're registering as a <strong>{{ role_label }}</strong>. Fill in the details below to get started.</p>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert--{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" novalidate class="onboarding-form">
+      {% csrf_token %}
+
+      {% for field in form %}
+        <div class="form-group {% if field.errors %}form-group--error{% endif %}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}
+            <small class="form-help">{{ field.help_text }}</small>
+          {% endif %}
+          {% if field.errors %}
+            <span class="form-error">{{ field.errors.0 }}</span>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert--error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="onboarding-actions">
+        <button type="submit" class="btn btn--primary">
+          Complete Profile &rarr;
+        </button>
+        <a href="{% url 'accounts:logout' %}" class="btn btn--ghost">
+          Log out
+        </a>
+      </div>
+    </form>
+
+  </div>
+</section>
+{% endblock %}

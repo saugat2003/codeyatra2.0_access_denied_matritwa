@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Register — Matritwa{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card__logo">
+      <img src="{% static 'images/logo.png' %}" alt="Matritwa" onerror="this.style.display='none'">
+      <h1 class="brand-name">Matritwa</h1>
+      <p class="brand-tagline">Safe motherhood starts here</p>
+    </div>
+
+    <h2 class="auth-card__title">Create Your Account</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert--{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" novalidate class="auth-form">
+      {% csrf_token %}
+
+      <div class="form-row form-row--two">
+        <div class="form-group">
+          <label for="{{ form.first_name.id_for_label }}">First Name</label>
+          {{ form.first_name }}
+          {% if form.first_name.errors %}
+            <span class="form-error">{{ form.first_name.errors.0 }}</span>
+          {% endif %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+          {{ form.last_name }}
+          {% if form.last_name.errors %}
+            <span class="form-error">{{ form.last_name.errors.0 }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">Email Address</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <span class="form-error">{{ form.email.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+        {{ form.phone }}
+        {% if form.phone.errors %}
+          <span class="form-error">{{ form.phone.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label>I am a…</label>
+        <div class="role-selector">
+          {% for radio in form.role %}
+            <label class="role-option" for="{{ radio.id_for_label }}">
+              {{ radio.tag }}
+              <span class="role-option__label">{{ radio.choice_label }}</span>
+            </label>
+          {% endfor %}
+        </div>
+        {% if form.role.errors %}
+          <span class="form-error">{{ form.role.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Password</label>
+        {{ form.password1 }}
+        {% if form.password1.errors %}
+          <span class="form-error">{{ form.password1.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+        {{ form.password2 }}
+        {% if form.password2.errors %}
+          <span class="form-error">{{ form.password2.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="alert alert--error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <button type="submit" class="btn btn--primary btn--full">
+        Create Account &rarr;
+      </button>
+    </form>
+
+    <p class="auth-card__footer">
+      Already have an account?
+      <a href="{% url 'accounts:login' %}">Sign in</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

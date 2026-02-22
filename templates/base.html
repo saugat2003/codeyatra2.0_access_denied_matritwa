@@ -2,25 +2,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Matritwa{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    {% block extra_css %}{% endblock %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block meta_description %}Matritwa — Safe motherhood, digital care.{% endblock %}">
+
+  <title>{% block title %}Matritwa{% endblock %}</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" onerror="''">
+
+  <!-- Core stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  <!-- Per-page extra CSS -->
+  {% block extra_css %}{% endblock %}
 </head>
-<body>
-    <header>
-        {% block header %}{% endblock %}
-    </header>
+<body class="{% block body_class %}{% endblock %}">
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+  <!-- ── Navigation ───────────────────────────────────── -->
+  {% block navbar %}
+    {% include "nav.html" %}
+  {% endblock %}
 
-    <footer>
-        {% block footer %}{% endblock %}
-    </footer>
+  <!-- ── Flash messages ───────────────────────────────── -->
+  {% if messages %}
+    <div class="messages-container" role="alert" aria-live="polite">
+      {% for message in messages %}
+        <div class="alert alert--{{ message.tags }}">
+          <span>{{ message }}</span>
+          <button class="alert__close" aria-label="Dismiss">&times;</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
 
-    {% block extra_js %}{% endblock %}
+  <!-- ── Page header (optional) ───────────────────────── -->
+  {% block page_header %}{% endblock %}
+
+  <!-- ── Main content ─────────────────────────────────── -->
+  <main class="main-content" id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Footer ───────────────────────────────────────── -->
+  <footer class="site-footer">
+    {% block footer %}
+      <div class="site-footer__inner">
+        <p>&copy; {% now "Y" %} Matritwa. All rights reserved.</p>
+        <p class="site-footer__tagline">Safe motherhood starts here 🌸</p>
+      </div>
+    {% endblock %}
+  </footer>
+
+  <!-- ── Scripts ──────────────────────────────────────── -->
+  <script>
+    // Auto-dismiss flash messages after 5 s
+    document.querySelectorAll('.alert__close').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        btn.closest('.alert').remove();
+      });
+    });
+    setTimeout(function () {
+      document.querySelectorAll('.alert').forEach(function (el) { el.remove(); });
+    }, 5000);
+  </script>
+
+  {% block extra_js %}{% endblock %}
 </body>
 </html>
