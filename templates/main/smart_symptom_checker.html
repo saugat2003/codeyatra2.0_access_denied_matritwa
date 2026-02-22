@@ -1,161 +1,96 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Matritwa Smart Symptom Checker</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#54cf17",
-                        "background-light": "#f6f8f6",
-                        "background-dark": "#162111",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.5rem",
-                        "lg": "1rem",
-                        "xl": "1.5rem",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
+{% block title %}Symptom Checker | Matritwa{% endblock %}
+{% block body_class %}page-symptoms{% endblock %}
+
+{% block extra_css %}
 <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-    </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
-<!-- Header -->
-<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
-<div class="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
-<button class="w-10 h-10 flex items-center justify-start text-slate-900 dark:text-slate-100">
-<span class="material-symbols-outlined text-2xl">arrow_back_ios</span>
-</button>
-<h1 class="text-lg font-semibold flex-1 text-center pr-10">Symptom Checker</h1>
+  .symptoms-page { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+  .symptoms-page h1 { font-size: 1.5rem; color: #1971c2; margin-bottom: .5rem; }
+
+  .actions-bar { display: flex; gap: 1rem; margin: 1.5rem 0; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: .6rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .9rem; transition: all .15s; }
+  .btn--primary { background: #1971c2; color: #fff; }
+  .btn--primary:hover { background: #155b9a; }
+  .btn--danger { background: #e03131; color: #fff; }
+  .btn--danger:hover { background: #c92a2a; }
+
+  .danger-alert { background: #ffe3e3; border-left: 4px solid #e03131; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+  .danger-alert h3 { color: #c92a2a; font-size: 1rem; margin-bottom: .5rem; }
+  .danger-alert ul { margin: 0; padding-left: 1.25rem; }
+  .danger-alert li { color: #862e2e; font-size: .9rem; margin-bottom: .25rem; }
+
+  .symptom-list { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); overflow: hidden; }
+  .symptom-row { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid #f1f3f5; }
+  .symptom-row:last-child { border-bottom: none; }
+  .symptom-info h4 { font-size: .95rem; color: #333; margin-bottom: .15rem; }
+  .symptom-info p { font-size: .8rem; color: #888; }
+  .symptom-meta { display: flex; gap: .5rem; align-items: center; }
+  .badge { padding: .2rem .6rem; border-radius: 100px; font-size: .78rem; font-weight: 600; }
+  .badge--mild { background: #d3f9d8; color: #2b8a3e; }
+  .badge--moderate { background: #fff3bf; color: #e67700; }
+  .badge--noticeable { background: #ffe8cc; color: #d9480f; }
+  .badge--severe { background: #ffe3e3; color: #c92a2a; }
+  .badge--very-severe { background: #c92a2a; color: #fff; }
+  .badge--danger { background: #e03131; color: #fff; }
+
+  .empty-state { text-align: center; padding: 3rem; color: #888; }
+  .empty-state p { margin-bottom: 1rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="symptoms-page">
+
+  <h1>🩺 Smart Symptom Checker</h1>
+  <p style="color:#666;">Track and monitor your symptoms for a safer pregnancy.</p>
+
+  <div class="actions-bar">
+    <a href="{% url 'main:log_symptom' %}" class="btn btn--primary">➕ Log a Symptom</a>
+    <a href="{% url 'main:report_danger_sign' %}" class="btn btn--danger">🚨 Report Danger Sign</a>
+  </div>
+
+  <!-- Danger Symptoms Alert -->
+  {% if danger_symptoms %}
+  <div class="danger-alert">
+    <h3>⚠️ Potential Danger Signs Detected</h3>
+    <ul>
+      {% for s in danger_symptoms %}
+      <li>{{ s.get_symptom_display }} — {{ s.get_severity_display }} ({{ s.date|date:"M d" }})</li>
+      {% endfor %}
+    </ul>
+    <p style="margin-top:.5rem; font-size:.85rem;"><strong>Please consult your healthcare provider or <a href="{% url 'main:report_danger_sign' %}" style="color:#c92a2a;">report a danger sign</a>.</strong></p>
+  </div>
+  {% endif %}
+
+  <!-- Symptom History -->
+  <h2 style="font-size:1.1rem; margin-bottom:1rem; color:#333;">Recent Symptoms</h2>
+
+  {% if symptoms %}
+  <div class="symptom-list">
+    {% for s in symptoms %}
+    <div class="symptom-row">
+      <div class="symptom-info">
+        <h4>{{ s.get_symptom_display }}</h4>
+        <p>{{ s.date|date:"M d, Y" }}{% if s.description %} — {{ s.description|truncatechars:60 }}{% endif %}</p>
+      </div>
+      <div class="symptom-meta">
+        <span class="badge {% if s.severity == 1 %}badge--mild{% elif s.severity == 2 %}badge--moderate{% elif s.severity == 3 %}badge--noticeable{% elif s.severity == 4 %}badge--severe{% else %}badge--very-severe{% endif %}">
+          {{ s.get_severity_display }}
+        </span>
+        {% if s.is_danger %}
+        <span class="badge badge--danger">⚠ Danger</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p>No symptoms logged yet.</p>
+    <a href="{% url 'main:log_symptom' %}" class="btn btn--primary">Log your first symptom</a>
+  </div>
+  {% endif %}
+
 </div>
-</header>
-<main class="flex-1 max-w-md mx-auto w-full px-4 pb-24">
-<!-- Greeting Section -->
-<section class="py-6">
-<h2 class="text-2xl font-bold tracking-tight mb-1">How are you feeling today?</h2>
-<p class="text-slate-500 dark:text-slate-400 text-sm">Tell us your symptoms for a quick assessment.</p>
-</section>
-<!-- Input Section -->
-<section class="relative mb-8">
-<div class="relative">
-<textarea class="w-full h-32 p-4 rounded-xl border-none bg-white dark:bg-slate-800 shadow-sm ring-1 ring-slate-200 dark:ring-slate-700 focus:ring-2 focus:ring-primary text-slate-900 dark:text-slate-100 placeholder:text-slate-400 resize-none font-display" placeholder="Describe how you are feeling... e.g. I have a slight headache and feel a bit tired."></textarea>
-<button class="absolute bottom-3 right-3 bg-primary text-white p-3 rounded-full shadow-lg hover:opacity-90 transition-opacity">
-<span class="material-symbols-outlined">mic</span>
-</button>
-</div>
-</section>
-<!-- Quick Select Grid -->
-<section class="mb-8">
-<h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4 px-1">Quick Select</h3>
-<div class="grid grid-cols-2 gap-3">
-<button class="flex items-center p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-primary transition-all">
-<div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-500 mr-3">
-<span class="material-symbols-outlined">vital_signs</span>
-</div>
-<span class="font-medium text-sm">Dizziness</span>
-</button>
-<button class="flex items-center p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-primary transition-all">
-<div class="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/30 flex items-center justify-center text-orange-500 mr-3">
-<span class="material-symbols-outlined">sick</span>
-</div>
-<span class="font-medium text-sm">Nausea</span>
-</button>
-<button class="flex items-center p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-primary transition-all">
-<div class="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/30 flex items-center justify-center text-red-500 mr-3">
-<span class="material-symbols-outlined">accessibility_new</span>
-</div>
-<span class="font-medium text-sm">Back Pain</span>
-</button>
-<button class="flex items-center p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-primary transition-all">
-<div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-500 mr-3">
-<span class="material-symbols-outlined">emergency_home</span>
-</div>
-<span class="font-medium text-sm">Swelling</span>
-</button>
-</div>
-</section>
-<!-- Risk Indicator & Recommendation -->
-<section class="space-y-4">
-<div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm ring-1 ring-slate-200 dark:ring-slate-700">
-<div class="flex items-center justify-between mb-4">
-<h3 class="font-semibold text-slate-900 dark:text-slate-100">Risk Assessment</h3>
-<span class="px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-full uppercase tracking-wide">Moderate</span>
-</div>
-<div class="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-lg p-4 mb-4">
-<div class="flex gap-3">
-<span class="material-symbols-outlined text-primary">info</span>
-<p class="text-sm leading-relaxed text-slate-700 dark:text-slate-300 font-display">
-                            You have reported multiple symptoms. We recommend resting and monitoring your blood pressure. If symptoms persist for 2 hours, please consult your doctor.
-                        </p>
-</div>
-</div>
-<div class="grid grid-cols-2 gap-3">
-<button class="py-3 px-4 bg-primary text-white rounded-lg font-semibold text-sm shadow-md shadow-primary/20 flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-sm">call</span>
-                        Call Doctor
-                    </button>
-<button class="py-3 px-4 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-lg font-semibold text-sm flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-sm">event</span>
-                        Book Visit
-                    </button>
-</div>
-</div>
-</section>
-<!-- Visual Context Image -->
-<section class="mt-8 rounded-xl overflow-hidden h-40 relative">
-<img alt="Healthcare support" class="w-full h-full object-cover" data-alt="Doctor holding hand of a patient supportively" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZb0WUW9vxdt9k248RAjKNxYr2Woe9tIDv3qwW1BO4PDzGyDZFWH2QI5ZAsDzBP50y1oqt_CMpa_6RsA9lk6nE6hVP-PkATLlc405dEP1TkYUkDuDF-QLHVX3gmyMzOVkYcflTz4-6DeS4-DzokHDtq6nYxzFEq2xc6IsaWraIPZzCz9xUSprOUpdY1yMmBxfxqUkPOEntLWRyX8cV6WKsZQvb3_MAfZtHkKJhpa79P-gBv6y9euZNBD0NxAqVaB24zKBg0BULuFQ"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-<p class="text-white text-xs font-medium uppercase tracking-widest opacity-80">24/7 Support</p>
-<p class="text-white font-semibold">Your care team is always here</p>
-</div>
-</section>
-</main>
-<!-- Bottom Navigation Bar -->
-<nav class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 px-6 pb-6 pt-3">
-<div class="max-w-md mx-auto flex items-center justify-between">
-<a class="flex flex-col items-center gap-1 group" href="#">
-<span class="material-symbols-outlined text-[26px] text-slate-400 group-hover:text-primary transition-colors">home</span>
-<span class="text-[10px] font-medium text-slate-500">Home</span>
-</a>
-<a class="flex flex-col items-center gap-1 group" href="#">
-<span class="material-symbols-outlined text-[26px] text-primary">description</span>
-<span class="text-[10px] font-medium text-primary">Reports</span>
-</a>
-<a class="flex flex-col items-center gap-1 group" href="#">
-<span class="material-symbols-outlined text-[26px] text-slate-400 group-hover:text-primary transition-colors">chat_bubble</span>
-<span class="text-[10px] font-medium text-slate-500">Chat</span>
-</a>
-<a class="flex flex-col items-center gap-1 group" href="#">
-<span class="material-symbols-outlined text-[26px] text-slate-400 group-hover:text-primary transition-colors">account_circle</span>
-<span class="text-[10px] font-medium text-slate-500">Profile</span>
-</a>
-</div>
-</nav>
-</body></html>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Log Health | Matritwa{% endblock %}
+{% block body_class %}page-log-streak{% endblock %}
+
+{% block extra_css %}
+<style>
+  .form-page { max-width: 600px; margin: 0 auto; padding: 1.5rem 1rem; }
+  .form-page h1 { font-size: 1.4rem; color: #2f9e44; margin-bottom: 1.5rem; }
+
+  .form-card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label { display: block; font-weight: 600; margin-bottom: .35rem; color: #333; font-size: .95rem; }
+  .form-group input[type="date"],
+  .form-group textarea,
+  .form-group select { width: 100%; padding: .6rem .8rem; border: 1px solid #dee2e6; border-radius: 8px; font-size: .95rem; }
+  .form-group textarea { resize: vertical; }
+
+  .checkbox-group { display: flex; align-items: center; gap: .5rem; padding: .5rem 0; }
+  .checkbox-group input[type="checkbox"] { width: 18px; height: 18px; accent-color: #2f9e44; }
+  .checkbox-group label { font-weight: 400; cursor: pointer; }
+
+  .btn-submit { background: #2f9e44; color: #fff; border: none; padding: .75rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background .2s; }
+  .btn-submit:hover { background: #237032; }
+
+  .btn-back { display: inline-block; margin-top: 1rem; color: #868e96; text-decoration: none; font-size: .9rem; }
+  .btn-back:hover { color: #333; }
+
+  .errorlist { color: #c92a2a; font-size: .85rem; list-style: none; padding: 0; margin: .25rem 0 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <h1>📝 Log Today's Health</h1>
+
+  <div class="form-card">
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="{{ form.date.id_for_label }}">Date</label>
+        {{ form.date }}
+        {{ form.date.errors }}
+      </div>
+
+      <p style="font-weight:600; margin-bottom:.75rem; color:#333;">Daily Habits</p>
+
+      <div class="checkbox-group">
+        {{ form.took_vitamins }}
+        <label for="{{ form.took_vitamins.id_for_label }}">💊 Took prenatal vitamins</label>
+      </div>
+
+      <div class="checkbox-group">
+        {{ form.exercised }}
+        <label for="{{ form.exercised.id_for_label }}">🏃‍♀️ Exercised / stayed active</label>
+      </div>
+
+      <div class="checkbox-group">
+        {{ form.drank_water }}
+        <label for="{{ form.drank_water.id_for_label }}">💧 Drank enough water (8+ glasses)</label>
+      </div>
+
+      <div class="checkbox-group">
+        {{ form.ate_balanced_meal }}
+        <label for="{{ form.ate_balanced_meal.id_for_label }}">🥗 Ate balanced meals</label>
+      </div>
+
+      <div class="checkbox-group">
+        {{ form.slept_well }}
+        <label for="{{ form.slept_well.id_for_label }}">😴 Slept well (7-9 hours)</label>
+      </div>
+
+      <div class="form-group" style="margin-top: 1rem;">
+        <label for="{{ form.notes.id_for_label }}">Notes (optional)</label>
+        {{ form.notes }}
+        {{ form.notes.errors }}
+      </div>
+
+      <button type="submit" class="btn-submit">Save Health Log</button>
+    </form>
+  </div>
+
+  <a href="{% url 'main:health_streaks' %}" class="btn-back">← Back to Health Streaks</a>
+</div>
+{% endblock %}

@@ -1,196 +1,128 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Health Streaks - Maternal Care</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#54cf17",
-                        "background-light": "#f6f8f6",
-                        "background-dark": "#162111",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.5rem",
-                        "lg": "1rem",
-                        "xl": "1.5rem",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
+{% block title %}Health Streaks | Matritwa{% endblock %}
+{% block body_class %}page-streaks{% endblock %}
+
+{% block extra_css %}
 <style>
-        body { font-family: 'Inter', sans-serif; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
-<!-- Header Section -->
-<header class="px-6 pt-8 pb-4 bg-background-light dark:bg-background-dark sticky top-0 z-10">
-<div class="flex items-center justify-between mb-2">
-<span class="material-symbols-outlined text-slate-900 dark:text-slate-100 cursor-pointer">arrow_back_ios</span>
-<span class="material-symbols-outlined text-slate-900 dark:text-slate-100 cursor-pointer">notifications</span>
+  .streaks-page { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+  .streaks-page h1 { font-size: 1.5rem; color: #2f9e44; margin-bottom: .5rem; }
+
+  .streak-summary { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1.5rem 0; }
+  .streak-card { background: #fff; padding: 1.25rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); text-align: center; min-width: 140px; flex: 1; }
+  .streak-card__icon { font-size: 2rem; }
+  .streak-card__value { font-size: 1.8rem; font-weight: 700; color: #2f9e44; }
+  .streak-card__label { font-size: .8rem; color: #888; text-transform: uppercase; }
+
+  .today-status { background: #fff; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .today-status h2 { font-size: 1.1rem; color: #333; margin-bottom: 1rem; }
+  .today-status .habits { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; }
+  .habit { display: flex; align-items: center; gap: .5rem; padding: .5rem .75rem; border-radius: 8px; font-size: .9rem; }
+  .habit--done { background: #d3f9d8; color: #2b8a3e; }
+  .habit--missed { background: #f1f3f5; color: #868e96; }
+  .habit__check { font-size: 1.1rem; }
+
+  .btn-log { display: inline-block; background: #2f9e44; color: #fff; padding: .75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 1rem; transition: background .2s; }
+  .btn-log:hover { background: #237032; }
+
+  .history-title { font-size: 1.1rem; color: #333; margin: 2rem 0 1rem; padding-bottom: .5rem; border-bottom: 2px solid #f1f3f5; }
+
+  .history-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+  .history-table th { background: #f8f9fa; padding: .75rem; text-align: left; font-size: .8rem; text-transform: uppercase; color: #666; }
+  .history-table td { padding: .75rem; border-top: 1px solid #f1f3f5; font-size: .9rem; }
+  .history-table .score { font-weight: 700; color: #2f9e44; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="streaks-page">
+
+  <h1>🎯 Health Streak Tracker</h1>
+  <p style="color:#666;">Build healthy habits every day for a healthy pregnancy!</p>
+
+  <div class="streak-summary">
+    <div class="streak-card">
+      <div class="streak-card__icon">🔥</div>
+      <div class="streak-card__value">{{ streak_count }}</div>
+      <div class="streak-card__label">Day Streak</div>
+    </div>
+    <div class="streak-card">
+      <div class="streak-card__icon">📅</div>
+      <div class="streak-card__value">{{ streaks|length }}</div>
+      <div class="streak-card__label">Days Logged</div>
+    </div>
+    {% if today_streak %}
+    <div class="streak-card">
+      <div class="streak-card__icon">⭐</div>
+      <div class="streak-card__value">{{ today_streak.score }}/5</div>
+      <div class="streak-card__label">Today's Score</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Today's Status -->
+  <div class="today-status">
+    <h2>Today — {{ today|date:"M d, Y" }}</h2>
+    {% if today_streak %}
+    <div class="habits">
+      <div class="habit {% if today_streak.took_vitamins %}habit--done{% else %}habit--missed{% endif %}">
+        <span class="habit__check">{% if today_streak.took_vitamins %}✅{% else %}⬜{% endif %}</span>
+        Took Vitamins
+      </div>
+      <div class="habit {% if today_streak.exercised %}habit--done{% else %}habit--missed{% endif %}">
+        <span class="habit__check">{% if today_streak.exercised %}✅{% else %}⬜{% endif %}</span>
+        Exercised
+      </div>
+      <div class="habit {% if today_streak.drank_water %}habit--done{% else %}habit--missed{% endif %}">
+        <span class="habit__check">{% if today_streak.drank_water %}✅{% else %}⬜{% endif %}</span>
+        Drank Water
+      </div>
+      <div class="habit {% if today_streak.ate_balanced_meal %}habit--done{% else %}habit--missed{% endif %}">
+        <span class="habit__check">{% if today_streak.ate_balanced_meal %}✅{% else %}⬜{% endif %}</span>
+        Balanced Meal
+      </div>
+      <div class="habit {% if today_streak.slept_well %}habit--done{% else %}habit--missed{% endif %}">
+        <span class="habit__check">{% if today_streak.slept_well %}✅{% else %}⬜{% endif %}</span>
+        Slept Well
+      </div>
+    </div>
+    <a href="{% url 'main:log_health_streak' %}" class="btn-log">✏️ Update Today's Log</a>
+    {% else %}
+    <p style="color:#888; margin-bottom: .75rem;">You haven't logged today's habits yet.</p>
+    <a href="{% url 'main:log_health_streak' %}" class="btn-log">➕ Log Today's Health</a>
+    {% endif %}
+  </div>
+
+  <!-- History -->
+  {% if streaks %}
+  <h2 class="history-title">Recent History</h2>
+  <table class="history-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Vitamins</th>
+        <th>Exercise</th>
+        <th>Water</th>
+        <th>Meal</th>
+        <th>Sleep</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in streaks %}
+      <tr>
+        <td>{{ s.date|date:"M d" }}</td>
+        <td>{% if s.took_vitamins %}✅{% else %}—{% endif %}</td>
+        <td>{% if s.exercised %}✅{% else %}—{% endif %}</td>
+        <td>{% if s.drank_water %}✅{% else %}—{% endif %}</td>
+        <td>{% if s.ate_balanced_meal %}✅{% else %}—{% endif %}</td>
+        <td>{% if s.slept_well %}✅{% else %}—{% endif %}</td>
+        <td class="score">{{ s.score }}/5</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
 </div>
-<h1 class="text-3xl font-bold tracking-tight">Health Streaks</h1>
-<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Stay on track for a healthy journey</p>
-</header>
-<main class="px-6 pb-24">
-<!-- Current Streak Overview Card -->
-<section class="mt-6">
-<div class="relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-100 dark:border-slate-700">
-<div class="flex justify-between items-start relative z-10">
-<div>
-<p class="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Current Streak</p>
-<h2 class="text-4xl font-black text-slate-900 dark:text-white">14 Days</h2>
-<p class="text-slate-500 dark:text-slate-400 text-sm mt-2 font-medium">You're doing great, Mama!</p>
-</div>
-<div class="bg-primary/10 p-3 rounded-full">
-<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1">potted_plant</span>
-</div>
-</div>
-<div class="mt-6 flex gap-2">
-<button class="flex-1 bg-primary text-white font-semibold py-2.5 rounded-lg text-sm transition-transform active:scale-95">Log Daily Activity</button>
-<button class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold rounded-lg text-sm">History</button>
-</div>
-<!-- Subtle decorative background element -->
-<div class="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/5 rounded-full blur-3xl"></div>
-</div>
-</section>
-<!-- Child Vaccination Tracker -->
-<section class="mt-10">
-<div class="flex items-center justify-between mb-4">
-<h3 class="text-xl font-bold">Vaccination Tracker</h3>
-<span class="text-primary text-sm font-semibold cursor-pointer">View All</span>
-</div>
-<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
-<!-- Vaccination Item 1 -->
-<div class="min-w-[140px] bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
-<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center mb-3">
-<span class="material-symbols-outlined text-white text-sm">check</span>
-</div>
-<p class="font-bold text-sm">Hepatitis B</p>
-<p class="text-slate-400 text-xs mt-1">Completed</p>
-</div>
-<!-- Vaccination Item 2 -->
-<div class="min-w-[140px] bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
-<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mb-3">
-<span class="material-symbols-outlined text-primary text-sm">schedule</span>
-</div>
-<p class="font-bold text-sm">BCG</p>
-<p class="text-slate-400 text-xs mt-1">Next Week</p>
-</div>
-<!-- Vaccination Item 3 -->
-<div class="min-w-[140px] bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
-<div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-3">
-<span class="material-symbols-outlined text-slate-400 text-sm">lock</span>
-</div>
-<p class="font-bold text-sm">Polio (OPV)</p>
-<p class="text-slate-400 text-xs mt-1">Month 2</p>
-</div>
-</div>
-</section>
-<!-- Prenatal Checkup Tracker -->
-<section class="mt-10">
-<div class="flex items-center justify-between mb-4">
-<h3 class="text-xl font-bold">Prenatality Checkups</h3>
-</div>
-<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-5">
-<div class="space-y-6 relative">
-<!-- Vertical Line Connector -->
-<div class="absolute left-4 top-2 bottom-2 w-0.5 bg-slate-100 dark:bg-slate-700"></div>
-<!-- Checkup 1 -->
-<div class="flex items-start gap-4 relative z-10">
-<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-sm shadow-primary/40">
-<span class="material-symbols-outlined text-white text-sm">check</span>
-</div>
-<div class="flex-1">
-<h4 class="font-semibold text-sm">First Ultrasound</h4>
-<p class="text-xs text-slate-400 mt-0.5">Completed • Week 8</p>
-</div>
-</div>
-<!-- Checkup 2 -->
-<div class="flex items-start gap-4 relative z-10">
-<div class="w-8 h-8 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center shrink-0">
-<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-</div>
-<div class="flex-1">
-<h4 class="font-semibold text-sm">Glucose Screening</h4>
-<p class="text-xs text-slate-500 mt-0.5">Upcoming • Oct 24, 2023</p>
-</div>
-<button class="text-xs font-bold text-primary">REMAP</button>
-</div>
-<!-- Checkup 3 -->
-<div class="flex items-start gap-4 relative z-10 opacity-50">
-<div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
-</div>
-<div class="flex-1">
-<h4 class="font-semibold text-sm">Anatomy Scan</h4>
-<p class="text-xs text-slate-500 mt-0.5">Future • Week 20</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Reward Section -->
-<section class="mt-10 mb-8">
-<div class="bg-slate-900 dark:bg-primary/20 rounded-xl p-5 flex items-center justify-between overflow-hidden relative">
-<div class="relative z-10">
-<p class="text-primary text-[10px] font-bold uppercase tracking-widest mb-1">Current Milestone</p>
-<h3 class="text-white dark:text-primary font-bold text-lg">Health Guardian</h3>
-<div class="mt-3 w-40 h-1.5 bg-slate-700 dark:bg-slate-600 rounded-full overflow-hidden">
-<div class="w-[70%] h-full bg-primary"></div>
-</div>
-<p class="text-slate-400 dark:text-primary/70 text-[10px] mt-2 font-medium">6 days until Level 2</p>
-</div>
-<div class="relative z-10 flex flex-col items-center">
-<div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center border border-primary/30">
-<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1">shield_with_heart</span>
-</div>
-</div>
-<!-- Decorative element -->
-<div class="absolute right-0 top-0 w-32 h-full bg-primary/10 skew-x-12 translate-x-16"></div>
-</div>
-</section>
-</main>
-<!-- Bottom Navigation Bar -->
-<nav class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-t border-slate-100 dark:border-slate-800 px-6 py-3 flex justify-between items-center z-50">
-<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
-<span class="material-symbols-outlined text-2xl">home</span>
-<span class="text-[10px] font-medium">Home</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
-<span class="material-symbols-outlined text-2xl">calendar_month</span>
-<span class="text-[10px] font-medium">Timeline</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-primary" href="#">
-<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">eco</span>
-<span class="text-[10px] font-bold">Health</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
-<span class="material-symbols-outlined text-2xl">description</span>
-<span class="text-[10px] font-medium">Records</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
-<span class="material-symbols-outlined text-2xl">person</span>
-<span class="text-[10px] font-medium">Profile</span>
-</a>
-</nav>
-</body></html>
+{% endblock %}

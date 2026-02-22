@@ -1,182 +1,61 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#54cf17",
-                        "background-light": "#f6f8f6",
-                        "background-dark": "#162111",
-                        "danger": "#ef4444",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
-                },
-            },
-        }
-    </script>
+{% block title %}Report Danger Sign | Matritwa{% endblock %}
+{% block body_class %}page-danger-report{% endblock %}
+
+{% block extra_css %}
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .filled-icon {
-            font-variation-settings: 'FILL' 1;
-        }
-    </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
-<!-- Top Navigation -->
-<header class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
-<div class="flex items-center gap-3">
-<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">arrow_back</span>
-</button>
-<h1 class="text-lg font-bold tracking-tight">Report Danger Sign</h1>
+  .form-page { max-width: 600px; margin: 0 auto; padding: 1.5rem 1rem; }
+  .form-page h1 { font-size: 1.4rem; color: #e03131; margin-bottom: 1rem; }
+
+  .warning-box { background: #ffe3e3; border-left: 4px solid #e03131; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+  .warning-box h3 { color: #c92a2a; font-size: 1rem; margin-bottom: .5rem; }
+  .warning-box p { font-size: .9rem; color: #862e2e; line-height: 1.5; }
+
+  .form-card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label { display: block; font-weight: 600; margin-bottom: .35rem; color: #333; }
+  .form-group select, .form-group textarea { width: 100%; padding: .6rem .8rem; border: 1px solid #dee2e6; border-radius: 8px; font-size: .95rem; }
+  .form-group textarea { resize: vertical; }
+
+  .btn-submit { background: #e03131; color: #fff; border: none; padding: .75rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+  .btn-submit:hover { background: #c92a2a; }
+  .btn-back { display: inline-block; margin-top: 1rem; color: #868e96; text-decoration: none; font-size: .9rem; }
+  .btn-back:hover { color: #333; }
+
+  .errorlist { color: #c92a2a; font-size: .85rem; list-style: none; padding: 0; margin: .25rem 0 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <h1>🚨 Report a Danger Sign</h1>
+
+  <div class="warning-box">
+    <h3>⚠️ This is for urgent health concerns</h3>
+    <p>If you are experiencing any of the following danger signs, report them immediately. Your FCHV worker and/or doctor will be notified.</p>
+  </div>
+
+  <div class="form-card">
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="{{ form.danger_sign.id_for_label }}">Danger Sign</label>
+        {{ form.danger_sign }}
+        {{ form.danger_sign.errors }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.description.id_for_label }}">Additional Details</label>
+        {{ form.description }}
+        {{ form.description.errors }}
+      </div>
+
+      <button type="submit" class="btn-submit">🚨 Submit Report</button>
+    </form>
+  </div>
+
+  <a href="{% url 'main:symptom_checker' %}" class="btn-back">← Back to Symptoms</a>
 </div>
-<div class="flex items-center gap-2 px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full text-xs font-bold uppercase tracking-wider">
-<span class="material-symbols-outlined text-sm filled-icon">error</span>
-            Critical Alert
-        </div>
-</header>
-<main class="max-w-2xl mx-auto pb-32">
-<!-- Patient Context Card -->
-<section class="p-4">
-<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 flex items-center gap-4 shadow-sm">
-<div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border-2 border-primary/20">
-<img alt="Patient Avatar" class="w-full h-full object-cover" data-alt="Portrait of a young woman smiling gently" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPpItTQUt8AEJ_OWy-6Duy4NVUPhNBSEb7SQCNR7jauWneFwMVJ3Rn-RsI686sn7rrX6Namgl_t6Cw-Izbh2DBfbq_KaDpDwVKY7VUf3vKPTYMF6gnsPG_p26lIc3m3aPAvf59dAtLx7yuDchH2oHjusztDjK05gtAj_qOxiqK6JsVhcmEQFov-E2ZOfajNyTfseUtVO2t94K0wQZXQkQ1MiqKSxvCGZ10zwjnGtuvO1_ztrl10dAq4AgvGr2LR35zKNkAQhDQpz8"/>
-</div>
-<div class="flex-1">
-<h2 class="text-base font-bold">Sita Devi, 26</h2>
-<p class="text-slate-500 dark:text-slate-400 text-sm">Pregnancy Week: 32 • G2P1</p>
-<div class="flex items-center gap-1 mt-1">
-<span class="material-symbols-outlined text-primary text-xs filled-icon">location_on</span>
-<span class="text-xs text-slate-400">Ward 4, Pipara Village</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Instructions -->
-<section class="px-4 py-2">
-<h3 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Select Symptoms</h3>
-<p class="text-xs text-slate-400 mb-4">Tap all signs that apply. This is a priority emergency report.</p>
-<div class="grid grid-cols-1 gap-3">
-<!-- Symptom Item -->
-<label class="relative flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-2 border-transparent rounded-xl cursor-pointer hover:border-primary/30 transition-all shadow-sm group">
-<input class="peer absolute opacity-0 w-full h-full left-0 top-0 cursor-pointer" type="checkbox"/>
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">neurology</span>
-</div>
-<span class="text-base font-semibold">Severe Headache</span>
-</div>
-<div class="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-700 peer-checked:bg-primary peer-checked:border-primary flex items-center justify-center transition-all">
-<span class="material-symbols-outlined text-white text-sm scale-0 peer-checked:scale-100 transition-transform">check</span>
-</div>
-</label>
-<label class="relative flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-2 border-transparent rounded-xl cursor-pointer hover:border-primary/30 transition-all shadow-sm group">
-<input class="peer absolute opacity-0 w-full h-full left-0 top-0 cursor-pointer" type="checkbox"/>
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">visibility_off</span>
-</div>
-<span class="text-base font-semibold">Blurry Vision</span>
-</div>
-<div class="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-700 peer-checked:bg-primary peer-checked:border-primary flex items-center justify-center transition-all">
-<span class="material-symbols-outlined text-white text-sm scale-0 peer-checked:scale-100 transition-transform">check</span>
-</div>
-</label>
-<label class="relative flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-2 border-transparent rounded-xl cursor-pointer hover:border-primary/30 transition-all shadow-sm group">
-<input class="peer absolute opacity-0 w-full h-full left-0 top-0 cursor-pointer" type="checkbox"/>
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">thermometer</span>
-</div>
-<span class="text-base font-semibold">Swelling (Hands/Face)</span>
-</div>
-<div class="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-700 peer-checked:bg-primary peer-checked:border-primary flex items-center justify-center transition-all">
-<span class="material-symbols-outlined text-white text-sm scale-0 peer-checked:scale-100 transition-transform">check</span>
-</div>
-</label>
-<label class="relative flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-2 border-transparent rounded-xl cursor-pointer hover:border-primary/30 transition-all shadow-sm group">
-<input class="peer absolute opacity-0 w-full h-full left-0 top-0 cursor-pointer" type="checkbox"/>
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">child_care</span>
-</div>
-<span class="text-base font-semibold">Reduced Baby Movement</span>
-</div>
-<div class="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-700 peer-checked:bg-primary peer-checked:border-primary flex items-center justify-center transition-all">
-<span class="material-symbols-outlined text-white text-sm scale-0 peer-checked:scale-100 transition-transform">check</span>
-</div>
-</label>
-<label class="relative flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-2 border-red-500/20 rounded-xl cursor-pointer hover:border-red-500/40 transition-all shadow-sm group">
-<input class="peer absolute opacity-0 w-full h-full left-0 top-0 cursor-pointer" type="checkbox"/>
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center group-hover:bg-red-100 transition-colors">
-<span class="material-symbols-outlined text-red-600">blood_pressure</span>
-</div>
-<span class="text-base font-semibold text-red-700 dark:text-red-400">Heavy Vaginal Bleeding</span>
-</div>
-<div class="w-6 h-6 rounded-full border-2 border-red-300 dark:border-red-700 peer-checked:bg-red-500 peer-checked:border-red-500 flex items-center justify-center transition-all">
-<span class="material-symbols-outlined text-white text-sm scale-0 peer-checked:scale-100 transition-transform">check</span>
-</div>
-</label>
-<label class="relative flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-2 border-red-500/20 rounded-xl cursor-pointer hover:border-red-500/40 transition-all shadow-sm group">
-<input class="peer absolute opacity-0 w-full h-full left-0 top-0 cursor-pointer" type="checkbox"/>
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center group-hover:bg-red-100 transition-colors">
-<span class="material-symbols-outlined text-red-600">emergency</span>
-</div>
-<span class="text-base font-semibold text-red-700 dark:text-red-400">Convulsions/Fits</span>
-</div>
-<div class="w-6 h-6 rounded-full border-2 border-red-300 dark:border-red-700 peer-checked:bg-red-500 peer-checked:border-red-500 flex items-center justify-center transition-all">
-<span class="material-symbols-outlined text-white text-sm scale-0 peer-checked:scale-100 transition-transform">check</span>
-</div>
-</label>
-</div>
-</section>
-<!-- Additional Notes -->
-<section class="p-4">
-<h3 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2">Additional Observations</h3>
-<textarea class="w-full rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:ring-primary focus:border-primary text-sm p-4 transition-all" placeholder="Add any other observations here... (e.g., onset time, recent food intake)" rows="4"></textarea>
-</section>
-<!-- Offline Status -->
-<section class="px-4 pb-4">
-<div class="flex items-center justify-center gap-2 text-slate-400 text-xs py-2 bg-slate-100 dark:bg-slate-800/50 rounded-lg">
-<span class="material-symbols-outlined text-sm">signal_cellular_alt_2_bar</span>
-                SMS Sync Enabled: Report will send even without internet
-            </div>
-</section>
-</main>
-<!-- Sticky Footer CTA -->
-<footer class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-background-dark/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 p-4 pb-8 z-50">
-<div class="max-w-2xl mx-auto flex flex-col gap-3">
-<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-3 transition-transform active:scale-[0.98]">
-<span class="material-symbols-outlined filled-icon">send</span>
-                Submit Urgent Report
-            </button>
-<p class="text-center text-[10px] text-slate-400 font-medium">
-                This will notify the health coordinator immediately.
-            </p>
-</div>
-</footer>
-<!-- Bottom Navigation (Overlay style) -->
-<nav class="hidden">
-<!-- Optional Bottom Nav if required by larger app context -->
-</nav>
-</body></html>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Log Symptom | Matritwa{% endblock %}
+{% block body_class %}page-log-symptom{% endblock %}
+
+{% block extra_css %}
+<style>
+  .form-page { max-width: 600px; margin: 0 auto; padding: 1.5rem 1rem; }
+  .form-page h1 { font-size: 1.4rem; color: #1971c2; margin-bottom: 1.5rem; }
+
+  .form-card { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label { display: block; font-weight: 600; margin-bottom: .35rem; color: #333; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: .6rem .8rem; border: 1px solid #dee2e6; border-radius: 8px; font-size: .95rem; }
+  .form-group textarea { resize: vertical; }
+
+  .btn-submit { background: #1971c2; color: #fff; border: none; padding: .75rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+  .btn-submit:hover { background: #155b9a; }
+  .btn-back { display: inline-block; margin-top: 1rem; color: #868e96; text-decoration: none; font-size: .9rem; }
+  .btn-back:hover { color: #333; }
+
+  .info-box { background: #e7f5ff; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; font-size: .9rem; color: #1864ab; }
+  .errorlist { color: #c92a2a; font-size: .85rem; list-style: none; padding: 0; margin: .25rem 0 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <h1>📋 Log a Symptom</h1>
+
+  <div class="info-box">
+    💡 Tracking symptoms helps your healthcare provider monitor your pregnancy. If you experience a severe symptom, please also <a href="{% url 'main:report_danger_sign' %}" style="color:#1864ab; font-weight:600;">report a danger sign</a>.
+  </div>
+
+  <div class="form-card">
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="{{ form.symptom.id_for_label }}">Symptom</label>
+        {{ form.symptom }}
+        {{ form.symptom.errors }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.severity.id_for_label }}">Severity</label>
+        {{ form.severity }}
+        {{ form.severity.errors }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.date.id_for_label }}">Date</label>
+        {{ form.date }}
+        {{ form.date.errors }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.description.id_for_label }}">Description (optional)</label>
+        {{ form.description }}
+        {{ form.description.errors }}
+      </div>
+
+      <button type="submit" class="btn-submit">Log Symptom</button>
+    </form>
+  </div>
+
+  <a href="{% url 'main:symptom_checker' %}" class="btn-back">← Back to Symptoms</a>
+</div>
+{% endblock %}

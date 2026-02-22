@@ -1,162 +1,62 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#54cf17",
-                        "background-light": "#f6f8f6",
-                        "background-dark": "#162111",
-                    },
-                    fontFamily: {
-                        "display": ["Inter"]
-                    },
-                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
-                },
-            },
-        }
-    </script>
-<title>Report Confirmation - FCHV Portal</title>
+{% block title %}Danger Sign Reported | Matritwa{% endblock %}
+{% block body_class %}page-danger-reported{% endblock %}
+
+{% block extra_css %}
 <style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
-<div class="relative flex min-h-screen w-full max-w-md mx-auto flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
-<!-- Header -->
-<div class="flex items-center p-4 justify-between border-b border-primary/10">
-<div class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center rounded-full hover:bg-primary/10 cursor-pointer">
-<span class="material-symbols-outlined">arrow_back</span>
+  .reported-page { max-width: 600px; margin: 0 auto; padding: 2rem 1rem; text-align: center; }
+
+  .success-card { background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .success-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+  .success-card h1 { font-size: 1.4rem; color: #e03131; margin-bottom: .75rem; }
+  .success-card p { color: #555; line-height: 1.6; margin-bottom: .5rem; }
+
+  .report-details { background: #f8f9fa; border-radius: 8px; padding: 1rem; margin: 1.5rem 0; text-align: left; }
+  .report-details dt { font-weight: 600; color: #333; font-size: .85rem; text-transform: uppercase; margin-top: .75rem; }
+  .report-details dt:first-child { margin-top: 0; }
+  .report-details dd { color: #555; margin-left: 0; }
+
+  .status-badge { display: inline-block; padding: .3rem .8rem; border-radius: 100px; font-size: .85rem; font-weight: 600; background: #fff3bf; color: #e67700; }
+
+  .action-links { margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .action-links a { display: inline-block; padding: .6rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .9rem; }
+  .btn--sos { background: #e03131; color: #fff; }
+  .btn--sos:hover { background: #c92a2a; }
+  .btn--secondary { background: #f1f3f5; color: #333; }
+  .btn--secondary:hover { background: #e9ecef; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="reported-page">
+  <div class="success-card">
+    <div class="success-icon">🚨</div>
+    <h1>Danger Sign Reported</h1>
+    <p>Your report has been submitted. Your healthcare team will be notified and will review it as soon as possible.</p>
+
+    <div class="report-details">
+      <dl>
+        <dt>Danger Sign</dt>
+        <dd>{{ report.get_danger_sign_display }}</dd>
+
+        {% if report.description %}
+        <dt>Details</dt>
+        <dd>{{ report.description }}</dd>
+        {% endif %}
+
+        <dt>Status</dt>
+        <dd><span class="status-badge">{{ report.get_status_display }}</span></dd>
+
+        <dt>Reported On</dt>
+        <dd>{{ report.created_at|date:"M d, Y h:i A" }}</dd>
+      </dl>
+    </div>
+
+    <div class="action-links">
+      <a href="{% url 'main:emergency_sos' %}" class="btn--sos">🆘 Emergency SOS</a>
+      <a href="{% url 'main:dashboard' %}" class="btn--secondary">← Back to Dashboard</a>
+    </div>
+  </div>
 </div>
-<h2 class="text-lg font-bold leading-tight flex-1 text-center pr-10">Submission Status</h2>
-</div>
-<!-- Success Banner Section -->
-<div class="p-6 flex flex-col items-center text-center">
-<div class="size-20 bg-primary/20 rounded-full flex items-center justify-center mb-4">
-<span class="material-symbols-outlined text-primary text-5xl font-bold">check_circle</span>
-</div>
-<h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 mb-2">Report Submitted</h1>
-<p class="text-slate-600 dark:text-slate-400 font-medium">Help is on the way. You have done the right thing.</p>
-</div>
-<!-- Real-time Status Card -->
-<div class="px-4 mb-6">
-<div class="bg-primary rounded-xl p-6 text-white shadow-lg shadow-primary/20">
-<div class="flex items-center gap-3 mb-4">
-<span class="material-symbols-outlined animate-pulse">emergency</span>
-<p class="text-sm font-bold uppercase tracking-wider opacity-90">Ambulance Dispatched</p>
-</div>
-<div class="flex justify-between items-end">
-<div>
-<p class="text-xs opacity-80 mb-1">Estimated Arrival</p>
-<p class="text-3xl font-extrabold">10 Minutes</p>
-</div>
-<div class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm">
-                        Live Tracking
-                    </div>
-</div>
-</div>
-</div>
-<!-- Notification Update -->
-<div class="px-4 mb-6">
-<div class="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-lg p-4 flex gap-4 items-start">
-<span class="material-symbols-outlined text-primary">medical_services</span>
-<div>
-<p class="font-bold text-slate-900 dark:text-slate-100">Doctor Notified</p>
-<p class="text-sm text-slate-600 dark:text-slate-400">Dr. Sharma has received the patient details and is preparing for arrival.</p>
-</div>
-</div>
-</div>
-<!-- Urgent Checklist (Next Steps) -->
-<div class="px-4 mb-6">
-<h3 class="text-lg font-bold mb-3 flex items-center gap-2">
-<span class="material-symbols-outlined text-amber-500">warning</span>
-                Immediate Next Steps
-            </h3>
-<div class="space-y-3">
-<div class="flex items-center gap-3 bg-white dark:bg-background-dark/50 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-<div class="size-6 border-2 border-primary rounded flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-primary text-sm">check</span>
-</div>
-<p class="text-sm font-semibold">Stay with the patient at all times</p>
-</div>
-<div class="flex items-center gap-3 bg-white dark:bg-background-dark/50 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-<div class="size-6 border-2 border-primary rounded flex items-center justify-center shrink-0"></div>
-<p class="text-sm font-semibold">Keep the patient's head elevated</p>
-</div>
-<div class="flex items-center gap-3 bg-white dark:bg-background-dark/50 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-<div class="size-6 border-2 border-primary rounded flex items-center justify-center shrink-0"></div>
-<p class="text-sm font-semibold">Ensure the airway remains clear</p>
-</div>
-</div>
-</div>
-<!-- Report Summary -->
-<div class="px-4 mb-8">
-<div class="bg-slate-100 dark:bg-slate-900 rounded-xl p-4">
-<p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Report Summary</p>
-<div class="grid grid-cols-2 gap-4">
-<div>
-<p class="text-xs text-slate-500 dark:text-slate-400">Patient</p>
-<p class="font-bold">Sunita Thapa</p>
-</div>
-<div>
-<p class="text-xs text-slate-500 dark:text-slate-400">Danger Sign</p>
-<p class="font-bold text-red-500">Severe Bleeding</p>
-</div>
-<div>
-<p class="text-xs text-slate-500 dark:text-slate-400">Location</p>
-<p class="font-bold">Ward 4, Gorkha</p>
-</div>
-<div>
-<p class="text-xs text-slate-500 dark:text-slate-400">Time Sent</p>
-<p class="font-bold">14:22 (Just now)</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Primary Actions -->
-<div class="mt-auto p-4 space-y-3 pb-8">
-<button class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 flex items-center justify-center gap-2">
-<span class="material-symbols-outlined">call</span>
-                Emergency Call Center
-            </button>
-<button class="w-full bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-bold py-4 rounded-xl flex items-center justify-center gap-2">
-<span class="material-symbols-outlined">home</span>
-                Back to Dashboard
-            </button>
-</div>
-<!-- Bottom Navigation Bar -->
-<div class="flex gap-2 border-t border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark px-4 pb-6 pt-2">
-<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400" href="#">
-<span class="material-symbols-outlined">home</span>
-<p class="text-xs font-medium">Home</p>
-</a>
-<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400" href="#">
-<span class="material-symbols-outlined">group</span>
-<p class="text-xs font-medium">Patients</p>
-</a>
-<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">description</span>
-<p class="text-xs font-medium">Reports</p>
-</a>
-<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400" href="#">
-<span class="material-symbols-outlined">menu_book</span>
-<p class="text-xs font-medium">Resources</p>
-</a>
-<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400" href="#">
-<span class="material-symbols-outlined">account_circle</span>
-<p class="text-xs font-medium">Profile</p>
-</a>
-</div>
-</div>
-</body></html>
+{% endblock %}
