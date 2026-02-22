@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matritwa FCHV Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#54cf17",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#162111",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Top Status Bar / Header -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-4 pb-2">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-primary">
+<img class="w-full h-full object-cover" data-alt="Female community health volunteer portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDxSOQRi91Tz_odD_Zn7eD7Kc3Hq1KO0_sba7PWsprLPZebqyY9gFW9e8RfXTJieARdglv-GZrQpwD6JnRVkws7eso7gIakamZ0bb11uHv-BDBbsgoIp2EHzgIPknirK9RuW_5icH6_jN6DuvafvuBbEwSE9EY84l16pTpOwYzZWMHqHCUjEjSZGP0ji5fe03DqOtAWxLVlTqk4H6bumql-0mU4KYAmBJmsIKjwUfqXX64-N19RUcmcqqfuHb30DhOaCO8R0VTQzQ"/>
+</div>
+<div>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">Namaste,</p>
+<h1 class="text-lg font-bold">Sunita Devi</h1>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-slate-200/50 dark:bg-slate-800/50 px-3 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-sm text-slate-500">cloud_off</span>
+<span class="text-[10px] font-bold uppercase tracking-tight text-slate-600 dark:text-slate-300">Offline: 12m ago</span>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full bg-white dark:bg-slate-900 border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary shadow-sm" placeholder="Search patients by name or ID..." type="text"/>
+</div>
+</header>
+<main class="px-4 space-y-6 mt-4">
+<!-- My Community Stats -->
+<section>
+<div class="flex items-center justify-between mb-3">
+<h2 class="text-base font-bold tracking-tight">My Community Overview</h2>
+<button class="text-primary text-xs font-semibold">View Ward 4</button>
+</div>
+<div class="grid grid-cols-3 gap-3">
+<div class="bg-white dark:bg-slate-900 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
+<p class="text-2xl font-bold text-slate-900 dark:text-white">32</p>
+<p class="text-[10px] text-slate-500 font-medium">Assigned</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
+<p class="text-2xl font-bold text-primary">8</p>
+<p class="text-[10px] text-slate-500 font-medium">Active Preg.</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
+<p class="text-2xl font-bold text-slate-900 dark:text-white">4</p>
+<p class="text-[10px] text-slate-500 font-medium">Newborns</p>
+</div>
+</div>
+</section>
+<!-- Who Needs Me Today Section -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="text-base font-bold tracking-tight">Who Needs Me Today?</h2>
+<div class="flex gap-1">
+<span class="w-2 h-2 rounded-full bg-red-500"></span>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+</div>
+<!-- Urgent/Overdue Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border-l-4 border-red-500 overflow-hidden">
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-red-500 text-lg">error</span>
+<span class="text-xs font-bold text-red-600 uppercase tracking-tighter">Overdue Vaccination</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400">3 days ago</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+<img class="w-full h-full object-cover rounded-lg" data-alt="Portrait of a mother and infant child" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5TLoMqdUDkjehuBjbq6ARNYMYG1l1YyRSZVxm4lR7Pn2MUy-qCosG4YpWk_H6ocjpqWZJZwTzXK2675Wbgv0k5uJg380z2xE4_914eVx6z2QLZ4OhbHSIYAqws-jrpIShl6T1Mx3fk6AYs9Hgsby9msJF9nF7KrXreIfkeVvtKGVZS1lO4T-YDeuyknJD-mcuUVZeKAOetPTNJ0w5q2IveKRmd34lPLnQdsgZfWVUvvqgT67D7I9yOVJyLInZLE0nQw5D62x5C5c"/>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-slate-900 dark:text-white">Maya Sharma</h3>
+<p class="text-xs text-slate-500">Baby: Aarav (6 Months) • DTP-3</p>
+</div>
+<button class="bg-red-500 text-white p-2 rounded-lg">
+<span class="material-symbols-outlined">call</span>
+</button>
+</div>
+</div>
+</div>
+<!-- High Risk Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border-l-4 border-orange-500 overflow-hidden">
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-500 text-lg">warning</span>
+<span class="text-xs font-bold text-orange-600 uppercase tracking-tighter">High Risk Alert</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400">Today</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-orange-500">
+<span class="material-symbols-outlined text-3xl">pregnant_woman</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-slate-900 dark:text-white">Rita Thapa</h3>
+<p class="text-xs text-slate-500">28 Weeks • Severe Anemia Flag</p>
+</div>
+<button class="bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold">Log Visit</button>
+</div>
+</div>
+</div>
+<!-- Upcoming Visit Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border-l-4 border-primary overflow-hidden">
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">event</span>
+<span class="text-xs font-bold text-primary uppercase tracking-tighter">Upcoming ANC</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400">In 2 hours</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+<img class="w-full h-full object-cover rounded-lg" data-alt="Abstract portrait of a young woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLwZg8vAhlwwg51qcwo2EQTZAySPvErXYhVA9RGA6IYmSPTeiDaY_6kLbB2jTHx1AxvMhZ0mWLwSbHTR4jsO2DTqhKXvmPfdtygOwQ53XTxgieIkZoqPLmTLkVFQgmrX_UUHzuawrGkK7t8TsHnvaaVoUySrtQP8XS2HtCni4ZDaPB8xWbj8xtodlLYYea5h4YXIJbuomuTvPcbiIkBnZIZ357O55uIonHEvi3wVlVpbJHyudjDs2Ehl6PJ6JuGJ3lvRyvNE8EiJw"/>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-slate-900 dark:text-white">Pooja Gurung</h3>
+<p class="text-xs text-slate-500">12 Weeks • 1st ANC Visit</p>
+</div>
+<button class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 p-2 rounded-lg">
+<span class="material-symbols-outlined">directions_walk</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Completed Action -->
+<section class="opacity-70">
+<h2 class="text-base font-bold tracking-tight mb-3">Recently Completed</h2>
+<div class="bg-primary/10 dark:bg-primary/5 rounded-xl border border-primary/20 p-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<div>
+<p class="text-sm font-bold">Kavita Shrestha</p>
+<p class="text-[10px] text-slate-500">PNC Visit Completed</p>
+</div>
+</div>
+<p class="text-[10px] font-medium text-slate-500 italic">Synced 2h ago</p>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 px-4 pb-6 pt-2">
+<div class="flex justify-between items-center max-w-lg mx-auto">
+<a class="active-nav flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-bold">Patients</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="text-[10px] font-bold">Visits</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="text-[10px] font-bold">Reports</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[10px] font-bold">Profile</span>
+</a>
+</div>
+</nav>
+<!-- Floating Action Button for Emergency -->
+<button class="fixed right-4 bottom-28 w-14 h-14 bg-red-600 text-white rounded-full shadow-lg flex items-center justify-center ring-4 ring-white dark:ring-slate-900">
+<span class="material-symbols-outlined text-3xl">emergency_home</span>
+</button>
+</body></html>
