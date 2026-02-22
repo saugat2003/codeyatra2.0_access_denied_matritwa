@@ -1,127 +1,43 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Vaccination Logged - Matritwa</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#54cf17",
-                        "background-light": "#f6f8f6",
-                        "background-dark": "#162111",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.5rem",
-                        "lg": "1rem",
-                        "xl": "1.5rem",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
+{% block title %}Vaccination Confirmed | Matritwa{% endblock %}
+{% block body_class %}page-vacc-success{% endblock %}
+
+{% block extra_css %}
 <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-    </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  </head>
-<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display">
-<!-- Top Navigation / Close -->
-<header class="flex items-center justify-between p-6">
-<button class="text-slate-900 dark:text-slate-100 p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors">
-<span class="material-symbols-outlined">close</span>
-</button>
-<div class="w-10"></div> <!-- Spacer for symmetry -->
-</header>
-<!-- Main Content Container -->
-<main class="flex-1 flex flex-col items-center justify-center px-6 pb-12">
-<!-- Hero Visual Section -->
-<div class="relative mb-10">
-<!-- Decorative concentric circles for "pop" effect -->
-<div class="absolute inset-0 bg-primary/10 rounded-full scale-150 blur-xl"></div>
-<div class="absolute inset-0 bg-primary/20 rounded-full scale-125"></div>
-<!-- Main Illustration/Icon Circle -->
-<div class="relative w-40 h-40 bg-primary rounded-full flex items-center justify-center shadow-2xl shadow-primary/40 border-8 border-white dark:border-background-dark">
-<span class="material-symbols-outlined text-white text-7xl font-bold">check</span>
+  .success-page { max-width: 500px; margin: 0 auto; padding: 2rem 1rem; text-align: center; }
+  .success-card { background: #fff; border-radius: 12px; padding: 2.5rem 2rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .success-icon { font-size: 4rem; margin-bottom: 1rem; }
+  .success-card h1 { font-size: 1.4rem; color: #2f9e44; margin-bottom: .75rem; }
+  .success-card p { color: #555; line-height: 1.6; margin-bottom: .5rem; }
+  .vacc-name { font-size: 1.1rem; font-weight: 700; color: #7048e8; margin: 1rem 0; }
+  .detail { font-size: .9rem; color: #888; }
+  .action-links { margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .action-links a { display: inline-block; padding: .6rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .9rem; }
+  .btn--primary { background: #7048e8; color: #fff; }
+  .btn--primary:hover { background: #5f3dc4; }
+  .btn--outline { background: #f1f3f5; color: #333; }
+  .btn--outline:hover { background: #e9ecef; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="success-page">
+  <div class="success-card">
+    <div class="success-icon">✅</div>
+    <h1>Vaccination Confirmed!</h1>
+    <p>Your vaccination has been marked as administered.</p>
+
+    <div class="vacc-name">{{ vaccination.get_vaccine_name_display }}</div>
+    <p class="detail">Administered on: {{ vaccination.administered_date|date:"M d, Y" }}</p>
+    {% if vaccination.facility %}
+    <p class="detail">Facility: {{ vaccination.facility }}</p>
+    {% endif %}
+
+    <div class="action-links">
+      <a href="{% url 'main:vaccination_details' %}" class="btn--primary">View Schedule</a>
+      <a href="{% url 'main:dashboard' %}" class="btn--outline">Dashboard</a>
+    </div>
+  </div>
 </div>
-<!-- Floating Streak Badge -->
-<div class="absolute -bottom-2 -right-4 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-lg flex items-center gap-2 border border-slate-100 dark:border-slate-700">
-<span class="material-symbols-outlined text-primary text-xl">local_fire_department</span>
-<span class="text-slate-900 dark:text-slate-100 font-bold text-sm">7 Day Streak</span>
-</div>
-</div>
-<!-- Typography Block -->
-<div class="text-center max-w-sm mx-auto">
-<h1 class="text-slate-900 dark:text-slate-100 text-3xl font-extrabold tracking-tight mb-3">
-                Vaccination Logged!
-            </h1>
-<p class="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
-                Great job! You’re keeping your child safe and your health streak alive.
-            </p>
-</div>
-<!-- Specific Detail Card -->
-<div class="mt-8 w-full max-w-xs bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex items-center gap-4">
-<div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-primary">vaccines</span>
-</div>
-<div class="text-left">
-<p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Logged Activity</p>
-<p class="text-slate-900 dark:text-slate-100 font-bold">Polio Dose 1 Recorded</p>
-</div>
-</div>
-</main>
-<!-- Footer Action Area -->
-<footer class="p-6 pb-10 space-y-4">
-<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
-            Back to Health Tracker
-        </button>
-<button class="w-full text-slate-500 dark:text-slate-400 font-medium py-2 hover:text-primary transition-colors">
-            View Full Medical History
-        </button>
-</footer>
-<!-- Bottom Navigation Bar (Consistent with App) -->
-<nav class="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 px-4 py-2">
-<div class="flex justify-between items-center max-w-md mx-auto">
-<a class="flex flex-col items-center gap-1 p-2 text-primary" href="#">
-<span class="material-symbols-outlined">home</span>
-<span class="text-[10px] font-medium">Home</span>
-</a>
-<a class="flex flex-col items-center gap-1 p-2 text-slate-400 dark:text-slate-500" href="#">
-<span class="material-symbols-outlined">monitoring</span>
-<span class="text-[10px] font-medium">Tracker</span>
-</a>
-<a class="flex flex-col items-center gap-1 p-2 text-slate-400 dark:text-slate-500" href="#">
-<span class="material-symbols-outlined">groups</span>
-<span class="text-[10px] font-medium">Community</span>
-</a>
-<a class="flex flex-col items-center gap-1 p-2 text-slate-400 dark:text-slate-500" href="#">
-<span class="material-symbols-outlined">person</span>
-<span class="text-[10px] font-medium">Profile</span>
-</a>
-</div>
-</nav>
-<!-- Image for Visual Context (Hidden) -->
-<div class="hidden">
-<img alt="" data-alt="A healthy smiling baby being held by a parent" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBf-aVfmm9Do4OqLshOUTx2mTttDQDKgF4r1YmTuOGW-_fwJSvd_pxyHxx0BuKQ4UxMGij72UW-fKtP_N2_m99SK4TXnKIe6RTMEiA6GiCJxBwtp29EjO4sTcSXm_RTfqT-PhCxGrCzu8z7pHzTMx2QyDXDn8qjGyYP8gLsmrMWVMa_T1DFM9IOHeDApIXx5tEGV6Y234QuJkVQq5FEM6Gyfw1GuiaY8R18Zt5JfHCfA6z7rRXL2X0oWt1_6piia-qRXvgPFK5kqzM"/>
-</div>
-</body></html>
+{% endblock %}
