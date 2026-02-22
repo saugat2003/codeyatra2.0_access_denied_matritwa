@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matritwa - Maternal Health</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#54cf17",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#162111",
+                        "emergency": "#fee2e2",
+                        "emergency-text": "#991b1b",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .apple-blur {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto shadow-2xl bg-white dark:bg-zinc-950">
+<!-- Top Navigation / Logo -->
+<header class="flex items-center justify-between px-6 pt-8 pb-4">
+<div class="flex items-center gap-2">
+<div class="bg-primary/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1">
+                        spa
+                    </span>
+</div>
+<h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Matritwa</h2>
+</div>
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors">
+<span class="material-symbols-outlined text-slate-500">
+                    info
+                </span>
+</button>
+</header>
+<!-- Hero Image Section -->
+<main class="flex-1 flex flex-col px-6">
+<div class="w-full aspect-[4/5] relative rounded-xl overflow-hidden mt-4 shadow-sm">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 z-10"></div>
+<div class="w-full h-full bg-center bg-no-repeat bg-cover" data-alt="A glowing pregnant woman smiling and holding her belly in soft natural light." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBdNwIzKeHju1SC137RjSx_6RwOnXOIlXTx4EInGqpiGm6M51eDHt6yulqFzN1qA847keatE3ZSPWFzxxBLhL664bWoVLENfki5_NAfw3ZTrXcYMsSTnoWXgtbQAqUnzOd0zzpJRXHVXX9kK1KFdd1D54OgDUhzeFarTwsVAdLpOwbPobbCcpgzPPqp-NW9k7BBBV2ZpSSqurOEJezZ1jOO_iqFYjJpnxdMNZN2sF0EXw-ZjhCIFjzedsV-twLCoH6AfaAnlhuFMt8");'>
+</div>
+</div>
+<!-- Content -->
+<div class="mt-8 space-y-2 text-center">
+<h1 class="text-3xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white px-2">
+                    Your health is your first priority.
+                </h1>
+<p class="text-lg text-slate-500 dark:text-slate-400 font-medium">
+                    Safe Motherhood for Every Woman.
+                </p>
+</div>
+<!-- Actions -->
+<div class="mt-10 flex flex-col gap-4">
+<button class="flex items-center justify-center h-14 w-full bg-primary hover:bg-opacity-90 text-slate-900 font-bold text-lg rounded-xl transition-all shadow-lg shadow-primary/20">
+<span>Start Registration</span>
+<span class="material-symbols-outlined ml-2 text-xl">
+                        arrow_forward
+                    </span>
+</button>
+<button class="flex items-center justify-center h-14 w-full bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-slate-200 font-semibold text-lg rounded-xl transition-all">
+<span>Explore Awareness</span>
+</button>
+</div>
+</main>
+<!-- Emergency Footer -->
+<footer class="p-6 pb-10 mt-4">
+<button class="flex items-center justify-center gap-3 w-full py-4 bg-emergency dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-xl text-emergency-text dark:text-red-400 font-bold tracking-wide transition-all active:scale-95">
+<span class="material-symbols-outlined animate-pulse text-2xl" style="font-variation-settings: 'FILL' 1">
+                    emergency_home
+                </span>
+<span class="uppercase text-sm">Emergency SOS</span>
+</button>
+<div class="mt-6 flex justify-center items-center gap-1 opacity-40">
+<div class="w-1 h-1 rounded-full bg-slate-400"></div>
+<div class="w-8 h-1 rounded-full bg-slate-400"></div>
+<div class="w-1 h-1 rounded-full bg-slate-400"></div>
+</div>
+</footer>
+</div>
+</body></html>
