@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Register — Step 3 | Matritwa{% endblock %}
+
+{% block body_class %}flex items-center justify-center p-0 sm:p-4{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-md bg-background-light dark:bg-background-dark min-h-screen sm:min-h-[800px] sm:rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative">
+
+    <!-- Status Bar -->
+    <div class="h-12 w-full shrink-0"></div>
+
+    <!-- Top App Bar -->
+    <header class="flex items-center px-4 py-2 gap-2 shrink-0">
+        <a href="{% url 'accounts:register_step2' %}" class="flex items-center justify-center size-10 rounded-full hover:bg-slate-100 dark:hover:bg-surface-dark transition-colors">
+            <span class="material-symbols-outlined text-slate-700 dark:text-slate-300">arrow_back</span>
+        </a>
+        <h2 class="flex-1 text-center text-lg font-bold text-slate-900 dark:text-white pr-10">Step 3 of 3</h2>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="px-6 pb-4 shrink-0">
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Almost there!</span>
+            <span class="text-xs font-bold text-primary uppercase tracking-wider">100%</span>
+        </div>
+        <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+            <div class="h-full bg-primary rounded-full transition-all" style="width: 100%;"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto no-scrollbar flex flex-col px-6 pb-32">
+
+        <div class="pt-4 pb-6">
+            <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Where are you located?</h1>
+            <p class="text-slate-500 dark:text-slate-400">We use your location to find nearby services and personalize your experience.</p>
+        </div>
+
+        <!-- Map View -->
+        <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-primary/10 bg-slate-100 dark:bg-surface-dark shadow-lg mb-5">
+            <!-- Simulated Map Bg -->
+            <div class="absolute inset-0"
+                 style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuABkxQqDi2M9ostJwz-fw-QykCZHuVjI80rby-HrZP8RRQNqbelLp0vdGwenx3GV4FejdOGm-3bBMO0k4XiVvSwcRwXjuDMzx60qrOGjBOudo8BxYnxH3uhh3OZmDOyIMJtToMjMo1aehzB2TJ12QLErquE12qDLNLaXabjiCP-FBxgrt-I3m88VwQzXscBcCKMCi2DPLXKIIkpXCkgg9imaDw63-AkwsynzKG29Vc-q_tqVTTn29zCDtiUa4VKO5tFU1wofIf50aiH'); background-size: cover; background-position: center; filter: grayscale(0.3);">
+            </div>
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-background-dark/30 to-transparent"></div>
+            <!-- GPS Pulse -->
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="relative flex items-center justify-center">
+                    <div class="absolute w-20 h-20 bg-primary/30 rounded-full animate-ping"></div>
+                    <div class="absolute w-14 h-14 bg-primary/40 rounded-full"></div>
+                    <div class="relative bg-primary text-slate-900 p-3 rounded-full shadow-xl">
+                        <span class="material-symbols-outlined text-[28px]" style="font-variation-settings:'FILL' 1">location_on</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Status Badge -->
+            <div class="absolute top-4 right-4 bg-white/90 dark:bg-background-dark/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-2 border border-primary/20">
+                <span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings:'FILL' 1">check_circle</span>
+                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Location Found</span>
+            </div>
+        </div>
+
+        <!-- Address Card -->
+        <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex items-start gap-4 mb-4">
+            <div class="flex items-center justify-center size-10 bg-primary/10 rounded-xl shrink-0">
+                <span class="material-symbols-outlined text-primary">near_me</span>
+            </div>
+            <div class="flex-1">
+                <p class="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Current Address</p>
+                <p class="text-slate-900 dark:text-white font-semibold">Detecting your location...</p>
+                <p class="text-slate-500 dark:text-slate-400 text-sm">Nepal</p>
+            </div>
+            <button class="text-slate-400 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined">edit</span>
+            </button>
+        </div>
+
+        <form method="post" action="{% url 'accounts:register_step3' %}">
+            {% csrf_token %}
+
+            <!-- Bottom CTA -->
+            <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md px-6 pb-8 pt-4 bg-background-light dark:bg-background-dark border-t border-slate-100 dark:border-slate-800 space-y-3">
+                <button type="button"
+                    class="w-full h-12 flex items-center justify-center gap-2 border-2 border-primary/30 hover:border-primary text-slate-800 dark:text-slate-200 font-semibold rounded-xl transition-all">
+                    <span class="material-symbols-outlined text-primary">refresh</span>
+                    Refresh Location
+                </button>
+                <button type="submit"
+                    class="w-full h-14 bg-primary hover:bg-primary-dark text-slate-900 font-bold text-lg rounded-xl flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-lg shadow-primary/25">
+                    Complete Registration
+                    <span class="material-symbols-outlined text-[22px]">check</span>
+                </button>
+            </div>
+        </form>
+
+    </main>
+
+    <!-- iOS Home Indicator -->
+    <div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-slate-300 dark:bg-slate-600 rounded-full"></div>
+</div>
+{% endblock %}
