@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }} | Matritwa{% endblock %}
+{% block body_class %}page-education-detail{% endblock %}
+
+{% block extra_css %}
+<style>
+  .detail-page { max-width: 800px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+  .breadcrumb { font-size: .85rem; color: #888; margin-bottom: 1rem; }
+  .breadcrumb a { color: #7048e8; text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  .article-hero { border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; max-height: 350px; background: linear-gradient(135deg, #e5dbff, #d0bfff); display: flex; align-items: center; justify-content: center; }
+  .article-hero img { width: 100%; object-fit: cover; }
+  .article-hero .placeholder { font-size: 4rem; padding: 3rem; }
+
+  .article-header { margin-bottom: 1.5rem; }
+  .article-header h1 { font-size: 1.6rem; color: #333; line-height: 1.4; margin-bottom: .75rem; }
+  .article-tags { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .75rem; }
+  .tag { padding: .2rem .65rem; border-radius: 100px; font-size: .8rem; font-weight: 600; }
+  .tag--category { background: #f1f3f5; color: #666; }
+  .tag--trimester { background: #e5dbff; color: #5f3dc4; }
+  .article-date { font-size: .85rem; color: #888; }
+
+  .article-content { background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); line-height: 1.8; font-size: .95rem; color: #333; }
+  .article-content p { margin-bottom: 1rem; }
+
+  .article-summary { background: #f8f0ff; border-left: 4px solid #7048e8; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: .95rem; color: #5f3dc4; }
+
+  .back-link { display: inline-block; margin-top: 1.5rem; color: #7048e8; text-decoration: none; font-weight: 600; font-size: .9rem; }
+  .back-link:hover { text-decoration: underline; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-page">
+
+  <div class="breadcrumb">
+    <a href="{% url 'main:awareness_education' %}">Education</a>
+    {% if article.category %}
+    &nbsp;/&nbsp; <a href="{% url 'main:awareness_education' %}?category={{ article.category }}">{{ article.get_category_display }}</a>
+    {% endif %}
+    &nbsp;/&nbsp; {{ article.title|truncatewords:5 }}
+  </div>
+
+  <!-- Hero Image -->
+  <div class="article-hero">
+    {% if article.image %}
+    <img src="{{ article.image.url }}" alt="{{ article.title }}">
+    {% else %}
+    <span class="placeholder">📖</span>
+    {% endif %}
+  </div>
+
+  <!-- Title & Metadata -->
+  <div class="article-header">
+    <h1>{{ article.title }}</h1>
+    <div class="article-tags">
+      <span class="tag tag--category">{{ article.get_category_display }}</span>
+      <span class="tag tag--trimester">{{ article.get_trimester_display }}</span>
+    </div>
+    <div class="article-date">
+      Published {{ article.created_at|date:"F d, Y" }}
+      {% if article.updated_at != article.created_at %}
+      &middot; Updated {{ article.updated_at|date:"F d, Y" }}
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Summary -->
+  {% if article.summary %}
+  <div class="article-summary">
+    <strong>Summary:</strong> {{ article.summary }}
+  </div>
+  {% endif %}
+
+  <!-- Content -->
+  <div class="article-content">
+    {{ article.content|linebreaks }}
+  </div>
+
+  <a href="{% url 'main:awareness_education' %}" class="back-link">← Back to All Articles</a>
+
+</div>
+{% endblock %}
