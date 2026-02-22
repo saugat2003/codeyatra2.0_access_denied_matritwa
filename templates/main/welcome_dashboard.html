@@ -1,193 +1,203 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Matritwa - Welcome Dashboard</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#54cf17",
-                        "background-light": "#f6f8f6",
-                        "background-dark": "#162111",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.5rem",
-                        "lg": "1rem",
-                        "xl": "1.5rem",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
+{% block title %}Dashboard | Matritwa{% endblock %}
+{% block body_class %}page-dashboard{% endblock %}
+
+{% block extra_css %}
 <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .active-nav .material-symbols-outlined {
-            font-variation-settings: 'FILL' 1;
-        }
-    </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen pb-24">
-<!-- Header Section -->
-<header class="flex items-center justify-between px-6 pt-8 pb-4">
-<div class="flex flex-col">
-<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Welcome back,</span>
-<h1 class="text-2xl font-bold tracking-tight">Good morning, Sita!</h1>
+  .dashboard { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem; }
+  .dashboard__greeting { margin-bottom: 1.5rem; }
+  .dashboard__greeting h1 { font-size: 1.6rem; color: #d6336c; }
+  .dashboard__greeting p { color: #666; margin-top: .25rem; }
+
+  .overview-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .card { background: #fff; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); transition: transform .15s; }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+  .card__icon { font-size: 2rem; margin-bottom: .5rem; }
+  .card__title { font-size: .85rem; text-transform: uppercase; letter-spacing: .5px; color: #888; margin-bottom: .25rem; }
+  .card__value { font-size: 1.6rem; font-weight: 700; color: #333; }
+  .card__subtitle { font-size: .8rem; color: #999; margin-top: .25rem; }
+
+  .card--pink { border-left: 4px solid #d6336c; }
+  .card--blue { border-left: 4px solid #1971c2; }
+  .card--green { border-left: 4px solid #2f9e44; }
+  .card--orange { border-left: 4px solid #e8590c; }
+  .card--purple { border-left: 4px solid #7048e8; }
+
+  .progress-bar-wrap { background: #e9ecef; border-radius: 100px; height: 10px; margin-top: .75rem; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, #d6336c, #e8590c); transition: width .4s; }
+
+  .milestone-card { background: linear-gradient(135deg, #fff0f6, #fff4e6); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+  .milestone-card h3 { color: #d6336c; margin-bottom: .5rem; }
+  .milestone-card p { color: #555; line-height: 1.7; }
+  .milestone-card .baby-size { display: inline-block; background: #d6336c; color: #fff; padding: .25rem .75rem; border-radius: 100px; font-size: .85rem; margin-top: .5rem; }
+
+  .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .75rem; margin-bottom: 2rem; }
+  .quick-action { display: flex; align-items: center; gap: .75rem; background: #fff; padding: 1rem; border-radius: 10px; text-decoration: none; color: #333; box-shadow: 0 1px 4px rgba(0,0,0,.06); transition: all .15s; }
+  .quick-action:hover { background: #fff0f6; transform: translateY(-1px); }
+  .quick-action__icon { font-size: 1.5rem; }
+  .quick-action__label { font-weight: 500; font-size: .95rem; }
+
+  .section-title { font-size: 1.1rem; color: #333; margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 2px solid #f1f3f5; }
+
+  .symptom-item { display: flex; justify-content: space-between; align-items: center; padding: .75rem 0; border-bottom: 1px solid #f1f3f5; }
+  .symptom-item__name { font-weight: 500; }
+  .symptom-item__severity { font-size: .8rem; padding: .2rem .6rem; border-radius: 100px; }
+  .severity--mild { background: #d3f9d8; color: #2b8a3e; }
+  .severity--moderate { background: #fff3bf; color: #e67700; }
+  .severity--severe { background: #ffe3e3; color: #c92a2a; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+  <!-- Greeting -->
+  <div class="dashboard__greeting">
+    <h1>Welcome, {{ user.get_short_name }}! 🌸</h1>
+    {% if week %}
+      <p>You are in <strong>Week {{ week }}</strong> of your pregnancy — {{ trimester|default:"" }}{% if trimester == 1 %}st{% elif trimester == 2 %}nd{% elif trimester == 3 %}rd{% endif %} Trimester</p>
+    {% else %}
+      <p>Your maternal health companion. Set your LMP in your profile to see pregnancy progress.</p>
+    {% endif %}
+  </div>
+
+  <!-- Overview Cards -->
+  <div class="overview-cards">
+    <div class="card card--pink">
+      <div class="card__icon">🤰</div>
+      <div class="card__title">Pregnancy Week</div>
+      <div class="card__value">{{ week|default:"—" }}</div>
+      <div class="card__subtitle">of 40 weeks</div>
+      {% if progress %}
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width: {{ progress }}%"></div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="card card--blue">
+      <div class="card__icon">📅</div>
+      <div class="card__title">Days Remaining</div>
+      <div class="card__value">{{ days_left|default:"—" }}</div>
+      {% if edd %}
+        <div class="card__subtitle">EDD: {{ edd|date:"M d, Y" }}</div>
+      {% endif %}
+    </div>
+
+    <div class="card card--green">
+      <div class="card__icon">🔥</div>
+      <div class="card__title">Health Streak</div>
+      <div class="card__value">{{ streak_count }} days</div>
+      <div class="card__subtitle">Keep logging daily!</div>
+    </div>
+
+    <div class="card card--orange">
+      <div class="card__icon">🔔</div>
+      <div class="card__title">Upcoming Reminders</div>
+      <div class="card__value">{{ upcoming_reminders }}</div>
+      <div class="card__subtitle">pending tasks</div>
+    </div>
+
+    {% if pending_danger_signs %}
+    <div class="card card--purple">
+      <div class="card__icon">⚠️</div>
+      <div class="card__title">Danger Signs</div>
+      <div class="card__value">{{ pending_danger_signs }}</div>
+      <div class="card__subtitle">pending review</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Current Milestone -->
+  {% if current_milestone %}
+  <div class="milestone-card">
+    <h3>📌 {{ current_milestone.title }}</h3>
+    <p>{{ current_milestone.description }}</p>
+    {% if current_milestone.baby_size %}
+      <span class="baby-size">🍼 Baby is about the size of {{ current_milestone.baby_size }}</span>
+    {% endif %}
+    {% if current_milestone.tips %}
+      <p style="margin-top: .75rem;"><strong>💡 Tip:</strong> {{ current_milestone.tips }}</p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Quick Actions -->
+  <h2 class="section-title">Quick Actions</h2>
+  <div class="quick-actions">
+    <a href="{% url 'main:pregnancy_timeline' %}" class="quick-action">
+      <span class="quick-action__icon">📊</span>
+      <span class="quick-action__label">Pregnancy Timeline</span>
+    </a>
+    <a href="{% url 'main:health_streaks' %}" class="quick-action">
+      <span class="quick-action__icon">🎯</span>
+      <span class="quick-action__label">Health Streaks</span>
+    </a>
+    <a href="{% url 'main:symptom_checker' %}" class="quick-action">
+      <span class="quick-action__icon">🩺</span>
+      <span class="quick-action__label">Symptom Checker</span>
+    </a>
+    <a href="{% url 'main:report_danger_sign' %}" class="quick-action">
+      <span class="quick-action__icon">🚨</span>
+      <span class="quick-action__label">Report Danger Sign</span>
+    </a>
+    <a href="{% url 'main:reminders' %}" class="quick-action">
+      <span class="quick-action__icon">🔔</span>
+      <span class="quick-action__label">Reminders</span>
+    </a>
+    <a href="{% url 'main:vaccination_details' %}" class="quick-action">
+      <span class="quick-action__icon">💉</span>
+      <span class="quick-action__label">Vaccinations</span>
+    </a>
+    <a href="{% url 'main:emergency_contacts' %}" class="quick-action">
+      <span class="quick-action__icon">📞</span>
+      <span class="quick-action__label">Emergency Contacts</span>
+    </a>
+    <a href="{% url 'main:doctor_consultation' %}" class="quick-action">
+      <span class="quick-action__icon">👩‍⚕️</span>
+      <span class="quick-action__label">Doctor Consultation</span>
+    </a>
+    <a href="{% url 'main:awareness_education' %}" class="quick-action">
+      <span class="quick-action__icon">📚</span>
+      <span class="quick-action__label">Health Education</span>
+    </a>
+    <a href="{% url 'main:emergency_sos' %}" class="quick-action">
+      <span class="quick-action__icon">🆘</span>
+      <span class="quick-action__label">Emergency SOS</span>
+    </a>
+  </div>
+
+  <!-- Recent Symptoms -->
+  {% if recent_symptoms %}
+  <h2 class="section-title">Recent Symptoms</h2>
+  <div class="card" style="margin-bottom: 2rem;">
+    {% for s in recent_symptoms %}
+    <div class="symptom-item">
+      <div>
+        <span class="symptom-item__name">{{ s.get_symptom_display }}</span>
+        <small style="color: #999;"> — {{ s.date|date:"M d" }}</small>
+      </div>
+      <span class="symptom-item__severity {% if s.severity <= 2 %}severity--mild{% elif s.severity == 3 %}severity--moderate{% else %}severity--severe{% endif %}">
+        {{ s.get_severity_display }}
+      </span>
+    </div>
+    {% endfor %}
+    <a href="{% url 'main:symptom_checker' %}" style="display:block; text-align:center; margin-top:.75rem; color:#d6336c; text-decoration:none; font-size:.9rem;">View all symptoms →</a>
+  </div>
+  {% endif %}
+
+  <!-- Next Vaccination -->
+  {% if next_vaccination %}
+  <h2 class="section-title">Next Vaccination</h2>
+  <div class="card card--blue" style="margin-bottom: 2rem;">
+    <div class="card__icon">💉</div>
+    <div class="card__value" style="font-size: 1.1rem;">{{ next_vaccination.get_vaccine_name_display }}</div>
+    <div class="card__subtitle">Scheduled: {{ next_vaccination.scheduled_date|date:"M d, Y" }}</div>
+    <a href="{% url 'main:vaccination_details' %}" style="display:inline-block; margin-top:.5rem; color:#1971c2; text-decoration:none; font-size:.85rem;">View details →</a>
+  </div>
+  {% endif %}
+
 </div>
-<div class="relative">
-<button class="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 shadow-sm">
-<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">notifications</span>
-<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-800"></span>
-</button>
-</div>
-</header>
-<!-- Main Journey Card -->
-<section class="px-6 py-4">
-<div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-700">
-<div class="flex justify-between items-start mb-4">
-<div class="space-y-1">
-<span class="text-xs font-bold uppercase tracking-wider text-primary">Your Journey</span>
-<h2 class="text-3xl font-bold text-slate-900 dark:text-white">Week 24</h2>
-<p class="text-sm text-slate-500 dark:text-slate-400">2nd Trimester</p>
-</div>
-<div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
-<!-- Cantaloupe Placeholder Illustration -->
-<div class="w-14 h-14 bg-orange-400 rounded-full relative overflow-hidden flex items-center justify-center shadow-inner" data-alt="Stylized orange cantaloupe illustration for baby size">
-<div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
-<span class="text-xs font-bold text-white/80 uppercase">Cantaloupe</span>
-</div>
-</div>
-</div>
-<div class="space-y-3">
-<div class="flex justify-between items-end">
-<p class="text-sm font-medium">Your baby is the size of a <span class="text-primary">Cantaloupe</span>.</p>
-<p class="text-sm font-bold text-primary">60%</p>
-</div>
-<div class="w-full bg-slate-100 dark:bg-slate-700 h-3 rounded-full overflow-hidden">
-<div class="bg-primary h-full rounded-full w-[60%]"></div>
-</div>
-<p class="text-xs text-slate-400 dark:text-slate-500 text-center">112 days to go until your due date</p>
-</div>
-</div>
-</section>
-<!-- Quick Actions -->
-<section class="px-6 py-4">
-<h3 class="text-lg font-bold mb-4">Quick Actions</h3>
-<div class="grid grid-cols-4 gap-4">
-<div class="flex flex-col items-center gap-2">
-<button class="w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-3xl">medical_services</span>
-</button>
-<span class="text-[11px] font-medium text-center leading-tight">Consult<br/>Doctor</span>
-</div>
-<div class="flex flex-col items-center gap-2">
-<button class="w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-3xl">stethoscope</span>
-</button>
-<span class="text-[11px] font-medium text-center leading-tight">Symptom<br/>Checker</span>
-</div>
-<div class="flex flex-col items-center gap-2">
-<button class="w-14 h-14 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-3xl">lightbulb</span>
-</button>
-<span class="text-[11px] font-medium text-center leading-tight">Health<br/>Awareness</span>
-</div>
-<div class="flex flex-col items-center gap-2">
-<button class="w-14 h-14 bg-red-50 dark:bg-red-900/20 rounded-xl shadow-sm border border-red-100 dark:border-red-900/30 flex items-center justify-center text-red-500">
-<span class="material-symbols-outlined text-3xl font-bold">emergency_home</span>
-</button>
-<span class="text-[11px] font-bold text-red-500 text-center leading-tight uppercase tracking-tighter">SOS</span>
-</div>
-</div>
-</section>
-<!-- Daily Insight -->
-<section class="px-6 py-4">
-<div class="bg-primary/10 border border-primary/20 rounded-xl p-4 flex gap-4 items-center">
-<div class="w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex shrink-0 items-center justify-center text-primary shadow-sm">
-<span class="material-symbols-outlined">water_drop</span>
-</div>
-<div class="flex flex-col">
-<h4 class="text-sm font-bold text-primary uppercase tracking-wide">Daily Insight</h4>
-<p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">Stay hydrated! Aim for 3 liters of water today.</p>
-</div>
-</div>
-</section>
-<!-- Upcoming Today -->
-<section class="px-6 py-4">
-<h3 class="text-lg font-bold mb-4">Upcoming Today</h3>
-<div class="space-y-3">
-<div class="bg-white dark:bg-slate-800 p-4 rounded-xl flex items-center justify-between border border-slate-100 dark:border-slate-700 shadow-sm">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center text-purple-500">
-<span class="material-symbols-outlined">self_improvement</span>
-</div>
-<div>
-<h5 class="font-bold text-sm">Prenatal Yoga</h5>
-<p class="text-xs text-slate-500">Today, 5:00 PM</p>
-</div>
-</div>
-<button class="text-slate-300 dark:text-slate-600">
-<span class="material-symbols-outlined text-3xl">radio_button_unchecked</span>
-</button>
-</div>
-<div class="bg-white dark:bg-slate-800 p-4 rounded-xl flex items-center justify-between border border-slate-100 dark:border-slate-700 shadow-sm">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
-<span class="material-symbols-outlined">checklist</span>
-</div>
-<div>
-<h5 class="font-bold text-sm">Log Daily Streak</h5>
-<p class="text-xs text-slate-500">Consistency is key!</p>
-</div>
-</div>
-<button class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-full shadow-md shadow-primary/20">
-                    LOG NOW
-                </button>
-</div>
-</div>
-</section>
-<!-- Bottom Navigation Bar -->
-<nav class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-slate-100 dark:border-slate-800 px-6 py-3 flex justify-between items-center z-50">
-<a class="flex flex-col items-center gap-1 active-nav text-primary" href="#">
-<span class="material-symbols-outlined">home</span>
-<span class="text-[10px] font-bold">Home</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
-<span class="material-symbols-outlined">calendar_today</span>
-<span class="text-[10px] font-medium">Timeline</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
-<span class="material-symbols-outlined">ecg_heart</span>
-<span class="text-[10px] font-medium">Health</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
-<span class="material-symbols-outlined">description</span>
-<span class="text-[10px] font-medium">Records</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
-<span class="material-symbols-outlined">person</span>
-<span class="text-[10px] font-medium">Profile</span>
-</a>
-</nav>
-</body></html>
+{% endblock %}
