@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matritwa - Create Your Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#54cf17",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#162111",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .form-input:focus {
+            border-color: #54cf17;
+            ring-color: #54cf17;
+        }
+        /* Custom Toggle Switch Style */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e2e8f0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #54cf17;
+        }
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="max-w-md mx-auto min-h-screen flex flex-col bg-white dark:bg-slate-900 shadow-xl overflow-hidden relative">
+<!-- Header Section -->
+<header class="pt-8 px-6 pb-4">
+<div class="flex items-center justify-between mb-6">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex-1 text-center">
+<span class="text-xs font-semibold uppercase tracking-widest text-slate-400">Step 1 of 3</span>
+</div>
+<div class="w-10"></div> <!-- Placeholder for balance -->
+</div>
+<h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">Create Your Profile</h1>
+<p class="text-slate-500 dark:text-slate-400">Help us personalize your maternal health journey.</p>
+</header>
+<!-- Progress Bar -->
+<div class="px-6 mb-6">
+<div class="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-1/3 rounded-full"></div>
+</div>
+</div>
+<!-- Form Content -->
+<main class="flex-1 px-6 pb-32 overflow-y-auto">
+<div class="space-y-6">
+<!-- Full Name -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Full Name</label>
+<input class="w-full h-14 px-4 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary transition-all" placeholder="Enter your full name" type="text"/>
+</div>
+<!-- Age & Mobile -->
+<div class="grid grid-cols-12 gap-4">
+<div class="col-span-4 space-y-2">
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Age</label>
+<input class="w-full h-14 px-4 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary transition-all" placeholder="Years" type="number"/>
+</div>
+<div class="col-span-8 space-y-2">
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Mobile Number</label>
+<div class="flex gap-2">
+<div class="w-20">
+<input class="w-full h-14 px-2 text-center rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary" type="text" value="+91"/>
+</div>
+<input class="flex-1 h-14 px-4 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary transition-all" placeholder="Phone number" type="tel"/>
+</div>
+</div>
+</div>
+<!-- Location -->
+<div class="space-y-2">
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Location</label>
+<div class="relative">
+<input class="w-full h-14 pl-4 pr-12 rounded-lg border-slate-200 dark:border-slate-700 dark:bg-slate-800 focus:ring-primary focus:border-primary transition-all" placeholder="City or Region" type="text"/>
+<button class="absolute right-2 top-2 w-10 h-10 flex items-center justify-center text-primary hover:bg-primary/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined">my_location</span>
+</button>
+</div>
+</div>
+<!-- Pregnancy Status Toggle -->
+<div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700">
+<div>
+<p class="font-semibold text-slate-800 dark:text-slate-100">Currently Pregnant?</p>
+<p class="text-xs text-slate-500">Toggle if you are currently expecting</p>
+</div>
+<label class="switch">
+<input checked="" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<!-- Medical Conditions -->
+<div class="space-y-3 pt-2">
+<label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Existing Medical Conditions</label>
+<p class="text-xs text-slate-500 mb-2">Select any that apply to help us tailor your care.</p>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium hover:border-primary hover:text-primary transition-all">None</button>
+<button class="px-4 py-2 rounded-full border-2 border-primary bg-primary/10 text-primary text-sm font-semibold transition-all">High BP</button>
+<button class="px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium hover:border-primary hover:text-primary transition-all">Anemia</button>
+<button class="px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium hover:border-primary hover:text-primary transition-all">Gestational Diabetes</button>
+<button class="px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium hover:border-primary hover:text-primary transition-all">Thyroid</button>
+<button class="px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium hover:border-primary hover:text-primary transition-all">+ Other</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Fixed Footer Button -->
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white via-white/95 to-transparent dark:from-slate-900 dark:via-slate-900/95">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-lg shadow-lg shadow-primary/30 transition-all flex items-center justify-center gap-2">
+<span>Save &amp; Continue</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<p class="text-center text-[10px] text-slate-400 mt-4 px-8 leading-tight">
+                By clicking Save &amp; Continue, you agree to our Terms of Service and Privacy Policy.
+            </p>
+</div>
+</div>
+</body></html>
