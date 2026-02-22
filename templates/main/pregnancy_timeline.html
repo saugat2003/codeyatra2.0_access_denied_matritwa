@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matritwa - Pregnancy Tracker</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#54cf17",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#162111",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .timeline-line {
+            position: absolute;
+            left: 15px;
+            top: 24px;
+            bottom: -24px;
+            width: 2px;
+            background-color: #e2e8f0;
+        }
+        .timeline-item:last-child .timeline-line {
+            display: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+<div class="max-w-md mx-auto min-h-screen flex flex-col bg-white dark:bg-background-dark shadow-xl">
+<!-- Header -->
+<header class="flex items-center justify-between px-6 pt-8 pb-4">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-2xl">pregnant_woman</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">Matritwa</h1>
+</div>
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Hero Status Card -->
+<section class="px-6 py-4">
+<div class="bg-primary/5 dark:bg-primary/10 rounded-xl p-6 border border-primary/10">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="text-3xl font-bold text-slate-900 dark:text-white">Week 24</h2>
+<p class="text-primary font-semibold">2nd Trimester • Growth Spurt</p>
+</div>
+<div class="bg-white dark:bg-slate-800 p-3 rounded-full shadow-sm">
+<div class="w-16 h-16 rounded-full bg-cover bg-center" data-alt="A close up of a ripe cantaloupe fruit" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDzmkzUiDzKayCIhOuH4zG8SonwN_C1CHyXLhNFXAOVFVBoyb7ceU5HrWf7rn5F6qyPUm5vjs5yVZHQKWLiGtCdBB763TB1nBpAEuzAQ6XLHJab8ZPn3T0HVzJY-R7qIK35BUFx0zg0qNQgGkQiDtd0aHIM7t8dEUi8hN_oadY9lukdFhIw9jzVUaSYjRwa5Oi9aUa-Our4d9ruhwYMXl2dpjNSjNAmrv8fkvD7QWxUXE5SYBwa0siOVhJiejMRjoc9C7gnmdNG-i0')"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-sm font-medium">
+<span>Pregnancy Progress</span>
+<span>60%</span>
+</div>
+<div class="w-full h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-1000" style="width: 60%;"></div>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">
+                            112 days until your big day! Baby is the size of a <span class="text-primary">Cantaloupe</span>.
+                        </p>
+</div>
+</div>
+</section>
+<!-- Milestones Timeline -->
+<section class="px-6 py-4">
+<h3 class="text-lg font-bold mb-4 px-1">Journey Roadmap</h3>
+<div class="space-y-0">
+<!-- Milestone 1 (Completed) -->
+<div class="relative flex gap-4 pb-8 timeline-item">
+<div class="timeline-line"></div>
+<div class="z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<div class="flex flex-col pt-1">
+<h4 class="text-sm font-bold text-slate-900 dark:text-white">Anatomy Scan</h4>
+<p class="text-xs text-slate-500">Week 20 • Completed</p>
+</div>
+</div>
+<!-- Milestone 2 (Current/Active) -->
+<div class="relative flex gap-4 pb-8 timeline-item">
+<div class="timeline-line"></div>
+<div class="z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-primary bg-white dark:bg-background-dark text-primary shadow-sm">
+<span class="material-symbols-outlined text-sm">medical_services</span>
+</div>
+<div class="flex flex-col pt-1">
+<h4 class="text-sm font-bold text-slate-900 dark:text-white">Gestational Diabetes Test</h4>
+<p class="text-xs text-slate-500">Week 24 - 28 • Upcoming soon</p>
+<div class="mt-2 bg-slate-50 dark:bg-white/5 rounded-lg p-3 border border-slate-100 dark:border-white/10">
+<p class="text-xs text-slate-600 dark:text-slate-300">Fast for 8 hours before your appointment on Thursday.</p>
+</div>
+</div>
+</div>
+<!-- Milestone 3 -->
+<div class="relative flex gap-4 pb-8 timeline-item">
+<div class="timeline-line"></div>
+<div class="z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-background-dark text-slate-400">
+<span class="material-symbols-outlined text-sm">event</span>
+</div>
+<div class="flex flex-col pt-1">
+<h4 class="text-sm font-bold text-slate-400 dark:text-slate-500">Third Trimester Begins</h4>
+<p class="text-xs text-slate-400">Week 27 • 3 weeks away</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Expected Changes & Danger Signs Grid -->
+<section class="px-6 py-4 grid grid-cols-1 gap-4">
+<!-- Expected Changes -->
+<div class="bg-white dark:bg-slate-800/50 rounded-xl p-5 border border-slate-100 dark:border-white/5">
+<div class="flex items-center gap-2 mb-3 text-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+<h3 class="font-bold">Expected Changes</h3>
+</div>
+<ul class="space-y-3">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-lg">restaurant</span>
+<div class="flex-1">
+<p class="text-sm font-semibold">Increased Appetite</p>
+<p class="text-xs text-slate-500">Your body needs extra energy for baby's lung development.</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-lg">airline_seat_recline_normal</span>
+<div class="flex-1">
+<p class="text-sm font-semibold">Mild Backaches</p>
+<p class="text-xs text-slate-500">Center of gravity shifting. Try gentle prenatal yoga.</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Danger Signs -->
+<div class="bg-red-50 dark:bg-red-950/20 rounded-xl p-5 border border-red-100 dark:border-red-900/30">
+<div class="flex items-center gap-2 mb-3 text-red-600 dark:text-red-400">
+<span class="material-symbols-outlined">warning</span>
+<h3 class="font-bold">Danger Signs</h3>
+</div>
+<ul class="space-y-3 mb-4">
+<li class="flex items-start gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5"></div>
+<p class="text-xs text-slate-700 dark:text-slate-300">Significant decrease in baby's movement</p>
+</li>
+<li class="flex items-start gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5"></div>
+<p class="text-xs text-slate-700 dark:text-slate-300">Severe or sudden swelling in face and hands</p>
+</li>
+</ul>
+<button class="w-full py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2 text-sm font-bold transition-colors">
+<span class="material-symbols-outlined text-sm">call</span>
+                        Contact Doctor
+                    </button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-slate-100 dark:border-white/10 px-6 py-2 pb-6 flex justify-between items-center z-50">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">timeline</span>
+<span class="text-[10px] font-medium">Timeline</span>
+</a>
+<div class="-mt-8">
+<button class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium">Health</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="text-[10px] font-medium">Community</span>
+</a>
+</nav>
+</div>
+</body></html>
