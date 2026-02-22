@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matritwa - Personalize Your Journey</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#54cf17",
+                "background-light": "#f6f8f6",
+                "background-dark": "#162111",
+              },
+              fontFamily: {
+                "display": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col items-center">
+<div class="w-full max-w-md flex flex-col min-h-screen px-6 py-8">
+<!-- Progress Indicators -->
+<div class="flex w-full flex-row items-center justify-center gap-2 mb-10">
+<div class="h-1.5 w-12 rounded-full bg-primary/20"></div>
+<div class="h-1.5 w-12 rounded-full bg-primary"></div>
+<div class="h-1.5 w-12 rounded-full bg-primary/20"></div>
+</div>
+<!-- Header -->
+<div class="mb-8">
+<span class="text-primary font-semibold text-sm uppercase tracking-wider mb-2 block">Step 2 of 3</span>
+<h1 class="text-slate-900 dark:text-slate-50 text-3xl font-bold leading-tight mb-3">Personalize Your Journey</h1>
+<p class="text-slate-600 dark:text-slate-400 text-base leading-relaxed">Select your areas of focus to customize your experience and get tailored recommendations.</p>
+</div>
+<!-- Interest Selection List -->
+<div class="flex flex-col gap-4 flex-grow">
+<!-- Option 1: Nutrition & Diet -->
+<label class="group relative flex items-center p-4 bg-white dark:bg-slate-800/50 rounded-xl border-2 border-transparent hover:border-primary/30 cursor-pointer transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+<input checked="" class="peer hidden" type="checkbox"/>
+<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mr-4">
+<span class="material-symbols-outlined text-2xl">nutrition</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-semibold text-slate-900 dark:text-slate-100">Nutrition &amp; Diet</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Healthy meal plans &amp; recipes</p>
+</div>
+<div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-primary peer-checked:border-primary transition-colors">
+<span class="material-symbols-outlined text-sm text-white peer-checked:block hidden">check</span>
+</div>
+</label>
+<!-- Option 2: Mental Wellbeing -->
+<label class="group relative flex items-center p-4 bg-white dark:bg-slate-800/50 rounded-xl border-2 border-transparent hover:border-primary/30 cursor-pointer transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+<input class="peer hidden" type="checkbox"/>
+<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mr-4">
+<span class="material-symbols-outlined text-2xl">psychology</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-semibold text-slate-900 dark:text-slate-100">Mental Wellbeing</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Meditation &amp; stress relief</p>
+</div>
+<div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-primary peer-checked:border-primary transition-colors">
+<span class="material-symbols-outlined text-sm text-white peer-checked:block hidden">check</span>
+</div>
+</label>
+<!-- Option 3: Exercise & Yoga -->
+<label class="group relative flex items-center p-4 bg-white dark:bg-slate-800/50 rounded-xl border-2 border-transparent hover:border-primary/30 cursor-pointer transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+<input checked="" class="peer hidden" type="checkbox"/>
+<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mr-4">
+<span class="material-symbols-outlined text-2xl">self_improvement</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-semibold text-slate-900 dark:text-slate-100">Exercise &amp; Yoga</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Prenatal &amp; postpartum routines</p>
+</div>
+<div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-primary peer-checked:border-primary transition-colors">
+<span class="material-symbols-outlined text-sm text-white peer-checked:block hidden">check</span>
+</div>
+</label>
+<!-- Option 4: Baby Development -->
+<label class="group relative flex items-center p-4 bg-white dark:bg-slate-800/50 rounded-xl border-2 border-transparent hover:border-primary/30 cursor-pointer transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+<input class="peer hidden" type="checkbox"/>
+<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mr-4">
+<span class="material-symbols-outlined text-2xl">child_care</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-semibold text-slate-900 dark:text-slate-100">Baby Development</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Weekly milestones &amp; tips</p>
+</div>
+<div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-primary peer-checked:border-primary transition-colors">
+<span class="material-symbols-outlined text-sm text-white peer-checked:block hidden">check</span>
+</div>
+</label>
+<!-- Option 5: Emergency Preparedness -->
+<label class="group relative flex items-center p-4 bg-white dark:bg-slate-800/50 rounded-xl border-2 border-transparent hover:border-primary/30 cursor-pointer transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+<input class="peer hidden" type="checkbox"/>
+<div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mr-4">
+<span class="material-symbols-outlined text-2xl">health_and_safety</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-semibold text-slate-900 dark:text-slate-100">Emergency Preparedness</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Safety guides &amp; quick access</p>
+</div>
+<div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-primary peer-checked:border-primary transition-colors">
+<span class="material-symbols-outlined text-sm text-white peer-checked:block hidden">check</span>
+</div>
+</label>
+</div>
+<!-- Sticky Footer Action -->
+<div class="mt-12 mb-4">
+<button class="w-full bg-primary hover:bg-opacity-90 text-slate-900 font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 text-lg active:scale-[0.98]">
+<span>Continue</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<p class="text-center mt-4 text-sm text-slate-400 dark:text-slate-500">You can change these settings later.</p>
+</div>
+</div>
+</body></html>
