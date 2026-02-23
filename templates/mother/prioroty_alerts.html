@@ -24,26 +24,24 @@
                 <h1 class="text-xl font-bold tracking-tight">Alerts &amp; Notifications</h1>
             </div>
             <div class="flex items-center gap-2">
-                <button class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <span class="material-symbols-outlined">search</span>
-                </button>
-                <button class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <span class="material-symbols-outlined">more_vert</span>
-                </button>
+                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <span class="material-symbols-outlined">filter_list</span>
+                </span>
             </div>
         </div>
 
         <!-- Urgency Filter Tabs -->
         <div class="mt-4 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-            <button class="whitespace-nowrap rounded-full bg-primary px-4 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20">All (12)</button>
-            <button class="whitespace-nowrap rounded-full bg-slate-200 dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400">Emergency</button>
-            <button class="whitespace-nowrap rounded-full bg-slate-200 dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400">High-Risk</button>
-            <button class="whitespace-nowrap rounded-full bg-slate-200 dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400">Missed</button>
+            <span class="whitespace-nowrap rounded-full bg-primary px-4 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20">All ({{ total_alerts }})</span>
+            <span class="whitespace-nowrap rounded-full bg-slate-200 dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400">{% if emergency_alert %}Emergency (1){% else %}No Emergency{% endif %}</span>
+            <span class="whitespace-nowrap rounded-full bg-slate-200 dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400">High-Risk ({{ high_risk_alerts|length }})</span>
+            <span class="whitespace-nowrap rounded-full bg-slate-200 dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400">Missed ({{ missed_appointments|length }})</span>
         </div>
     </header>
 
     <main class="flex-1 p-4 space-y-6 pb-24">
         <!-- Emergency SOS Section -->
+        {% if emergency_alert %}
         <section class="space-y-3">
             <div class="flex items-center gap-2 text-red-600 dark:text-red-500">
                 <span class="material-symbols-outlined fill-1">emergency</span>
@@ -54,94 +52,96 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
                             <span class="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
-                            <p class="text-xs font-bold text-red-500">CRITICAL • 2 MINS AGO</p>
+                            <p class="text-xs font-bold text-red-500">CRITICAL • {{ emergency_alert.time_ago }}</p>
                         </div>
-                        <h3 class="text-lg font-bold">Sita Sharma - Active Labor Complication</h3>
-                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Immediate transportation required. Patient reporting severe bleeding.</p>
+                        <h3 class="text-lg font-bold">{{ emergency_alert.mother.full_name }} - {{ emergency_alert.title }}</h3>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">{{ emergency_alert.message }}</p>
                     </div>
                     <div class="h-12 w-12 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600">
                         <span class="material-symbols-outlined text-3xl">ambulance</span>
                     </div>
                 </div>
                 <div class="mt-4 grid grid-cols-2 gap-3">
-                    <button class="flex items-center justify-center gap-2 rounded-lg bg-red-600 py-3 text-sm font-bold text-white hover:bg-red-700 transition-colors">
+                    {% if emergency_alert.mother.emergency_contact %}
+                    <a href="tel:{{ emergency_alert.mother.emergency_contact }}" class="flex items-center justify-center gap-2 rounded-lg bg-red-600 py-3 text-sm font-bold text-white hover:bg-red-700 transition-colors no-underline">
                         <span class="material-symbols-outlined text-lg">call</span>
                         Call Family
-                    </button>
-                    <button class="flex items-center justify-center gap-2 rounded-lg bg-slate-900 dark:bg-white dark:text-slate-900 py-3 text-sm font-bold text-white hover:opacity-90 transition-colors">
-                        <span class="material-symbols-outlined text-lg">local_hospital</span>
-                        Call Hospital
-                    </button>
+                    </a>
+                    {% else %}
+                    <span class="flex items-center justify-center gap-2 rounded-lg bg-slate-300 py-3 text-sm font-bold text-slate-500 cursor-not-allowed">
+                        <span class="material-symbols-outlined text-lg">call</span>
+                        No Contact
+                    </span>
+                    {% endif %}
+                    <a href="{% url 'main:mother_profile' emergency_alert.mother.pk %}" class="flex items-center justify-center gap-2 rounded-lg bg-slate-900 dark:bg-white dark:text-slate-900 py-3 text-sm font-bold text-white hover:opacity-90 transition-colors no-underline">
+                        <span class="material-symbols-outlined text-lg">visibility</span>
+                        View Profile
+                    </a>
                 </div>
             </div>
         </section>
+        {% else %}
+        <section class="space-y-3">
+            <div class="flex items-center gap-2 text-slate-400">
+                <span class="material-symbols-outlined">emergency</span>
+                <h2 class="text-sm font-bold uppercase tracking-wider">No Emergency Alerts</h2>
+            </div>
+            <div class="rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/30 p-6 text-center">
+                <span class="material-symbols-outlined text-green-500 text-4xl mb-2">check_circle</span>
+                <p class="text-green-700 dark:text-green-400 font-medium">All patients are safe. No emergency alerts at this time.</p>
+            </div>
+        </section>
+        {% endif %}
 
         <!-- High-Risk Notifications -->
         <section class="space-y-3">
             <div class="flex items-center gap-2 text-primary">
                 <span class="material-symbols-outlined">warning</span>
-                <h2 class="text-sm font-bold uppercase tracking-wider">High-Risk Monitoring</h2>
+                <h2 class="text-sm font-bold uppercase tracking-wider">High-Risk Monitoring ({{ high_risk_alerts|length }})</h2>
             </div>
             <div class="space-y-3">
-                <!-- Notification Card 1 -->
+                {% for alert in high_risk_alerts %}
                 <div class="flex flex-col gap-4 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
                     <div class="flex items-start justify-between">
                         <div class="flex gap-3">
                             <div class="h-12 w-12 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center">
-                                <span class="text-primary font-bold text-lg">MD</span>
+                                <span class="text-primary font-bold text-lg">{{ alert.initials }}</span>
                             </div>
                             <div>
-                                <h4 class="font-bold text-primary">Maya Devi</h4>
-                                <p class="text-xs font-medium text-slate-500">Gestational Age: 32 Weeks</p>
+                                <h4 class="font-bold text-primary">{{ alert.mother.full_name }}</h4>
+                                <p class="text-xs font-medium text-slate-500">Gestational Age: {{ alert.mother.pregnancy_week }} Weeks</p>
                                 <div class="mt-1 flex items-center gap-1 rounded bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary w-fit">
                                     <span class="material-symbols-outlined text-[12px]">monitor_heart</span>
-                                    HIGH BP (150/95)
+                                    {{ alert.title|upper }}
                                 </div>
                             </div>
                         </div>
-                        <span class="text-[10px] font-medium text-slate-400">1 hour ago</span>
+                        <span class="text-[10px] font-medium text-slate-400">{{ alert.time_ago }}</span>
                     </div>
                     <div class="flex gap-2">
-                        <button class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary text-primary py-2 text-xs font-bold hover:bg-primary/5">
+                        <a href="{% url 'main:mother_profile' alert.mother.pk %}" class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary text-primary py-2 text-xs font-bold hover:bg-primary/5 no-underline">
                             <span class="material-symbols-outlined text-base">visibility</span>
                             View Profile
-                        </button>
-                        <button class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-white py-2 text-xs font-bold shadow-md shadow-primary/20">
+                        </a>
+                        {% if alert.mother.user.phone_number %}
+                        <a href="tel:{{ alert.mother.user.phone_number }}" class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-white py-2 text-xs font-bold shadow-md shadow-primary/20 no-underline">
                             <span class="material-symbols-outlined text-base">call</span>
                             Call Patient
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Notification Card 2 -->
-                <div class="flex flex-col gap-4 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
-                    <div class="flex items-start justify-between">
-                        <div class="flex gap-3">
-                            <div class="h-12 w-12 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center">
-                                <span class="text-primary font-bold text-lg">AT</span>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-primary">Anjali Tamang</h4>
-                                <p class="text-xs font-medium text-slate-500">Postnatal Day 3</p>
-                                <div class="mt-1 flex items-center gap-1 rounded bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary w-fit">
-                                    <span class="material-symbols-outlined text-[12px]">thermometer</span>
-                                    FEVER REPORTED
-                                </div>
-                            </div>
-                        </div>
-                        <span class="text-[10px] font-medium text-slate-400">3 hours ago</span>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary text-primary py-2 text-xs font-bold hover:bg-primary/5">
-                            <span class="material-symbols-outlined text-base">visibility</span>
-                            View Profile
-                        </button>
-                        <button class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-white py-2 text-xs font-bold shadow-md shadow-primary/20">
+                        </a>
+                        {% else %}
+                        <span class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-slate-200 text-slate-500 py-2 text-xs font-bold cursor-not-allowed">
                             <span class="material-symbols-outlined text-base">call</span>
-                            Call Patient
-                        </button>
+                            No Phone
+                        </span>
+                        {% endif %}
                     </div>
                 </div>
+                {% empty %}
+                <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 p-6 text-center">
+                    <span class="material-symbols-outlined text-slate-400 text-3xl mb-2">check_circle</span>
+                    <p class="text-slate-500 text-sm">No high-risk patients currently being monitored.</p>
+                </div>
+                {% endfor %}
             </div>
         </section>
 
@@ -149,38 +149,33 @@
         <section class="space-y-3">
             <div class="flex items-center gap-2 text-slate-500">
                 <span class="material-symbols-outlined">event_busy</span>
-                <h2 class="text-sm font-bold uppercase tracking-wider">Missed Appointments</h2>
+                <h2 class="text-sm font-bold uppercase tracking-wider">Missed Appointments ({{ missed_appointments|length }})</h2>
             </div>
+            {% if missed_appointments %}
             <div class="rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800 shadow-sm overflow-hidden">
+                {% for apt in missed_appointments %}
                 <div class="p-4 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
-                            <span class="text-slate-600 dark:text-slate-400 font-bold text-sm">PK</span>
+                            <span class="text-slate-600 dark:text-slate-400 font-bold text-sm">{{ apt.initials }}</span>
                         </div>
                         <div>
-                            <h4 class="text-sm font-bold">Priya K.C.</h4>
-                            <p class="text-[10px] text-slate-500">ANC Visit 2 • Scheduled Yesterday</p>
+                            <h4 class="text-sm font-bold">{{ apt.mother.full_name }}</h4>
+                            <p class="text-[10px] text-slate-500">{{ apt.visit_type|title }} Visit • {{ apt.time_ago }}</p>
                         </div>
                     </div>
-                    <button class="h-8 w-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary/10">
-                        <span class="material-symbols-outlined text-lg">call</span>
-                    </button>
+                    <a href="{% url 'main:mother_profile' apt.mother.pk %}" class="h-8 w-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary/10 no-underline">
+                        <span class="material-symbols-outlined text-lg">visibility</span>
+                    </a>
                 </div>
-                <div class="p-4 flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
-                            <span class="text-slate-600 dark:text-slate-400 font-bold text-sm">SG</span>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-bold">Sunita Gurung</h4>
-                            <p class="text-[10px] text-slate-500">PNC Visit 1 • Scheduled 2 days ago</p>
-                        </div>
-                    </div>
-                    <button class="h-8 w-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary/10">
-                        <span class="material-symbols-outlined text-lg">call</span>
-                    </button>
-                </div>
+                {% endfor %}
             </div>
+            {% else %}
+            <div class="rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-6 text-center">
+                <span class="material-symbols-outlined text-green-500 text-3xl mb-2">event_available</span>
+                <p class="text-green-700 dark:text-green-400 text-sm font-medium">All appointments are on track!</p>
+            </div>
+            {% endif %}
         </section>
 
         <!-- System Updates -->
@@ -190,14 +185,13 @@
                     <span class="material-symbols-outlined text-lg">notifications</span>
                     <h2 class="text-sm font-bold uppercase tracking-wider">System &amp; Updates</h2>
                 </div>
-                <button class="text-xs font-bold text-primary">Clear All</button>
             </div>
             <div class="rounded-xl bg-slate-100 dark:bg-slate-800/50 p-4 border border-dashed border-slate-300 dark:border-slate-700">
                 <div class="flex gap-3">
                     <span class="material-symbols-outlined text-primary">inventory_2</span>
                     <div>
-                        <p class="text-sm font-bold italic">Stock Reminder</p>
-                        <p class="text-xs text-slate-600 dark:text-slate-400">Your Iron/Folic Acid supplies are running low. Please visit the health post for refill.</p>
+                        <p class="text-sm font-bold italic">Reminder</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-400">Remember to regularly update patient records and schedule follow-up visits.</p>
                     </div>
                 </div>
             </div>
@@ -210,20 +204,22 @@
             <span class="material-symbols-outlined">grid_view</span>
             <span class="text-[10px] font-bold uppercase">Dashboard</span>
         </a>
-        <a class="flex flex-col items-center gap-1 text-primary" href="#">
+        <a class="flex flex-col items-center gap-1 text-primary" href="{% url 'main:priority_alerts' %}">
             <div class="relative">
                 <span class="material-symbols-outlined fill-1">notifications</span>
-                <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-white border-2 border-white dark:border-surface-dark">12</span>
+                {% if total_alerts > 0 %}
+                <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-white border-2 border-white dark:border-surface-dark">{{ total_alerts }}</span>
+                {% endif %}
             </div>
             <span class="text-[10px] font-bold uppercase">Alerts</span>
         </a>
-        <a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+        <a class="flex flex-col items-center gap-1 text-slate-400" href="{% url 'main:records_detail' %}">
             <span class="material-symbols-outlined">groups</span>
-            <span class="text-[10px] font-bold uppercase">Patients</span>
+            <span class="text-[10px] font-bold uppercase">Records</span>
         </a>
-        <a class="flex flex-col items-center gap-1 text-slate-400" href="#">
-            <span class="material-symbols-outlined">account_circle</span>
-            <span class="text-[10px] font-bold uppercase">Profile</span>
+        <a class="flex flex-col items-center gap-1 text-slate-400" href="{% url 'main:monthly_reports' %}">
+            <span class="material-symbols-outlined">bar_chart</span>
+            <span class="text-[10px] font-bold uppercase">Reports</span>
         </a>
     </nav>
 </div>
