@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 
 
 class TimeStampedModel(models.Model):
@@ -295,3 +296,146 @@ class MonthlyReport(TimeStampedModel):
         if self.visit_target == 0:
             return 0
         return min(100, int((self.completed_visits / self.visit_target) * 100))
+
+
+# ── SOS Emergency (Offline-First) ──────────────────────────────
+
+
+class SOSEmergency(TimeStampedModel):
+    """
+    One-tap emergency record.
+
+    Captures woman's details, risk level, live GPS, and timestamp.
+    Designed for offline-first operation: the client generates an
+    ``offline_id`` (UUID) so duplicate submissions are safe, and
+    ``is_synced`` tracks whether the record originated online or
+    was later synced from the device's IndexedDB queue.
+    """
+
+    class RiskLevel(models.TextChoices):
+        CRITICAL = "critical", "Critical"
+        HIGH = "high", "High"
+        MODERATE = "moderate", "Moderate"
+        LOW = "low", "Low"
+
+    class Status(models.TextChoices):
+        ACTIVE = "active", "Active — Awaiting Response"
+        RESPONDING = "responding", "Responder En Route"
+        RESOLVED = "resolved", "Resolved"
+        CANCELLED = "cancelled", "Cancelled / False Alarm"
+
+    # ── Deduplication key (generated client-side) ──────────────────
+    offline_id = models.UUIDField(
+        default=uuid.uuid4,
+        unique=True,
+        editable=False,
+        help_text="Client-generated UUID for offline deduplication",
+    )
+
+    # ── Who is in danger ───────────────────────────────────────────
+    mother = models.ForeignKey(
+        "accounts.MotherProfile",
+        on_delete=models.CASCADE,
+        related_name="sos_emergencies",
+    )
+
+    # ── Who triggered it ───────────────────────────────────────────
+    triggered_by = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="triggered_sos",
+        help_text="FCHV who pressed the SOS button",
+    )
+
+    # ── Risk & status ──────────────────────────────────────────────
+    risk_level = models.CharField(
+        max_length=10,
+        choices=RiskLevel.choices,
+        default=RiskLevel.CRITICAL,
+    )
+    status = models.CharField(
+        max_length=12,
+        choices=Status.choices,
+        default=Status.ACTIVE,
+    )
+
+    # ── GPS snapshot at trigger time ───────────────────────────────
+    latitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True,
+        help_text="GPS latitude captured at SOS trigger time",
+    )
+    longitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True,
+        help_text="GPS longitude captured at SOS trigger time",
+    )
+
+    # ── Details ────────────────────────────────────────────────────
+    note = models.TextField(
+        blank=True,
+        help_text="Brief emergency description",
+    )
+    triggered_at = models.DateTimeField(
+        help_text="Client-side timestamp (may differ from created_at "
+                  "if the device was offline)",
+    )
+
+    # ── Sync metadata ──────────────────────────────────────────────
+    is_synced = models.BooleanField(
+        default=True,
+        help_text="False while queued offline; set True once server confirms",
+    )
+    synced_at = models.DateTimeField(
+        null=True, blank=True,
+        help_text="Timestamp of successful server sync",
+    )
+
+    # ── Resolution ─────────────────────────────────────────────────
+    resolved_by = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="resolved_sos",
+    )
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    resolution_note = models.TextField(blank=True)
+
+    class Meta(TimeStampedModel.Meta):
+        verbose_name = "SOS Emergency"
+        verbose_name_plural = "SOS Emergencies"
+        indexes = [
+            models.Index(fields=["status", "-triggered_at"]),
+            models.Index(fields=["mother", "-triggered_at"]),
+            models.Index(fields=["offline_id"]),
+        ]
+
+    def __str__(self):
+        return (
+            f"SOS [{self.get_risk_level_display()}] "
+            f"{self.mother.full_name} — "
+            f"{self.triggered_at:%Y-%m-%d %H:%M}"
+        )
+
+    # ── Convenience helpers ────────────────────────────────────────
+
+    @property
+    def is_active(self):
+        """Return True while the emergency has not been closed."""
+        return self.status in (self.Status.ACTIVE, self.Status.RESPONDING)
+
+    @property
+    def time_ago(self):
+        """Human-readable elapsed time since trigger."""
+        from django.utils import timezone
+
+        diff = timezone.now() - self.triggered_at
+        if diff.days > 0:
+            return f"{diff.days}d ago"
+        hours = diff.seconds // 3600
+        if hours > 0:
+            return f"{hours}h ago"
+        minutes = diff.seconds // 60
+        if minutes > 0:
+            return f"{minutes}m ago"
+        return "Just now"

@@ -1,6 +1,9 @@
 from django.contrib import admin
 
-from .models import ANCVisit, Alert, AwarenessProgram, HospitalConsultation, MonthlyReport, ScheduledVisit
+from .models import (
+    ANCVisit, Alert, AwarenessProgram, HospitalConsultation,
+    MonthlyReport, ScheduledVisit, SOSEmergency,
+)
 
 
 @admin.register(ANCVisit)
@@ -64,3 +67,27 @@ class MonthlyReportAdmin(admin.ModelAdmin):
     @admin.display(description="Goal %")
     def goal_progress(self, obj):
         return f"{obj.goal_progress}%"
+
+
+@admin.register(SOSEmergency)
+class SOSEmergencyAdmin(admin.ModelAdmin):
+    """Admin view for SOS Emergency records."""
+
+    list_display = (
+        "offline_id_short", "mother", "risk_level", "status",
+        "is_synced", "triggered_at", "triggered_by",
+    )
+    list_filter = ("status", "risk_level", "is_synced")
+    search_fields = ("mother__full_name", "note", "offline_id")
+    readonly_fields = (
+        "offline_id", "triggered_at", "synced_at", "resolved_at",
+        "created_at", "updated_at",
+    )
+    raw_id_fields = ("mother", "triggered_by", "resolved_by")
+    list_editable = ("status",)
+    date_hierarchy = "triggered_at"
+
+    @admin.display(description="Offline ID")
+    def offline_id_short(self, obj):
+        """Show truncated offline_id for readability."""
+        return str(obj.offline_id)[:8]

@@ -137,57 +137,19 @@
     </section>
 
     <!-- SOS Button Container -->
-    <section class="p-4 mt-6">
-        <button type="button" onclick="document.getElementById('sos-modal').classList.remove('hidden')"
-            class="w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-3 py-4 rounded-xl shadow-lg shadow-red-500/20 active:scale-[0.98] transition-all">
+    <!-- SOS Actions -->
+    <section class="p-4 mt-6 space-y-3">
+        <a href="{% url 'main:sos_trigger_page' profile.pk %}"
+            class="w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-3 py-4 rounded-xl shadow-lg shadow-red-500/20 active:scale-[0.98] transition-all no-underline">
             <span class="material-symbols-outlined font-bold text-2xl">emergency_share</span>
             <span class="text-lg font-black uppercase tracking-widest">Trigger SOS</span>
-        </button>
+        </a>
+        <a href="{% url 'main:sos_history' profile.pk %}"
+            class="w-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center gap-2 py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors no-underline">
+            <span class="material-symbols-outlined text-lg">history</span>
+            <span class="text-sm font-semibold">SOS History</span>
+        </a>
     </section>
-
-    <!-- SOS Confirmation Modal -->
-    <div id="sos-modal" class="hidden fixed inset-0 z-50 flex items-end justify-center p-4 bg-black/60 backdrop-blur-sm">
-        <div class="w-full max-w-lg bg-white dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
-            <!-- Modal Header -->
-            <div class="bg-red-600 px-5 py-4 flex items-center gap-3">
-                <span class="material-symbols-outlined text-white text-3xl">emergency_share</span>
-                <div>
-                    <h3 class="text-white font-black text-lg uppercase tracking-wider">Trigger Emergency SOS</h3>
-                    <p class="text-red-100 text-xs">{{ profile.full_name }}</p>
-                </div>
-            </div>
-            <!-- Modal Body -->
-            <form method="POST" action="{% url 'main:trigger_sos' profile.pk %}" class="p-5 space-y-4">
-                {% csrf_token %}
-                <p class="text-sm text-slate-600 dark:text-slate-400">This will create a <strong class="text-red-600">CRITICAL</strong> emergency alert visible to all assigned health workers. Use only in a real emergency.</p>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1" for="sos-note">Emergency Note <span class="text-slate-400 font-normal">(optional)</span></label>
-                    <textarea id="sos-note" name="note" rows="3"
-                        placeholder="Describe the emergency situation..."
-                        class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-surface-light dark:bg-background-dark px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
-                </div>
-                {% if profile.emergency_contact %}
-                <div class="flex items-center gap-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-2">
-                    <span class="material-symbols-outlined text-red-500 text-lg">call</span>
-                    <div>
-                        <p class="text-xs font-bold text-red-600">Emergency Contact</p>
-                        <a href="tel:{{ profile.emergency_contact }}" class="text-sm font-semibold text-slate-800 dark:text-white">{{ profile.emergency_contact }}</a>
-                    </div>
-                </div>
-                {% endif %}
-                <div class="grid grid-cols-2 gap-3">
-                    <button type="button" onclick="document.getElementById('sos-modal').classList.add('hidden')"
-                        class="py-3 rounded-xl border-2 border-slate-300 dark:border-slate-600 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                        class="py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-black uppercase tracking-wider shadow-lg shadow-red-500/30 transition-colors">
-                        Confirm SOS
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 </main>
 
 <!-- Bottom Navigation -->
