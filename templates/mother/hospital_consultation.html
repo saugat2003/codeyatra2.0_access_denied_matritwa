@@ -8,7 +8,7 @@
 <!-- Header -->
 <header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10 px-4 py-4 flex items-center justify-between">
     <div class="flex items-center gap-3">
-        <a href="{% url 'main:dashboard' %}" class="flex items-center justify-center size-10 rounded-full hover:bg-primary/10 transition-colors">
+        <a href="{% url 'main:mother_profile' profile.pk %}" class="flex items-center justify-center size-10 rounded-full hover:bg-primary/10 transition-colors">
             <span class="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back</span>
         </a>
         <h1 class="text-xl font-bold tracking-tight">Consult Health Post</h1>
@@ -19,39 +19,44 @@
     </div>
 </header>
 
+<form method="post" action="">
+{% csrf_token %}
+<input type="hidden" name="reason" value="Consultation request for {{ profile.full_name }} — Week {{ weeks }}">
 <main class="flex-1 overflow-y-auto pb-32">
     <!-- Patient Profile -->
     <div class="p-4">
         <div class="flex items-center gap-4 bg-white dark:bg-primary/5 p-4 rounded-xl border border-primary/5 shadow-sm">
-            <div class="size-20 rounded-full bg-primary/20 flex items-center justify-center text-primary text-2xl font-bold ring-2 ring-primary/20">SJ</div>
+            <div class="size-20 rounded-full bg-primary/20 flex items-center justify-center text-primary text-2xl font-bold ring-2 ring-primary/20">{{ initials }}</div>
             <div class="flex flex-col">
-                <h2 class="text-2xl font-bold">Sarah Johnson</h2>
-                <p class="text-slate-500 dark:text-slate-400 font-medium">ID: #882910</p>
+                <h2 class="text-2xl font-bold">{{ profile.full_name }}</h2>
+                <p class="text-slate-500 dark:text-slate-400 font-medium">ID: #F-{{ profile.pk|stringformat:"04d" }}</p>
                 <div class="flex items-center gap-1 mt-1">
-                    <span class="material-symbols-outlined text-primary text-sm">history</span>
-                    <p class="text-xs text-slate-400">Last updated: 2 mins ago</p>
+                    <span class="material-symbols-outlined text-primary text-sm">favorite</span>
+                    <p class="text-xs text-slate-400">Week {{ weeks }}</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Risk Level Alert -->
+    {% if has_danger %}
     <div class="px-4 pb-4">
         <div class="bg-red-100 dark:bg-red-950/30 border-l-4 border-red-600 p-4 rounded-r-lg flex items-start gap-4">
             <span class="material-symbols-outlined text-red-600 text-3xl fill-icon">warning</span>
             <div>
                 <h3 class="text-red-600 font-bold text-lg leading-none mb-1">High Risk Status Detected</h3>
-                <p class="text-sm text-slate-700 dark:text-slate-300">Case requires immediate clinical consultation. Elevated blood pressure and signs of pre-eclampsia noted.</p>
+                <p class="text-sm text-slate-700 dark:text-slate-300">Case requires immediate clinical consultation. Danger signs detected in latest ANC visit.</p>
             </div>
         </div>
     </div>
+    {% endif %}
 
     <!-- Case Summary Card -->
     <div class="px-4">
         <div class="bg-white dark:bg-surface-dark rounded-xl border border-primary/10 overflow-hidden shadow-sm">
             <div class="bg-slate-100 dark:bg-primary/10 px-4 py-2 flex justify-between items-center">
                 <span class="text-[10px] font-bold tracking-[0.1em] text-slate-500 dark:text-primary uppercase">Auto-Generated Summary</span>
-                <span class="text-[10px] text-slate-400">Week 32, Day 4</span>
+                <span class="text-[10px] text-slate-400">Week {{ weeks }}</span>
             </div>
             <div class="p-5 space-y-6">
                 <!-- Vital Stats Grid -->
@@ -62,7 +67,7 @@
                     </div>
                     <div class="space-y-1">
                         <p class="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Gestational Week</p>
-                        <p class="text-xl font-bold text-primary">32 Weeks</p>
+                        <p class="text-xl font-bold text-primary">{{ weeks }} Weeks</p>
                     </div>
                 </div>
 
@@ -75,19 +80,11 @@
                         Active Symptoms
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[14px]">blood_pressure</span>
-                            High BP (150/95)
-                        </span>
-                        <span class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-full">
-                            Persistent Headache
-                        </span>
-                        <span class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-full">
-                            Blurred Vision
-                        </span>
-                        <span class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-full">
-                            Severe Edema
-                        </span>
+                        {% for symptom in active_symptoms %}
+                        <span class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-full">{{ symptom }}</span>
+                        {% empty %}
+                        <span class="text-sm text-slate-400 italic">No active symptoms recorded</span>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -96,9 +93,7 @@
                 <!-- Clinical Recommendation -->
                 <div class="bg-primary/5 p-3 rounded-lg border border-primary/10">
                     <p class="text-xs font-bold text-primary uppercase mb-2">Health Post Recommendation</p>
-                    <p class="text-sm leading-relaxed italic text-slate-600 dark:text-slate-300">
-                        "Immediate referral to secondary care facility. Monitor vitals every 15 minutes. Administer first dose of magnesium sulfate if protocol allows."
-                    </p>
+                    <textarea name="recommendation" rows="3" placeholder="Enter clinical recommendation..." class="w-full bg-transparent text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 outline-none resize-none">{{ form.recommendation.value|default:'' }}</textarea>
                 </div>
             </div>
         </div>
@@ -123,10 +118,11 @@
             <span class="material-symbols-outlined text-primary text-2xl fill-icon">call</span>
             <span class="text-xs font-bold uppercase tracking-wide">Call Post</span>
         </button>
-        <button class="flex-[2] flex items-center justify-center gap-3 bg-primary hover:bg-primary-dark text-slate-900 font-bold py-4 rounded-xl shadow-lg shadow-primary/30 transition-all active:scale-95">
+        <button type="submit" class="flex-[2] flex items-center justify-center gap-3 bg-primary hover:bg-primary-dark text-slate-900 font-bold py-4 rounded-xl shadow-lg shadow-primary/30 transition-all active:scale-95">
             <span class="material-symbols-outlined">send_and_archive</span>
             <span>Send Digital Case Summary</span>
         </button>
     </div>
 </div>
+</form>
 {% endblock %}

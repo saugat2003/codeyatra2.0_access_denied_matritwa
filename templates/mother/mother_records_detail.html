@@ -23,41 +23,44 @@
             <h1 class="text-xl font-bold tracking-tight">Detailed Records</h1>
         </div>
         <div class="flex items-center gap-4">
-            <button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
+            <a href="{% url 'main:priority_alerts' %}" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
                 <span class="material-symbols-outlined">notifications</span>
-            </button>
+            </a>
             <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-                <span class="text-primary text-xs font-bold">SS</span>
+                <span class="text-primary text-xs font-bold">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper|default:"U" }}</span>
             </div>
         </div>
     </div>
 
     <!-- Search Bar Container -->
     <div class="px-4 pb-4">
-        <label class="relative flex items-center w-full">
-            <span class="absolute left-4 text-slate-400 material-symbols-outlined">search</span>
-            <input class="w-full h-12 pl-12 pr-4 bg-slate-100 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary/50 placeholder:text-slate-400 text-base" placeholder="Search mothers by name..." type="text"/>
-        </label>
+        <form method="GET" action="{% url 'main:records_detail' %}">
+            <label class="relative flex items-center w-full">
+                <span class="absolute left-4 text-slate-400 material-symbols-outlined">search</span>
+                <input name="search" value="{{ search }}" class="w-full h-12 pl-12 pr-4 bg-slate-100 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary/50 placeholder:text-slate-400 text-base" placeholder="Search mothers by name..." type="text"/>
+                {% if filter %}<input type="hidden" name="filter" value="{{ filter }}">{% endif %}
+            </label>
+        </form>
     </div>
 
     <!-- Filter Pill Bar -->
     <div class="flex gap-3 px-4 pb-4 overflow-x-auto no-scrollbar">
-        <button class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-white shadow-md shadow-primary/20">
+        <a href="{% url 'main:records_detail' %}{% if search %}?search={{ search }}{% endif %}" class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl {% if not filter or filter == 'all' %}bg-primary text-white shadow-md shadow-primary/20{% else %}bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-primary/50{% endif %} px-5 no-underline transition-colors">
             <span class="material-symbols-outlined text-[20px]">group</span>
-            <span class="text-sm font-semibold">All</span>
-        </button>
-        <button class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 px-5 border border-slate-200 dark:border-slate-700 hover:border-primary/50 transition-colors">
-            <span class="material-symbols-outlined text-[20px] text-red-500">warning</span>
+            <span class="text-sm font-semibold">All ({{ total_count }})</span>
+        </a>
+        <a href="{% url 'main:records_detail' %}?filter=high_risk{% if search %}&search={{ search }}{% endif %}" class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl {% if filter == 'high_risk' %}bg-red-500 text-white shadow-md shadow-red-500/20{% else %}bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-red-500/50{% endif %} px-5 no-underline transition-colors">
+            <span class="material-symbols-outlined text-[20px] {% if filter != 'high_risk' %}text-red-500{% endif %}">warning</span>
             <span class="text-sm font-medium">High Risk</span>
-        </button>
-        <button class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 px-5 border border-slate-200 dark:border-slate-700 hover:border-primary/50 transition-colors">
-            <span class="material-symbols-outlined text-[20px] text-primary">check_circle</span>
+        </a>
+        <a href="{% url 'main:records_detail' %}?filter=stable{% if search %}&search={{ search }}{% endif %}" class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl {% if filter == 'stable' %}bg-primary text-white shadow-md shadow-primary/20{% else %}bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-primary/50{% endif %} px-5 no-underline transition-colors">
+            <span class="material-symbols-outlined text-[20px] {% if filter != 'stable' %}text-primary{% endif %}">check_circle</span>
             <span class="text-sm font-medium">Stable</span>
-        </button>
-        <button class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 px-5 border border-slate-200 dark:border-slate-700 hover:border-primary/50 transition-colors">
-            <span class="material-symbols-outlined text-[20px] text-yellow-500">visibility</span>
+        </a>
+        <a href="{% url 'main:records_detail' %}?filter=observation{% if search %}&search={{ search }}{% endif %}" class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl {% if filter == 'observation' %}bg-yellow-500 text-white shadow-md shadow-yellow-500/20{% else %}bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-yellow-500/50{% endif %} px-5 no-underline transition-colors">
+            <span class="material-symbols-outlined text-[20px] {% if filter != 'observation' %}text-yellow-500{% endif %}">visibility</span>
             <span class="text-sm font-medium">Observation</span>
-        </button>
+        </a>
     </div>
 </header>
 
@@ -66,7 +69,7 @@
     <div class="flex items-center justify-between p-4 rounded-xl bg-primary/10 border border-primary/20">
         <div>
             <p class="text-sm font-medium text-primary">High Risk Alert</p>
-            <p class="text-2xl font-bold">12 Active Cases</p>
+            <p class="text-2xl font-bold">{{ high_risk_count }} Active Case{{ high_risk_count|pluralize:"s" }}</p>
         </div>
         <div class="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-white">
             <span class="material-symbols-outlined">trending_up</span>
@@ -75,123 +78,93 @@
 
     <!-- Records List -->
     <div class="space-y-4">
-        <!-- Record Card 1: High Risk -->
+        {% for record in records %}
         <div class="bg-white dark:bg-surface-dark rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-1.5 h-full bg-red-500"></div>
+            <div class="absolute top-0 right-0 w-1.5 h-full {% if record.risk == 'high_risk' %}bg-red-500{% elif record.risk == 'observation' %}bg-yellow-500{% else %}bg-primary{% endif %}"></div>
             <div class="flex justify-between items-start mb-4">
-                <div>
-                    <h3 class="text-lg font-bold">Sita Devi</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">26 years • ID: #F-9021</p>
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span class="text-primary font-bold text-lg">{{ record.initials }}</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold">{{ record.profile.full_name }}</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ record.profile.age|default:"--" }} years • ID: #F-{{ record.profile.pk|stringformat:"04d" }}</p>
+                    </div>
                 </div>
                 <div class="flex flex-col items-end gap-2">
-                    <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Week 28</span>
+                    <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Week {{ record.weeks|default:"--" }}</span>
+                    {% if record.risk == 'high_risk' %}
                     <span class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-2 py-0.5 rounded text-[10px] font-bold uppercase">High Risk</span>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4 py-3 border-y border-slate-100 dark:border-slate-800">
-                <div>
-                    <p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-1">Last Visit</p>
-                    <p class="text-sm font-semibold">Kartik 26</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Normal BP • Low Iron</p>
-                </div>
-                <div>
-                    <p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-1">Upcoming</p>
-                    <p class="text-sm font-semibold text-primary">Mangsir 10</p>
-                    <p class="text-xs text-primary/80">In 3 days</p>
-                </div>
-            </div>
-            <div class="flex gap-3 mt-4">
-                <button class="flex-1 h-10 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary-dark transition-colors">Add Visit</button>
-                <button class="flex-1 h-10 border border-slate-200 dark:border-slate-700 text-sm font-bold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">View Profile</button>
-            </div>
-        </div>
-
-        <!-- Record Card 2: Stable -->
-        <div class="bg-white dark:bg-surface-dark rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-1.5 h-full bg-primary"></div>
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <h3 class="text-lg font-bold">Maya Kumari</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">22 years • ID: #F-8842</p>
-                </div>
-                <div class="flex flex-col items-end gap-2">
-                    <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Week 14</span>
-                    <span class="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-bold uppercase">Stable</span>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4 py-3 border-y border-slate-100 dark:border-slate-800">
-                <div>
-                    <p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-1">Last Visit</p>
-                    <p class="text-sm font-semibold">Mangsir 2</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Routine Checkup</p>
-                </div>
-                <div>
-                    <p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-1">Upcoming</p>
-                    <p class="text-sm font-semibold">Mangsir 16</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">In 10 days</p>
-                </div>
-            </div>
-            <div class="flex gap-3 mt-4">
-                <button class="flex-1 h-10 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary-dark transition-colors">Add Visit</button>
-                <button class="flex-1 h-10 border border-slate-200 dark:border-slate-700 text-sm font-bold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">View Profile</button>
-            </div>
-        </div>
-
-        <!-- Record Card 3: Observation -->
-        <div class="bg-white dark:bg-surface-dark rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-1.5 h-full bg-yellow-500"></div>
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <h3 class="text-lg font-bold">Priya Thapa</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">30 years • ID: #F-9105</p>
-                </div>
-                <div class="flex flex-col items-end gap-2">
-                    <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Week 32</span>
+                    {% elif record.risk == 'observation' %}
                     <span class="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Observation</span>
+                    {% else %}
+                    <span class="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-bold uppercase">Stable</span>
+                    {% endif %}
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-4 py-3 border-y border-slate-100 dark:border-slate-800">
                 <div>
                     <p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-1">Last Visit</p>
-                    <p class="text-sm font-semibold">Mangsir 4</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Mild Fever reported</p>
+                    {% if record.last_visit %}
+                    <p class="text-sm font-semibold">{{ record.last_visit.visit_date|date:"M d" }}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Visit {{ record.last_visit.visit_number }}</p>
+                    {% else %}
+                    <p class="text-sm font-semibold text-slate-400">No visits yet</p>
+                    {% endif %}
                 </div>
                 <div>
                     <p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-1">Upcoming</p>
-                    <p class="text-sm font-semibold text-primary">Mangsir 8</p>
-                    <p class="text-xs text-primary/80">Tomorrow</p>
+                    {% if record.next_scheduled %}
+                    <p class="text-sm font-semibold text-primary">{{ record.next_scheduled.scheduled_date|date:"M d" }}</p>
+                    <p class="text-xs text-primary/80">{{ record.next_scheduled.visit_type|title }}</p>
+                    {% else %}
+                    <p class="text-sm font-semibold text-slate-400">Not scheduled</p>
+                    {% endif %}
                 </div>
             </div>
             <div class="flex gap-3 mt-4">
-                <button class="flex-1 h-10 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary-dark transition-colors">Add Visit</button>
-                <button class="flex-1 h-10 border border-slate-200 dark:border-slate-700 text-sm font-bold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">View Profile</button>
+                <a href="{% url 'main:update_anc_visit' record.profile.pk %}" class="flex-1 h-10 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center no-underline">Add Visit</a>
+                <a href="{% url 'main:mother_profile' record.profile.pk %}" class="flex-1 h-10 border border-slate-200 dark:border-slate-700 text-sm font-bold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-center no-underline">View Profile</a>
             </div>
         </div>
+        {% empty %}
+        <div class="bg-white dark:bg-surface-dark rounded-xl p-8 shadow-sm border border-slate-200 dark:border-slate-800 text-center">
+            <span class="material-symbols-outlined text-slate-400 text-5xl mb-3">search_off</span>
+            <h3 class="text-lg font-bold text-slate-600 dark:text-slate-400">No Records Found</h3>
+            <p class="text-sm text-slate-500 mt-1">{% if search %}No mothers match "{{ search }}"{% else %}No registered mothers yet{% endif %}</p>
+            <a href="{% url 'accounts:register' %}" class="inline-flex items-center gap-2 mt-4 px-6 py-2 bg-primary text-white rounded-lg font-semibold no-underline">
+                <span class="material-symbols-outlined">person_add</span>
+                Register New Mother
+            </a>
+        </div>
+        {% endfor %}
     </div>
 </main>
 
 <!-- Floating Action Button -->
-<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-background-dark z-50">
+<a href="{% url 'accounts:register' %}" class="fixed bottom-20 right-6 w-14 h-14 bg-primary text-slate-900 rounded-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-background-dark z-50 no-underline">
     <span class="material-symbols-outlined text-3xl">person_add</span>
-</button>
+</a>
 
-<!-- Bottom Navigation Bar -->
-<nav class="fixed bottom-0 w-full bg-white dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 flex justify-around items-center px-2 py-3 z-50">
-    <a class="flex flex-col items-center gap-1 text-slate-400" href="{% url 'main:dashboard' %}">
-        <span class="material-symbols-outlined">home</span>
-        <span class="text-[10px] font-medium">Home</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-primary" href="#">
-        <span class="material-symbols-outlined fill-1">description</span>
-        <span class="text-[10px] font-bold">Records</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-slate-400" href="#">
-        <span class="material-symbols-outlined">calendar_month</span>
-        <span class="text-[10px] font-medium">Visits</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-slate-400" href="#">
-        <span class="material-symbols-outlined">account_circle</span>
-        <span class="text-[10px] font-medium">Profile</span>
-    </a>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 z-50">
+    <div class="flex h-16 max-w-xl mx-auto">
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:dashboard' %}">
+            <span class="material-symbols-outlined">home</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="{% url 'main:mother_list' %}">
+            <span class="material-symbols-outlined fill-icon">group</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Patients</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:priority_alerts' %}">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:monthly_reports' %}">
+            <span class="material-symbols-outlined">bar_chart</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Reports</span>
+        </a>
+    </div>
 </nav>
 {% endblock %}

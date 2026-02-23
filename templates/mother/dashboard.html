@@ -9,11 +9,10 @@
 <header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
     <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border border-primary/30">
-            <img alt="Health Worker Profile" class="w-full h-full object-cover"
-                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgLlfqKz7xMaSLNMnucko-vm6znNj8abbiEwrnUbc-emU3cWDz7QgEJcUu9GW9iFf4oIPYgoWr9pd0QgEA5M5TYZiYvTPycGDo0Lup2VWTwalCy-nztH_nt1tj7hpUNo24Qu14WjnVdFo1xmf0ZhXdtZ6k7ueDQcDC8EbKAI8A3mpsUX_Ux2GqiEFjmYnWKmvuUND1UvrT3PQUEDn6N2IVFmhjZLaJCTYIfxRdtVPplTPJHWkaGz1M7wdT_IPBEHDSplsOkCdyQ_FD"/>
+            <span class="text-primary font-bold text-sm">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper|default:"U" }}</span>
         </div>
         <div>
-            <h1 class="text-sm font-bold leading-tight">Sita Sharma</h1>
+            <h1 class="text-sm font-bold leading-tight">{{ user.get_full_name|default:user.username }}</h1>
             <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">FCHV Volunteer</p>
         </div>
     </div>
@@ -41,10 +40,10 @@
         <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
             <div class="flex items-center justify-between mb-2">
                 <span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-lg">groups</span>
-                <span class="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">+4%</span>
+                <span class="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">Active</span>
             </div>
             <p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Registered Mothers</p>
-            <p class="text-2xl font-bold mt-1">142</p>
+            <p class="text-2xl font-bold mt-1">{{ total_mothers }}</p>
         </div>
         <div class="bg-red-50 dark:bg-red-950/20 p-4 rounded-xl border border-red-100 dark:border-red-900/30 shadow-sm">
             <div class="flex items-center justify-between mb-2">
@@ -52,70 +51,44 @@
                 <span class="text-[10px] font-bold text-red-600 bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded-full">Alert</span>
             </div>
             <p class="text-red-700 dark:text-red-400 text-xs font-medium">High-Risk Cases</p>
-            <p class="text-2xl font-bold mt-1 text-red-600">08</p>
+            <p class="text-2xl font-bold mt-1 text-red-600">{{ high_risk_count|stringformat:"02d" }}</p>
         </div>
     </section>
 
     <!-- Upcoming ANC Visits -->
     <section class="space-y-4">
         <div class="flex items-center justify-between">
-            <h2 class="text-lg font-bold tracking-tight">Upcoming ANC Visits</h2>
-            <button class="text-primary text-sm font-semibold hover:underline">View All</button>
+            <h2 class="text-lg font-bold tracking-tight">Recent ANC Visits</h2>
+            <a href="{% url 'main:mother_list' %}" class="text-primary text-sm font-semibold hover:underline">View All</a>
         </div>
         <div class="space-y-3">
-            <!-- Visit Card 1 -->
-            <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border-l-4 border-primary border-y border-r border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+            {% for visit in recent_visits %}
+            <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border-l-4 {% if visit.has_danger_signs %}border-red-600{% else %}border-primary{% endif %} border-y border-r border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
                 <div class="flex items-center gap-4">
-                    <div class="bg-slate-100 dark:bg-slate-700 w-12 h-12 rounded-lg flex flex-col items-center justify-center text-slate-600 dark:text-slate-300">
-                        <span class="text-[10px] font-bold uppercase">Oct</span>
-                        <span class="text-lg font-bold">24</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-sm">Maya Adhikari</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">2nd ANC Visit • 10:00 AM</p>
-                    </div>
-                </div>
-                <button class="text-slate-400 hover:text-primary">
-                    <span class="material-symbols-outlined">chevron_right</span>
-                </button>
-            </div>
-
-            <!-- Visit Card 2 (High Risk) -->
-            <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border-l-4 border-red-600 border-y border-r border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="bg-red-100 dark:bg-red-900/30 w-12 h-12 rounded-lg flex flex-col items-center justify-center text-red-600 dark:text-red-400">
-                        <span class="text-[10px] font-bold uppercase">Oct</span>
-                        <span class="text-lg font-bold">25</span>
+                    <div class="{% if visit.has_danger_signs %}bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400{% else %}bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300{% endif %} w-12 h-12 rounded-lg flex flex-col items-center justify-center">
+                        <span class="text-[10px] font-bold uppercase">{{ visit.visit_date|date:"M" }}</span>
+                        <span class="text-lg font-bold">{{ visit.visit_date|date:"d" }}</span>
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <h3 class="font-bold text-sm">Priya Thapa</h3>
+                            <h3 class="font-bold text-sm">{{ visit.mother.full_name }}</h3>
+                            {% if visit.has_danger_signs %}
                             <span class="w-2 h-2 rounded-full bg-red-600"></span>
+                            {% endif %}
                         </div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">4th ANC Visit • 02:30 PM</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Visit {{ visit.visit_number }}</p>
                     </div>
                 </div>
-                <button class="text-slate-400 hover:text-primary">
+                <a href="{% url 'main:mother_profile' visit.mother.pk %}" class="text-slate-400 hover:text-primary">
                     <span class="material-symbols-outlined">chevron_right</span>
-                </button>
+                </a>
             </div>
-
-            <!-- Visit Card 3 -->
-            <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border-l-4 border-primary border-y border-r border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="bg-slate-100 dark:bg-slate-700 w-12 h-12 rounded-lg flex flex-col items-center justify-center text-slate-600 dark:text-slate-300">
-                        <span class="text-[10px] font-bold uppercase">Oct</span>
-                        <span class="text-lg font-bold">27</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-sm">Sita Devi</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">1st ANC Visit • 09:00 AM</p>
-                    </div>
-                </div>
-                <button class="text-slate-400 hover:text-primary">
-                    <span class="material-symbols-outlined">chevron_right</span>
-                </button>
+            {% empty %}
+            <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-slate-200 dark:border-slate-700 text-center">
+                <span class="material-symbols-outlined text-slate-400 text-4xl mb-2">event_busy</span>
+                <p class="text-slate-500 dark:text-slate-400 text-sm">No recent visits recorded</p>
             </div>
+            {% endfor %}
         </div>
     </section>
 
@@ -124,11 +97,11 @@
         <div class="relative z-10">
             <h3 class="text-sm font-semibold text-slate-400 mb-1">Monthly Goal Progress</h3>
             <div class="flex items-end gap-2 mb-4">
-                <span class="text-3xl font-bold">82%</span>
+                <span class="text-3xl font-bold">{{ goal_progress }}%</span>
                 <span class="text-xs text-slate-400 mb-1">Target achieved</span>
             </div>
             <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                <div class="bg-primary h-full rounded-full shadow-[0_0_12px_rgba(43,238,108,0.5)]" style="width: 82%;"></div>
+                <div class="bg-primary h-full rounded-full shadow-[0_0_12px_rgba(43,238,108,0.5)]" style="width: {{ goal_progress }}%;"></div>
             </div>
         </div>
         <!-- Decorative blur -->
@@ -138,22 +111,24 @@
 </main>
 
 <!-- Bottom Navigation -->
-<nav class="fixed bottom-0 left-0 right-0 bg-surface-light dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 px-6 py-2 pb-6 flex items-center justify-between z-50">
-    <a class="flex flex-col items-center gap-1 text-primary" href="{% url 'main:dashboard' %}">
-        <span class="material-symbols-outlined text-2xl fill-icon">home</span>
-        <span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
-        <span class="material-symbols-outlined text-2xl">description</span>
-        <span class="text-[10px] font-bold uppercase tracking-tighter">Records</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
-        <span class="material-symbols-outlined text-2xl">notifications</span>
-        <span class="text-[10px] font-bold uppercase tracking-tighter">Alerts</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'accounts:logout' %}">
-        <span class="material-symbols-outlined text-2xl">logout</span>
-        <span class="text-[10px] font-bold uppercase tracking-tighter">Logout</span>
-    </a>
+<nav class="fixed bottom-0 left-0 right-0 bg-surface-light dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 z-50">
+    <div class="flex h-16 max-w-xl mx-auto">
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="{% url 'main:dashboard' %}">
+            <span class="material-symbols-outlined fill-icon">home</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:mother_list' %}">
+            <span class="material-symbols-outlined">group</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Patients</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:priority_alerts' %}">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:monthly_reports' %}">
+            <span class="material-symbols-outlined">bar_chart</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Reports</span>
+        </a>
+    </div>
 </nav>
 {% endblock %}
