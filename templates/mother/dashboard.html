@@ -33,14 +33,6 @@
 
 <main class="flex-1 overflow-y-auto p-4 space-y-6 pb-28">
 
-    <!-- Quick Action: Register -->
-    <section>
-        <a href="{% url 'main:register_mother' %}" class="w-full bg-primary hover:bg-primary-dark text-slate-900 rounded-xl py-4 px-6 flex items-center justify-center gap-3 shadow-xl shadow-primary/20 active:scale-[0.98] transition-all no-underline">
-            <span class="material-symbols-outlined text-2xl">person_add</span>
-            <span class="text-lg font-bold tracking-tight">+ Register New Mother</span>
-        </a>
-    </section>
-
     <!-- Key Metrics Grid -->
     <section class="grid grid-cols-2 gap-4">
         <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -61,93 +53,55 @@
         </div>
     </section>
 
-    <!-- Active Mothers -->
-    <section class="space-y-3">
-        <div class="flex items-center justify-between">
-            <h2 class="text-lg font-bold tracking-tight">Active Mothers</h2>
-            <a href="{% url 'main:mother_list' %}" class="text-primary text-sm font-semibold hover:underline">View All</a>
-        </div>
-        {% for m in active_mothers %}
-        <a href="{% url 'main:mother_profile' m.profile.pk %}" class="flex items-center gap-4 bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-transform active:scale-[0.98] no-underline">
-            <div class="relative shrink-0">
-                {% if m.profile.photo %}
-                <img src="{{ m.profile.photo.url }}" alt="{{ m.profile.full_name }}" class="size-12 rounded-full object-cover border-2 {% if m.risk == 'high' %}border-red-500/40{% else %}border-primary/30{% endif %}" />
-                {% else %}
-                {% if m.risk == 'high' %}
-                <div class="size-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 font-bold border-2 border-red-500/30 text-sm">{{ m.initials }}</div>
-                {% else %}
-                <div class="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">{{ m.initials }}</div>
-                {% endif %}
-                {% endif %}
-                {% if m.risk == 'high' %}
-                <div class="absolute -bottom-1 -right-1 size-4 rounded-full bg-red-500 border-2 border-white dark:border-surface-dark flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white" style="font-size:9px;font-variation-settings:'wght' 700">priority_high</span>
-                </div>
-                {% else %}
-                <div class="absolute -bottom-1 -right-1 size-4 rounded-full bg-emerald-500 border-2 border-white dark:border-surface-dark flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white" style="font-size:9px;font-variation-settings:'wght' 700">check</span>
-                </div>
-                {% endif %}
+    <!-- Quick Actions Grid -->
+    <section class="grid grid-cols-2 gap-4">
+        <!-- Register Mother -->
+        <a href="{% url 'main:register_mother' %}" class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center gap-2 hover:border-primary transition-colors active:scale-95 no-underline">
+            <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-2xl">person_add</span>
             </div>
-            <div class="flex-1 min-w-0">
-                <p class="font-bold text-sm leading-tight truncate">{{ m.profile.full_name }}</p>
-                <div class="flex items-center gap-2 mt-0.5">
-                    <span class="text-xs text-slate-500 dark:text-slate-400">Week {{ m.weeks|default:"--" }}</span>
-                    <span class="size-1 rounded-full bg-slate-300"></span>
-                    {% if m.risk == 'high' %}
-                    <span class="text-xs text-red-500 font-semibold uppercase tracking-wide">High Risk</span>
-                    {% else %}
-                    <span class="text-xs text-emerald-500 font-semibold uppercase tracking-wide">Stable</span>
-                    {% endif %}
-                </div>
-            </div>
-            <span class="material-symbols-outlined text-slate-300 shrink-0">chevron_right</span>
+            <span class="text-sm font-bold text-slate-700 dark:text-slate-300 text-center">Register<br>Mother</span>
         </a>
-        {% empty %}
-        <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-slate-200 dark:border-slate-700 text-center">
-            <span class="material-symbols-outlined text-slate-400 text-4xl mb-2">group_off</span>
-            <p class="text-slate-500 dark:text-slate-400 text-sm">No mothers registered yet</p>
-            <a href="{% url 'main:register_mother' %}" class="inline-flex items-center gap-1 mt-3 text-primary text-sm font-semibold no-underline">
-                <span class="material-symbols-outlined text-base">person_add</span>Register now
-            </a>
-        </div>
-        {% endfor %}
-    </section>
 
-    <!-- Recent ANC Visits -->
-    <section class="space-y-4">
-        <div class="flex items-center justify-between">
-            <h2 class="text-lg font-bold tracking-tight">Recent ANC Visits</h2>
-        </div>
-        <div class="space-y-3">
-            {% for visit in recent_visits %}
-            <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border-l-4 {% if visit.has_danger_signs %}border-red-600{% else %}border-primary{% endif %} border-y border-r border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="{% if visit.has_danger_signs %}bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400{% else %}bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300{% endif %} w-12 h-12 rounded-lg flex flex-col items-center justify-center">
-                        <span class="text-[10px] font-bold uppercase">{{ visit.visit_date|date:"M" }}</span>
-                        <span class="text-lg font-bold">{{ visit.visit_date|date:"d" }}</span>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h3 class="font-bold text-sm">{{ visit.mother.full_name }}</h3>
-                            {% if visit.has_danger_signs %}
-                            <span class="w-2 h-2 rounded-full bg-red-600"></span>
-                            {% endif %}
-                        </div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Visit {{ visit.visit_number }}</p>
-                    </div>
-                </div>
-                <a href="{% url 'main:mother_profile' visit.mother.pk %}" class="text-slate-400 hover:text-primary">
-                    <span class="material-symbols-outlined">chevron_right</span>
-                </a>
+        <!-- Log ANC Visit -->
+        <a href="{% url 'main:mother_list' %}" class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center gap-2 hover:border-emerald-500 transition-colors active:scale-95 no-underline">
+            <div class="size-12 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                <span class="material-symbols-outlined text-2xl">medical_services</span>
             </div>
-            {% empty %}
-            <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-slate-200 dark:border-slate-700 text-center">
-                <span class="material-symbols-outlined text-slate-400 text-4xl mb-2">event_busy</span>
-                <p class="text-slate-500 dark:text-slate-400 text-sm">No recent visits recorded</p>
+            <span class="text-sm font-bold text-slate-700 dark:text-slate-300 text-center">Log ANC<br>Visit</span>
+        </a>
+
+        <!-- Hospital Consult -->
+        <a href="{% url 'main:mother_list' %}" class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center gap-2 hover:border-orange-500 transition-colors active:scale-95 no-underline">
+            <div class="size-12 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-600">
+                <span class="material-symbols-outlined text-2xl">local_hospital</span>
             </div>
-            {% endfor %}
-        </div>
+            <span class="text-sm font-bold text-slate-700 dark:text-slate-300 text-center">Hospital<br>Consult</span>
+        </a>
+
+        <!-- Awareness Program -->
+        <a href="{% url 'main:awareness_program' %}" class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center gap-2 hover:border-blue-500 transition-colors active:scale-95 no-underline">
+            <div class="size-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600">
+                <span class="material-symbols-outlined text-2xl">campaign</span>
+            </div>
+            <span class="text-sm font-bold text-slate-700 dark:text-slate-300 text-center">Awareness<br>Program</span>
+        </a>
+
+        <!-- Emergency Alerts -->
+        <a href="{% url 'main:priority_alerts' %}" class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center gap-2 hover:border-red-500 transition-colors active:scale-95 no-underline">
+            <div class="size-12 rounded-full bg-red-500/10 flex items-center justify-center text-red-600">
+                <span class="material-symbols-outlined text-2xl">emergency</span>
+            </div>
+            <span class="text-sm font-bold text-slate-700 dark:text-slate-300 text-center">Emergency<br>Alerts</span>
+        </a>
+
+        <!-- Monthly Reports -->
+        <a href="{% url 'main:monthly_reports' %}" class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center gap-2 hover:border-purple-500 transition-colors active:scale-95 no-underline">
+            <div class="size-12 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600">
+                <span class="material-symbols-outlined text-2xl">summarize</span>
+            </div>
+            <span class="text-sm font-bold text-slate-700 dark:text-slate-300 text-center">Monthly<br>Reports</span>
+        </a>
     </section>
 
     <!-- Stats Progress -->
@@ -169,22 +123,31 @@
 </main>
 
 <!-- Bottom Navigation -->
-<nav class="fixed bottom-0 left-0 right-0 bg-surface-light dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 z-50">
-    <div class="flex h-16 max-w-xl mx-auto">
-        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="{% url 'main:dashboard' %}">
-            <span class="material-symbols-outlined fill-icon">home</span>
+<nav class="fixed bottom-0 left-0 right-0 bg-surface-light dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 z-50 pb-safe">
+    <div class="flex h-16 max-w-xl mx-auto relative">
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'dashboard' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:dashboard' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'dashboard' %}fill-icon{% endif %}">home</span>
             <span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
         </a>
-        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:mother_list' %}">
-            <span class="material-symbols-outlined">group</span>
-            <span class="text-[10px] font-bold uppercase tracking-wider">Patients</span>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'mother_list' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:mother_list' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'mother_list' %}fill-icon{% endif %}">group</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Mothers</span>
         </a>
-        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:priority_alerts' %}">
-            <span class="material-symbols-outlined">notifications</span>
+        
+        <!-- Central Add Button -->
+        <div class="flex flex-1 flex-col items-center justify-start relative">
+            <a href="{% url 'main:register_mother' %}" class="absolute -top-5 flex items-center justify-center size-14 rounded-full bg-primary text-white shadow-lg shadow-primary/40 hover:bg-primary-dark transition-transform active:scale-95">
+                <span class="material-symbols-outlined text-3xl">add</span>
+            </a>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-10">Register</span>
+        </div>
+
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'priority_alerts' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:priority_alerts' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'priority_alerts' %}fill-icon{% endif %}">notifications</span>
             <span class="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
         </a>
-        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:monthly_reports' %}">
-            <span class="material-symbols-outlined">bar_chart</span>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'monthly_reports' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:monthly_reports' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'monthly_reports' %}fill-icon{% endif %}">bar_chart</span>
             <span class="text-[10px] font-bold uppercase tracking-wider">Reports</span>
         </a>
     </div>

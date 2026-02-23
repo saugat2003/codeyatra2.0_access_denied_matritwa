@@ -131,22 +131,31 @@
 </div>
 
 <!-- Bottom Navigation -->
-<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 z-50">
-    <div class="flex h-16 max-w-xl mx-auto">
-        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:dashboard' %}">
-            <span class="material-symbols-outlined">home</span>
+<nav class="fixed bottom-0 left-0 right-0 bg-surface-light dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 z-50 pb-safe">
+    <div class="flex h-16 max-w-xl mx-auto relative">
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'dashboard' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:dashboard' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'dashboard' %}fill-icon{% endif %}">home</span>
             <span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
         </a>
-        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:mother_list' %}">
-            <span class="material-symbols-outlined">group</span>
-            <span class="text-[10px] font-bold uppercase tracking-wider">Patients</span>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'mother_list' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:mother_list' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'mother_list' %}fill-icon{% endif %}">group</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Mothers</span>
         </a>
-        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:priority_alerts' %}">
-            <span class="material-symbols-outlined">notifications</span>
+        
+        <!-- Central Add Button -->
+        <div class="flex flex-1 flex-col items-center justify-start relative">
+            <a href="{% url 'main:register_mother' %}" class="absolute -top-5 flex items-center justify-center size-14 rounded-full bg-primary text-white shadow-lg shadow-primary/40 hover:bg-primary-dark transition-transform active:scale-95">
+                <span class="material-symbols-outlined text-3xl">add</span>
+            </a>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-10">Register</span>
+        </div>
+
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'priority_alerts' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:priority_alerts' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'priority_alerts' %}fill-icon{% endif %}">notifications</span>
             <span class="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
         </a>
-        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:monthly_reports' %}">
-            <span class="material-symbols-outlined">bar_chart</span>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'monthly_reports' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:monthly_reports' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'monthly_reports' %}fill-icon{% endif %}">bar_chart</span>
             <span class="text-[10px] font-bold uppercase tracking-wider">Reports</span>
         </a>
     </div>
