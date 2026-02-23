@@ -1,4 +1,4 @@
-# Matritwa — Maternal Health Tracking System
+# Matritwa
 
 **Matritwa** is an offline-first Progressive Web App (PWA) built to empower Female Community Health Volunteers (FCHVs) in tracking and managing maternal health in underserved communities. It provides real-time SOS emergency support, antenatal care (ANC) visit tracking, risk alerts, and healthcare analytics — all accessible even without an internet connection.
 
