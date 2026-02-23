@@ -1,56 +1,31 @@
+"""
+healthcare/views.py — Thin HTTP adapter for the Healthcare Analytics bounded context.
+"""
+
+import logging
+
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
 from django.shortcuts import render
 
-from accounts.models import MotherProfile
-from mother.models import ANCVisit, AwarenessProgram, HospitalConsultation
+from .services import HealthcareDashboardQueryService
+
+logger = logging.getLogger(__name__)
+
+_dashboard_service = HealthcareDashboardQueryService()
 
 
 @login_required
 def dashboard(request):
     """Healthcare worker dashboard with aggregate statistics."""
-    mothers = MotherProfile.objects.filter(registration_completed=True, registered_by=request.user)
-    total_mothers = mothers.count()
-    volunteer_mother_ids = mothers.values_list("pk", flat=True)
-
-    # High-risk count
-    high_risk_ids = (
-        ANCVisit.objects.filter(has_danger_signs=True, mother_id__in=volunteer_mother_ids)
-        .values_list("mother_id", flat=True)
-        .distinct()
-    )
-    high_risk_count = mothers.filter(pk__in=high_risk_ids).count()
-
-    # Total ANC visits
-    total_visits = ANCVisit.objects.filter(mother_id__in=volunteer_mother_ids).count()
-
-    # Total consultations
-    total_consultations = HospitalConsultation.objects.filter(mother_id__in=volunteer_mother_ids).count()
-
-    # Total awareness programs
-    total_programs = AwarenessProgram.objects.filter(created_by=request.user).count()
-
-    # Recent danger-sign visits
-    danger_visits = (
-        ANCVisit.objects.filter(has_danger_signs=True, mother_id__in=volunteer_mother_ids)
-        .select_related("mother")
-        .order_by("-created_at")[:5]
-    )
-
-    # Recent consultations
-    recent_consultations = (
-        HospitalConsultation.objects.filter(mother_id__in=volunteer_mother_ids)
-        .select_related("mother")
-        .order_by("-created_at")[:5]
-    )
+    data = _dashboard_service.get_dashboard_data(request.user)
 
     context = {
-        "total_mothers": total_mothers,
-        "high_risk_count": high_risk_count,
-        "total_visits": total_visits,
-        "total_consultations": total_consultations,
-        "total_programs": total_programs,
-        "danger_visits": danger_visits,
-        "recent_consultations": recent_consultations,
+        "total_mothers": data.total_mothers,
+        "high_risk_count": data.high_risk_count,
+        "total_visits": data.total_visits,
+        "total_consultations": data.total_consultations,
+        "total_programs": data.total_programs,
+        "danger_visits": data.danger_visits,
+        "recent_consultations": data.recent_consultations,
     }
     return render(request, "healthcare/dashboard.html", context)

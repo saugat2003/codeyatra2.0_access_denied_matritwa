@@ -1,9 +1,29 @@
-from django.db import models
+"""
+mother/models.py — ORM models for the Maternal Health bounded context.
+
+Models are infrastructure — they define the data schema and delegate
+any domain behaviour to the domain layer (mother/domain/).
+
+Design notes
+────────────
+- TimeStampedModel is an abstract base for audit fields.
+- ANCVisit auto-computes has_danger_signs in save() (single invariant guard).
+- Alert.time_ago and SOSEmergency.time_ago now delegate to the
+  canonical TimeAgoFormatter domain service so no logic is duplicated.
+"""
+
 import uuid
+
+from django.db import models
+
+from mother.domain.services import TimeAgoFormatter
+
+
+# ── Abstract base ─────────────────────────────────────────────────
 
 
 class TimeStampedModel(models.Model):
-    """Abstract base model with created/updated timestamps."""
+    """Abstract base model that adds created_at / updated_at audit fields."""
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -13,8 +33,23 @@ class TimeStampedModel(models.Model):
         ordering = ["-created_at"]
 
 
+# ── Antenatal Care Visits ─────────────────────────────────────────
+
+
 class ANCVisit(TimeStampedModel):
     """Antenatal Care visit record for a mother."""
+
+    SYMPTOM_CHOICES = [
+        ("mild_nausea", "Mild Nausea"),
+        ("severe_headache", "Severe Headache"),
+        ("blurred_vision", "Blurred Vision"),
+        ("fever_chills", "Fever / Chills"),
+        ("swollen_feet", "Swollen Feet"),
+        ("none", "No Symptoms Observed"),
+    ]
+
+    # Symptoms that automatically flag a visit as dangerous
+    DANGER_SYMPTOMS: frozenset = frozenset({"severe_headache", "blurred_vision", "fever_chills"})
 
     mother = models.ForeignKey(
         "accounts.MotherProfile",
@@ -25,26 +60,13 @@ class ANCVisit(TimeStampedModel):
     visit_date = models.DateField(auto_now_add=True)
 
     # Vitals
-    weight_kg = models.DecimalField(
-        max_digits=5, decimal_places=1, null=True, blank=True
-    )
+    weight_kg = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
     blood_pressure = models.CharField(max_length=20, blank=True)
 
-    # Symptoms
-    SYMPTOM_CHOICES = [
-        ("mild_nausea", "Mild Nausea"),
-        ("severe_headache", "Severe Headache"),
-        ("blurred_vision", "Blurred Vision"),
-        ("fever_chills", "Fever / Chills"),
-        ("swollen_feet", "Swollen Feet"),
-        ("none", "No Symptoms Observed"),
-    ]
     symptoms = models.JSONField(default=list, blank=True)
-
-    # Danger-sign flag (auto-set when danger symptoms selected)
     has_danger_signs = models.BooleanField(default=False)
-
     notes = models.TextField(blank=True)
+
     recorded_by = models.ForeignKey(
         "accounts.User",
         on_delete=models.SET_NULL,
@@ -58,20 +80,20 @@ class ANCVisit(TimeStampedModel):
         verbose_name_plural = "ANC Visits"
         unique_together = ("mother", "visit_number")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Visit {self.visit_number} — {self.mother.full_name}"
 
-    DANGER_SYMPTOMS = {"severe_headache", "blurred_vision", "fever_chills"}
-
     def save(self, *args, **kwargs):
-        self.has_danger_signs = bool(
-            set(self.symptoms or []) & self.DANGER_SYMPTOMS
-        )
+        """Auto-set has_danger_signs before persisting."""
+        self.has_danger_signs = bool(set(self.symptoms or []) & self.DANGER_SYMPTOMS)
         super().save(*args, **kwargs)
 
 
+# ── Awareness Programs ────────────────────────────────────────────
+
+
 class AwarenessProgram(TimeStampedModel):
-    """Community awareness/education event."""
+    """Community awareness / education event."""
 
     TOPIC_CHOICES = [
         ("nutrition", "Nutrition & Healthy Eating"),
@@ -100,8 +122,11 @@ class AwarenessProgram(TimeStampedModel):
     class Meta(TimeStampedModel.Meta):
         verbose_name = "Awareness Program"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.get_topic_display()} — {self.event_datetime:%Y-%m-%d}"
+
+
+# ── Hospital Consultations ────────────────────────────────────────
 
 
 class HospitalConsultation(TimeStampedModel):
@@ -128,8 +153,11 @@ class HospitalConsultation(TimeStampedModel):
     class Meta(TimeStampedModel.Meta):
         verbose_name = "Hospital Consultation"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Consultation — {self.mother.full_name} ({self.created_at:%Y-%m-%d})"
+
+
+# ── Alerts ────────────────────────────────────────────────────────
 
 
 class Alert(TimeStampedModel):
@@ -184,27 +212,20 @@ class Alert(TimeStampedModel):
             models.Index(fields=["priority", "-created_at"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"[{self.get_priority_display()}] {self.title}"
 
     @property
-    def time_ago(self):
-        from django.utils import timezone
-        now = timezone.now()
-        diff = now - self.created_at
-        if diff.days > 0:
-            return f"{diff.days} day{'s' if diff.days > 1 else ''} ago"
-        hours = diff.seconds // 3600
-        if hours > 0:
-            return f"{hours} hour{'s' if hours > 1 else ''} ago"
-        minutes = diff.seconds // 60
-        if minutes > 0:
-            return f"{minutes} min{'s' if minutes > 1 else ''} ago"
-        return "Just now"
+    def time_ago(self) -> str:
+        """Human-readable elapsed time since creation (delegates to domain service)."""
+        return TimeAgoFormatter.format(self.created_at)
+
+
+# ── Scheduled Visits ──────────────────────────────────────────────
 
 
 class ScheduledVisit(TimeStampedModel):
-    """Scheduled ANC/PNC visits for mothers."""
+    """Scheduled ANC / PNC visits for mothers."""
 
     class VisitType(models.TextChoices):
         ANC = "anc", "Antenatal Care"
@@ -241,38 +262,42 @@ class ScheduledVisit(TimeStampedModel):
             models.Index(fields=["scheduled_date", "is_completed"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.get_visit_type_display()} {self.visit_number} — {self.mother.full_name}"
 
     @property
-    def is_overdue(self):
+    def is_overdue(self) -> bool:
+        """Return True when the visit date has passed and it was not completed."""
         from datetime import date
         return not self.is_completed and self.scheduled_date < date.today()
+
+
+# ── Monthly Reports ───────────────────────────────────────────────
 
 
 class MonthlyReport(TimeStampedModel):
     """Monthly performance metrics snapshot for reporting."""
 
     year = models.PositiveIntegerField()
-    month = models.PositiveIntegerField()  # 1-12
-    
+    month = models.PositiveIntegerField()  # 1–12
+
     # Registration metrics
     total_registrations = models.PositiveIntegerField(default=0)
     new_registrations = models.PositiveIntegerField(default=0)
-    
+
     # Visit metrics
     total_anc_visits = models.PositiveIntegerField(default=0)
     completed_visits = models.PositiveIntegerField(default=0)
     missed_visits = models.PositiveIntegerField(default=0)
-    
+
     # Risk metrics
     high_risk_cases = models.PositiveIntegerField(default=0)
     stable_cases = models.PositiveIntegerField(default=0)
     observation_cases = models.PositiveIntegerField(default=0)
-    
-    # Weekly breakdown (JSON: {"week1": 10, "week2": 15, ...})
+
+    # Weekly breakdown (JSON: {"week1": 10, "week2": 15, …})
     weekly_registrations = models.JSONField(default=dict)
-    
+
     # Goal tracking
     visit_target = models.PositiveIntegerField(default=50)
 
@@ -288,28 +313,28 @@ class MonthlyReport(TimeStampedModel):
         unique_together = ("year", "month")
         ordering = ["-year", "-month"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Report {self.year}-{self.month:02d}"
 
     @property
-    def goal_progress(self):
+    def goal_progress(self) -> int:
+        """Percentage of visit target achieved (capped at 100)."""
         if self.visit_target == 0:
             return 0
         return min(100, int((self.completed_visits / self.visit_target) * 100))
 
 
-# ── SOS Emergency (Offline-First) ──────────────────────────────
+# ── SOS Emergencies ───────────────────────────────────────────────
 
 
 class SOSEmergency(TimeStampedModel):
     """
     One-tap emergency record.
 
-    Captures woman's details, risk level, live GPS, and timestamp.
-    Designed for offline-first operation: the client generates an
-    ``offline_id`` (UUID) so duplicate submissions are safe, and
-    ``is_synced`` tracks whether the record originated online or
-    was later synced from the device's IndexedDB queue.
+    Offline-first: ``offline_id`` (UUID) is generated client-side so
+    duplicate submissions are safely deduplicated.  ``is_synced`` tracks
+    whether the record was originally created online or synced from
+    the device's IndexedDB queue.
     """
 
     class RiskLevel(models.TextChoices):
@@ -324,7 +349,7 @@ class SOSEmergency(TimeStampedModel):
         RESOLVED = "resolved", "Resolved"
         CANCELLED = "cancelled", "Cancelled / False Alarm"
 
-    # ── Deduplication key (generated client-side) ──────────────────
+    # Deduplication key (generated client-side)
     offline_id = models.UUIDField(
         default=uuid.uuid4,
         unique=True,
@@ -332,14 +357,11 @@ class SOSEmergency(TimeStampedModel):
         help_text="Client-generated UUID for offline deduplication",
     )
 
-    # ── Who is in danger ───────────────────────────────────────────
     mother = models.ForeignKey(
         "accounts.MotherProfile",
         on_delete=models.CASCADE,
         related_name="sos_emergencies",
     )
-
-    # ── Who triggered it ───────────────────────────────────────────
     triggered_by = models.ForeignKey(
         "accounts.User",
         on_delete=models.SET_NULL,
@@ -349,7 +371,6 @@ class SOSEmergency(TimeStampedModel):
         help_text="FCHV who pressed the SOS button",
     )
 
-    # ── Risk & status ──────────────────────────────────────────────
     risk_level = models.CharField(
         max_length=10,
         choices=RiskLevel.choices,
@@ -361,41 +382,31 @@ class SOSEmergency(TimeStampedModel):
         default=Status.ACTIVE,
     )
 
-    # ── GPS snapshot at trigger time ───────────────────────────────
     latitude = models.DecimalField(
         max_digits=9, decimal_places=6, null=True, blank=True,
-        help_text="GPS latitude captured at SOS trigger time",
+        help_text="GPS latitude at SOS trigger time",
     )
     longitude = models.DecimalField(
         max_digits=9, decimal_places=6, null=True, blank=True,
-        help_text="GPS longitude captured at SOS trigger time",
+        help_text="GPS longitude at SOS trigger time",
     )
 
-    # ── Details ────────────────────────────────────────────────────
-    note = models.TextField(
-        blank=True,
-        help_text="Brief emergency description",
-    )
+    note = models.TextField(blank=True, help_text="Brief emergency description")
     triggered_at = models.DateTimeField(
-        help_text="Client-side timestamp (may differ from created_at "
-                  "if the device was offline)",
+        help_text="Client-side timestamp (may differ from created_at if offline)",
     )
 
-    # ── Sync metadata ──────────────────────────────────────────────
     is_synced = models.BooleanField(
         default=True,
-        help_text="False while queued offline; set True once server confirms",
+        help_text="False while queued offline; True once server confirms",
     )
-    synced_at = models.DateTimeField(
-        null=True, blank=True,
-        help_text="Timestamp of successful server sync",
-    )
+    synced_at = models.DateTimeField(null=True, blank=True)
 
-    # ── Resolution ─────────────────────────────────────────────────
     resolved_by = models.ForeignKey(
         "accounts.User",
         on_delete=models.SET_NULL,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="resolved_sos",
     )
     resolved_at = models.DateTimeField(null=True, blank=True)
@@ -410,32 +421,19 @@ class SOSEmergency(TimeStampedModel):
             models.Index(fields=["offline_id"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"SOS [{self.get_risk_level_display()}] "
             f"{self.mother.full_name} — "
             f"{self.triggered_at:%Y-%m-%d %H:%M}"
         )
 
-    # ── Convenience helpers ────────────────────────────────────────
-
     @property
-    def is_active(self):
-        """Return True while the emergency has not been closed."""
+    def is_active(self) -> bool:
+        """Return True while the emergency is in an open state."""
         return self.status in (self.Status.ACTIVE, self.Status.RESPONDING)
 
     @property
-    def time_ago(self):
-        """Human-readable elapsed time since trigger."""
-        from django.utils import timezone
-
-        diff = timezone.now() - self.triggered_at
-        if diff.days > 0:
-            return f"{diff.days}d ago"
-        hours = diff.seconds // 3600
-        if hours > 0:
-            return f"{hours}h ago"
-        minutes = diff.seconds // 60
-        if minutes > 0:
-            return f"{minutes}m ago"
-        return "Just now"
+    def time_ago(self) -> str:
+        """Human-readable elapsed time since trigger (delegates to domain service)."""
+        return TimeAgoFormatter.format(self.triggered_at)
