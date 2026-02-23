@@ -1,3 +1,4 @@
 from django.contrib import admin
 
-# Register your models here.
+# Healthcare app uses models from the mother app.
+# Admin registrations are in mother/admin.py.
