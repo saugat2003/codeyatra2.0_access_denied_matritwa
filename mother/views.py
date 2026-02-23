@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from accounts.models import MotherProfile
 from .forms import ANCVisitForm, AwarenessProgramForm, HospitalConsultationForm
-from .models import ANCVisit, Alert, ScheduledVisit
+from .models import ANCVisit, Alert, ScheduledVisit, SOSEmergency
 
 
 # ── Index / Landing ─────────────────────────────────────────────
@@ -814,9 +814,62 @@ def records_detail(request):
 # ── SOS Views ───────────────────────────────────────────────────
 
 
+def _compute_risk_level(mother: MotherProfile) -> str:
+    """
+    Derive a risk-level string from the mother's clinical profile.
+
+    Used by the SOS trigger page to pre-fill risk level and by the
+    legacy form-POST trigger_sos view.
+    """
+    danger_visits = ANCVisit.objects.filter(
+        mother=mother, has_danger_signs=True,
+    ).count()
+    week = mother.pregnancy_week or 0
+    age = mother.age or 25
+
+    if danger_visits >= 2:
+        return SOSEmergency.RiskLevel.CRITICAL
+    if week >= 37 and mother.has_previous_complications:
+        return SOSEmergency.RiskLevel.CRITICAL
+    if danger_visits >= 1:
+        return SOSEmergency.RiskLevel.HIGH
+    if (age < 18 or age > 35) and mother.has_previous_complications:
+        return SOSEmergency.RiskLevel.HIGH
+    if mother.has_previous_complications:
+        return SOSEmergency.RiskLevel.MODERATE
+    return SOSEmergency.RiskLevel.LOW
+
+
+@login_required
+def sos_trigger_page(request, pk):
+    """
+    Render the dedicated offline-first SOS trigger page.
+
+    Passes mother details and computed risk level to the template
+    which uses the SOS JS module for one-tap triggering.
+    """
+    if request.user.is_staff:
+        mother = get_object_or_404(MotherProfile, pk=pk)
+    else:
+        mother = get_object_or_404(
+            MotherProfile, pk=pk, registered_by=request.user,
+        )
+
+    context = {
+        "mother": mother,
+        "risk_level": _compute_risk_level(mother),
+    }
+    return render(request, "mother/sos_trigger.html", context)
+
+
 @login_required
 def trigger_sos(request, pk):
-    """Create an EMERGENCY_SOS alert for a mother."""
+    """
+    Legacy form-POST SOS trigger (non-JS fallback).
+
+    Creates both an SOSEmergency record and legacy Alert so that
+    priority_alerts page continues to work.
+    """
     if request.user.is_staff:
         profile = get_object_or_404(MotherProfile, pk=pk)
     else:
@@ -824,6 +877,23 @@ def trigger_sos(request, pk):
 
     if request.method == "POST":
         note = request.POST.get("note", "").strip()
+        risk = _compute_risk_level(profile)
+
+        # Create SOSEmergency record
+        SOSEmergency.objects.create(
+            offline_id=uuid.uuid4(),
+            mother=profile,
+            triggered_by=request.user,
+            risk_level=risk,
+            latitude=profile.latitude,
+            longitude=profile.longitude,
+            note=note or f"SOS triggered by {request.user.get_full_name() or request.user.username}.",
+            triggered_at=timezone.now(),
+            is_synced=True,
+            synced_at=timezone.now(),
+        )
+
+        # Also create legacy Alert for backward compatibility
         Alert.objects.create(
             mother=profile,
             alert_type=Alert.AlertType.EMERGENCY_SOS,
@@ -837,6 +907,37 @@ def trigger_sos(request, pk):
         return redirect("main:priority_alerts")
 
     return redirect("main:mother_profile", pk=pk)
+
+
+@login_required
+def sos_history(request, pk):
+    """
+    Display the SOS emergency history for a specific mother.
+
+    Shows all SOS records (active + resolved) ordered newest first.
+    """
+    if request.user.is_staff:
+        mother = get_object_or_404(MotherProfile, pk=pk)
+    else:
+        mother = get_object_or_404(
+            MotherProfile, pk=pk, registered_by=request.user,
+        )
+
+    emergencies = (
+        SOSEmergency.objects
+        .filter(mother=mother)
+        .select_related("triggered_by", "resolved_by")
+        .order_by("-triggered_at")
+    )
+
+    context = {
+        "mother": mother,
+        "emergencies": emergencies,
+        "active_count": emergencies.filter(
+            status__in=[SOSEmergency.Status.ACTIVE, SOSEmergency.Status.RESPONDING],
+        ).count(),
+    }
+    return render(request, "mother/sos_history.html", context)
 
 
 @login_required
