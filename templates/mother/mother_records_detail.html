@@ -132,7 +132,7 @@
             <span class="material-symbols-outlined text-slate-400 text-5xl mb-3">search_off</span>
             <h3 class="text-lg font-bold text-slate-600 dark:text-slate-400">No Records Found</h3>
             <p class="text-sm text-slate-500 mt-1">{% if search %}No mothers match "{{ search }}"{% else %}No registered mothers yet{% endif %}</p>
-            <a href="{% url 'accounts:register' %}" class="inline-flex items-center gap-2 mt-4 px-6 py-2 bg-primary text-white rounded-lg font-semibold no-underline">
+            <a href="{% url 'main:register_mother' %}" class="inline-flex items-center gap-2 mt-4 px-6 py-2 bg-primary text-white rounded-lg font-semibold no-underline">
                 <span class="material-symbols-outlined">person_add</span>
                 Register New Mother
             </a>
@@ -142,7 +142,7 @@
 </main>
 
 <!-- Floating Action Button -->
-<a href="{% url 'accounts:register' %}" class="fixed bottom-20 right-6 w-14 h-14 bg-primary text-slate-900 rounded-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-background-dark z-50 no-underline">
+<a href="{% url 'main:register_mother' %}" class="fixed bottom-20 right-6 w-14 h-14 bg-primary text-slate-900 rounded-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-background-dark z-50 no-underline">
     <span class="material-symbols-outlined text-3xl">person_add</span>
 </a>
 

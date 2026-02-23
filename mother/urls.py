@@ -11,6 +11,9 @@ urlpatterns = [
     # Dashboard
     path("dashboard/", views.dashboard, name="dashboard"),
     
+    # Register Mother (FCHV only)
+    path("register/", views.register_mother, name="register_mother"),
+    
     # Mother Records
     path("mothers/", views.mother_list, name="mother_list"),
     path("mothers/<int:pk>/", views.mother_profile, name="mother_profile"),

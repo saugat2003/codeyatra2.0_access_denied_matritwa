@@ -77,7 +77,7 @@
         <p class="text-sm text-slate-400 mt-1">
             {% if search_query %}No results for "{{ search_query }}"{% else %}No registered mothers yet{% endif %}
         </p>
-        <a href="{% url 'accounts:register' %}" class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-slate-900 font-bold rounded-xl no-underline">
+        <a href="{% url 'main:register_mother' %}" class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-slate-900 font-bold rounded-xl no-underline">
             <span class="material-symbols-outlined">person_add</span>Register New Mother
         </a>
     </div>
@@ -85,7 +85,7 @@
 </main>
 
 <!-- Floating Action Button -->
-<a href="{% url 'accounts:register' %}" class="fixed bottom-20 right-4 size-14 bg-primary text-slate-900 rounded-full shadow-lg flex items-center justify-center z-40 active:scale-90 transition-transform hover:bg-primary-dark no-underline">
+<a href="{% url 'main:register_mother' %}" class="fixed bottom-20 right-4 size-14 bg-primary text-slate-900 rounded-full shadow-lg flex items-center justify-center z-40 active:scale-90 transition-transform hover:bg-primary-dark no-underline">
     <span class="material-symbols-outlined text-3xl">add</span>
 </a>
 

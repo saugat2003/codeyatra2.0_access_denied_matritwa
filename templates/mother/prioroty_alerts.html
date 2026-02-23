@@ -123,8 +123,8 @@
                             <span class="material-symbols-outlined text-base">visibility</span>
                             View Profile
                         </a>
-                        {% if alert.mother.user.phone_number %}
-                        <a href="tel:{{ alert.mother.user.phone_number }}" class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-white py-2 text-xs font-bold shadow-md shadow-primary/20 no-underline">
+                        {% if alert.mother.phone %}
+                        <a href="tel:{{ alert.mother.phone }}" class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-white py-2 text-xs font-bold shadow-md shadow-primary/20 no-underline">
                             <span class="material-symbols-outlined text-base">call</span>
                             Call Patient
                         </a>
