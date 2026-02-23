@@ -142,27 +142,29 @@
 </main>
 
 <!-- Floating Action Button -->
-<a href="{% url 'accounts:register' %}" class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-background-dark z-50 no-underline">
+<a href="{% url 'accounts:register' %}" class="fixed bottom-20 right-6 w-14 h-14 bg-primary text-slate-900 rounded-full shadow-2xl flex items-center justify-center border-4 border-white dark:border-background-dark z-50 no-underline">
     <span class="material-symbols-outlined text-3xl">person_add</span>
 </a>
 
-<!-- Bottom Navigation Bar -->
-<nav class="fixed bottom-0 w-full bg-white dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 flex justify-around items-center px-2 py-3 z-50">
-    <a class="flex flex-col items-center gap-1 text-slate-400" href="{% url 'main:dashboard' %}">
-        <span class="material-symbols-outlined">home</span>
-        <span class="text-[10px] font-medium">Home</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-primary" href="{% url 'main:records_detail' %}">
-        <span class="material-symbols-outlined fill-1">description</span>
-        <span class="text-[10px] font-bold">Records</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-slate-400" href="{% url 'main:priority_alerts' %}">
-        <span class="material-symbols-outlined">notifications</span>
-        <span class="text-[10px] font-medium">Alerts</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-slate-400" href="{% url 'main:monthly_reports' %}">
-        <span class="material-symbols-outlined">bar_chart</span>
-        <span class="text-[10px] font-medium">Reports</span>
-    </a>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 z-50">
+    <div class="flex h-16 max-w-xl mx-auto">
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:dashboard' %}">
+            <span class="material-symbols-outlined">home</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="{% url 'main:mother_list' %}">
+            <span class="material-symbols-outlined fill-icon">group</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Patients</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:priority_alerts' %}">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:monthly_reports' %}">
+            <span class="material-symbols-outlined">bar_chart</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Reports</span>
+        </a>
+    </div>
 </nav>
 {% endblock %}

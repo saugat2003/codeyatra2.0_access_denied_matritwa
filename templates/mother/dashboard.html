@@ -111,22 +111,24 @@
 </main>
 
 <!-- Bottom Navigation -->
-<nav class="fixed bottom-0 left-0 right-0 bg-surface-light dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 px-6 py-2 pb-6 flex items-center justify-between z-50">
-    <a class="flex flex-col items-center gap-1 text-primary" href="{% url 'main:dashboard' %}">
-        <span class="material-symbols-outlined text-2xl fill-icon">home</span>
-        <span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:records_detail' %}">
-        <span class="material-symbols-outlined text-2xl">description</span>
-        <span class="text-[10px] font-bold uppercase tracking-tighter">Records</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:priority_alerts' %}">
-        <span class="material-symbols-outlined text-2xl">notifications</span>
-        <span class="text-[10px] font-bold uppercase tracking-tighter">Alerts</span>
-    </a>
-    <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'accounts:logout' %}">
-        <span class="material-symbols-outlined text-2xl">logout</span>
-        <span class="text-[10px] font-bold uppercase tracking-tighter">Logout</span>
-    </a>
+<nav class="fixed bottom-0 left-0 right-0 bg-surface-light dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 z-50">
+    <div class="flex h-16 max-w-xl mx-auto">
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="{% url 'main:dashboard' %}">
+            <span class="material-symbols-outlined fill-icon">home</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:mother_list' %}">
+            <span class="material-symbols-outlined">group</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Patients</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:priority_alerts' %}">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:monthly_reports' %}">
+            <span class="material-symbols-outlined">bar_chart</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Reports</span>
+        </a>
+    </div>
 </nav>
 {% endblock %}

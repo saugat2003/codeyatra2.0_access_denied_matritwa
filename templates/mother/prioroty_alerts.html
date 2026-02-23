@@ -199,28 +199,30 @@
     </main>
 
     <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 z-20 bg-white dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 px-6 pb-6 pt-3 flex items-center justify-between max-w-full">
-        <a class="flex flex-col items-center gap-1 text-slate-400" href="{% url 'main:dashboard' %}">
-            <span class="material-symbols-outlined">grid_view</span>
-            <span class="text-[10px] font-bold uppercase">Dashboard</span>
-        </a>
-        <a class="flex flex-col items-center gap-1 text-primary" href="{% url 'main:priority_alerts' %}">
-            <div class="relative">
-                <span class="material-symbols-outlined fill-1">notifications</span>
-                {% if total_alerts > 0 %}
-                <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-white border-2 border-white dark:border-surface-dark">{{ total_alerts }}</span>
-                {% endif %}
-            </div>
-            <span class="text-[10px] font-bold uppercase">Alerts</span>
-        </a>
-        <a class="flex flex-col items-center gap-1 text-slate-400" href="{% url 'main:records_detail' %}">
-            <span class="material-symbols-outlined">groups</span>
-            <span class="text-[10px] font-bold uppercase">Records</span>
-        </a>
-        <a class="flex flex-col items-center gap-1 text-slate-400" href="{% url 'main:monthly_reports' %}">
-            <span class="material-symbols-outlined">bar_chart</span>
-            <span class="text-[10px] font-bold uppercase">Reports</span>
-        </a>
+    <nav class="fixed bottom-0 left-0 right-0 z-20 bg-white dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800">
+        <div class="flex h-16 max-w-xl mx-auto">
+            <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:dashboard' %}">
+                <span class="material-symbols-outlined">home</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+            </a>
+            <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:mother_list' %}">
+                <span class="material-symbols-outlined">group</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Patients</span>
+            </a>
+            <a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="{% url 'main:priority_alerts' %}">
+                <div class="relative">
+                    <span class="material-symbols-outlined fill-icon">notifications</span>
+                    {% if total_alerts > 0 %}
+                    <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-bold text-white">{{ total_alerts }}</span>
+                    {% endif %}
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
+            </a>
+            <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:monthly_reports' %}">
+                <span class="material-symbols-outlined">bar_chart</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Reports</span>
+            </a>
+        </div>
     </nav>
 </div>
 {% endblock %}
