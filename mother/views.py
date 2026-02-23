@@ -33,14 +33,14 @@ def dashboard(request):
     total_mothers = mothers.count()
 
     # High-risk: mothers who have had any ANC visit with danger signs
-    high_risk_ids = (
+    high_risk_ids = set(
         ANCVisit.objects.filter(has_danger_signs=True)
         .values_list("mother_id", flat=True)
         .distinct()
     )
     high_risk_count = mothers.filter(pk__in=high_risk_ids).count()
 
-    # Upcoming ANC visits — show the most recent visits as a proxy
+    # Recent ANC visits
     recent_visits = (
         ANCVisit.objects.select_related("mother")
         .order_by("-created_at")[:5]
@@ -56,11 +56,26 @@ def dashboard(request):
         else 0
     )
 
+    # Active mothers — most recently registered, up to 5
+    recent_mothers = mothers.order_by("-created_at")[:5]
+    active_mothers = []
+    for m in recent_mothers:
+        initials = "".join(w[0].upper() for w in m.full_name.split()[:2]) if m.full_name else "?"
+        weeks = _pregnancy_weeks(m)
+        risk = "high" if m.pk in high_risk_ids else "stable"
+        active_mothers.append({
+            "profile": m,
+            "initials": initials,
+            "weeks": weeks,
+            "risk": risk,
+        })
+
     context = {
         "total_mothers": total_mothers,
         "high_risk_count": high_risk_count,
         "recent_visits": recent_visits,
         "goal_progress": goal_progress,
+        "active_mothers": active_mothers,
         "user": request.user,
     }
     return render(request, "mother/dashboard.html", context)
