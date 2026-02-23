@@ -161,5 +161,5 @@ LOGGING = {
 
 # Auth
 LOGIN_URL = "accounts:login"
-LOGIN_REDIRECT_URL = "healthcare:dashboard"
+LOGIN_REDIRECT_URL = "main:dashboard"
 LOGOUT_REDIRECT_URL = "accounts:login"

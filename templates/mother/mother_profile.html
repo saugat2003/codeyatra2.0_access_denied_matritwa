@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Mother Profile | Matritwa{% endblock %}
+
+{% block body_class %}min-h-screen flex flex-col{% endblock %}
+
+{% block content %}
+<!-- Header Navigation -->
+<header class="flex items-center justify-between p-4 bg-white dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800">
+    <a href="{% url 'main:dashboard' %}" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+        <span class="material-symbols-outlined text-slate-600 dark:text-slate-400">arrow_back</span>
+    </a>
+    <h1 class="text-lg font-bold tracking-tight">Mother Profile</h1>
+    <button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+        <span class="material-symbols-outlined text-slate-600 dark:text-slate-400">settings</span>
+    </button>
+</header>
+
+<main class="flex-1 overflow-y-auto pb-24">
+    <!-- Profile Identity Section -->
+    <section class="p-6 flex flex-col items-center gap-4">
+        <div class="relative">
+            <div class="w-32 h-32 rounded-full border-4 border-primary/20 bg-primary/10 flex items-center justify-center text-primary text-4xl font-bold">SJ</div>
+            <div class="absolute bottom-1 right-1 bg-primary text-slate-900 p-1.5 rounded-full border-2 border-white dark:border-background-dark">
+                <span class="material-symbols-outlined text-sm block">edit</span>
+            </div>
+        </div>
+        <div class="text-center">
+            <h2 class="text-2xl font-bold">Sarah Jenkins</h2>
+            <div class="mt-1 flex items-center justify-center gap-2">
+                <span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">
+                    Week 28 (3rd Trimester)
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Grid -->
+    <section class="px-4 grid grid-cols-2 gap-4">
+        <div class="bg-white dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase mb-1">Due Date</p>
+            <p class="text-lg font-bold">Oct 15, 2023</p>
+        </div>
+        <div class="bg-red-50 dark:bg-red-950/30 p-4 rounded-xl border border-red-200 dark:border-red-900/50 shadow-sm">
+            <p class="text-red-600 dark:text-red-400 text-xs font-bold uppercase mb-1 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">warning</span> Risk Level
+            </p>
+            <p class="text-lg font-black text-red-600 dark:text-red-400">HIGH RISK</p>
+        </div>
+    </section>
+
+    <!-- ANC Progress Section -->
+    <section class="p-4 mt-4">
+        <div class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-base">ANC Visits Progress</h3>
+                <span class="text-sm font-medium text-primary">3 of 8 completed</span>
+            </div>
+            <div class="relative w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div class="absolute top-0 left-0 h-full bg-primary rounded-full" style="width: 37.5%"></div>
+            </div>
+            <div class="flex justify-between mt-3">
+                <div class="flex flex-col items-center">
+                    <div class="w-2 h-2 rounded-full bg-primary"></div>
+                    <span class="text-[10px] text-slate-500 mt-1">Visit 1</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-2 h-2 rounded-full bg-primary"></div>
+                    <span class="text-[10px] text-slate-500 mt-1">Visit 2</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-2 h-2 rounded-full bg-primary"></div>
+                    <span class="text-[10px] text-slate-500 mt-1">Visit 3</span>
+                </div>
+                <div class="flex flex-col items-center opacity-40">
+                    <div class="w-2 h-2 rounded-full bg-slate-400"></div>
+                    <span class="text-[10px] text-slate-500 mt-1">Visit 4</span>
+                </div>
+                <div class="flex flex-col items-center opacity-40">
+                    <div class="w-2 h-2 rounded-full bg-slate-400"></div>
+                    <span class="text-[10px] text-slate-500 mt-1">Visit 5</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Grid -->
+    <section class="px-4 mt-2 grid grid-cols-2 gap-4">
+        <a href="#" class="flex flex-col items-center justify-center p-4 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20 hover:bg-primary/10 transition-colors">
+            <span class="material-symbols-outlined text-primary mb-2 text-3xl">calendar_add_on</span>
+            <span class="text-sm font-semibold">Update Visit</span>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center p-4 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20 hover:bg-primary/10 transition-colors">
+            <span class="material-symbols-outlined text-primary mb-2 text-3xl">medical_services</span>
+            <span class="text-sm font-semibold">Add Symptoms</span>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center p-4 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20 hover:bg-primary/10 transition-colors">
+            <span class="material-symbols-outlined text-primary mb-2 text-3xl">local_hospital</span>
+            <span class="text-sm font-semibold">Health Post</span>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center p-4 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-200 transition-colors">
+            <span class="material-symbols-outlined text-slate-600 dark:text-slate-400 mb-2 text-3xl">description</span>
+            <span class="text-sm font-semibold">Health Records</span>
+        </a>
+    </section>
+
+    <!-- SOS Button Container -->
+    <section class="p-4 mt-6">
+        <button class="w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-3 py-4 rounded-xl shadow-lg shadow-red-500/20 active:scale-[0.98] transition-all">
+            <span class="material-symbols-outlined font-bold text-2xl">emergency_share</span>
+            <span class="text-lg font-black uppercase tracking-widest">Trigger SOS</span>
+        </button>
+    </section>
+</main>
+
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 px-6 py-2 flex justify-between items-center z-50">
+    <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="{% url 'main:dashboard' %}">
+        <span class="material-symbols-outlined">home</span>
+        <span class="text-[10px] font-medium">Home</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+        <span class="material-symbols-outlined">analytics</span>
+        <span class="text-[10px] font-medium">Health</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+        <span class="material-symbols-outlined">groups</span>
+        <span class="text-[10px] font-medium">Community</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-primary" href="#">
+        <span class="material-symbols-outlined fill-icon">person</span>
+        <span class="text-[10px] font-medium">Profile</span>
+    </a>
+</nav>
+{% endblock %}
