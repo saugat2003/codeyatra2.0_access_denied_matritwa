@@ -9,7 +9,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect("healthcare:dashboard")
+            return redirect("main:dashboard")
         else:
             from django.contrib import messages
             messages.error(request, "Invalid username or password.")
