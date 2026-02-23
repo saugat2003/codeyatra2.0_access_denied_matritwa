@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Register — Step 2 | Matritwa{% endblock %}
+
+{% block body_class %}flex items-center justify-center p-0 sm:p-4{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-md bg-background-light dark:bg-background-dark min-h-screen sm:min-h-[800px] sm:rounded-[40px] shadow-2xl overflow-hidden flex flex-col relative">
+
+    <!-- Status Bar -->
+    <div class="h-12 w-full shrink-0"></div>
+
+    <!-- Top App Bar -->
+    <header class="flex items-center px-4 py-2 gap-2 shrink-0">
+        <a href="{% url 'accounts:register_step1' %}" class="flex items-center justify-center size-10 rounded-full hover:bg-slate-100 dark:hover:bg-surface-dark transition-colors">
+            <span class="material-symbols-outlined text-slate-700 dark:text-slate-300">arrow_back</span>
+        </a>
+        <h2 class="flex-1 text-center text-lg font-bold text-slate-900 dark:text-white pr-10">Pregnancy Details</h2>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="px-6 pb-4 shrink-0">
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Registration Progress</span>
+            <span class="text-xs font-bold text-primary uppercase tracking-wider">Step 2 of 3</span>
+        </div>
+        <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+            <div class="h-full bg-primary rounded-full transition-all" style="width: 66%;"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto no-scrollbar px-6 pb-32">
+        <div class="pt-4 pb-6">
+            <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Your Pregnancy</h1>
+            <p class="text-slate-500 dark:text-slate-400">This helps us provide tailored advice and track your progress.</p>
+        </div>
+
+        <form method="post" action="{% url 'accounts:register_step2' %}" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Tracking Method Toggle -->
+            <div class="space-y-3">
+                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 block">Track by</label>
+                <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                    <label class="flex-1">
+                        <input checked type="radio" name="tracking_method" value="lmp" class="sr-only peer" />
+                        <div class="text-center py-2.5 rounded-lg cursor-pointer text-sm font-semibold transition-all peer-checked:bg-surface-light dark:peer-checked:bg-surface-dark peer-checked:text-primary peer-checked:shadow-sm text-slate-500 dark:text-slate-400">
+                            LMP Date
+                        </div>
+                    </label>
+                    <label class="flex-1">
+                        <input type="radio" name="tracking_method" value="week" class="sr-only peer" />
+                        <div class="text-center py-2.5 rounded-lg cursor-pointer text-sm font-semibold transition-all peer-checked:bg-surface-light dark:peer-checked:bg-surface-dark peer-checked:text-primary peer-checked:shadow-sm text-slate-500 dark:text-slate-400">
+                            Pregnancy Week
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- LMP Date -->
+            <div class="space-y-2">
+                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 block">Last Menstrual Period (LMP)</label>
+                <input type="date" name="lmp_date"
+                    class="w-full h-14 px-4 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base transition-all" />
+            </div>
+
+            <!-- First Pregnancy -->
+            <div class="space-y-3">
+                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 block">Is this your first pregnancy?</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="relative cursor-pointer">
+                        <input type="radio" name="first_pregnancy" value="yes" class="sr-only peer" />
+                        <div class="flex items-center justify-center h-12 border-2 border-slate-200 dark:border-slate-700 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 text-slate-500 peer-checked:text-primary font-semibold transition-all">Yes</div>
+                    </label>
+                    <label class="relative cursor-pointer">
+                        <input type="radio" name="first_pregnancy" value="no" class="sr-only peer" />
+                        <div class="flex items-center justify-center h-12 border-2 border-slate-200 dark:border-slate-700 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 text-slate-500 peer-checked:text-primary font-semibold transition-all">No</div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Previous Complications -->
+            <div class="space-y-3">
+                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 block">Previous pregnancy complications?</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="relative cursor-pointer">
+                        <input type="radio" name="complications" value="yes" class="sr-only peer" />
+                        <div class="flex items-center justify-center h-12 border-2 border-slate-200 dark:border-slate-700 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 text-slate-500 peer-checked:text-primary font-semibold transition-all">Yes</div>
+                    </label>
+                    <label class="relative cursor-pointer">
+                        <input type="radio" name="complications" value="no" class="sr-only peer" />
+                        <div class="flex items-center justify-center h-12 border-2 border-slate-200 dark:border-slate-700 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 text-slate-500 peer-checked:text-primary font-semibold transition-all">No</div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Blood Group -->
+            <div class="space-y-2">
+                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 flex justify-between">
+                    Blood Group <span class="font-normal text-slate-400">(Optional)</span>
+                </label>
+                <div class="relative">
+                    <select name="blood_group"
+                        class="w-full h-14 px-4 bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base appearance-none transition-all">
+                        <option value="">Select blood group</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                </div>
+            </div>
+
+            <!-- Bottom CTA -->
+            <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md px-6 pb-8 pt-4 bg-background-light dark:bg-background-dark border-t border-slate-100 dark:border-slate-800">
+                <button type="submit"
+                    class="w-full h-14 bg-primary hover:bg-primary-dark text-slate-900 font-bold text-lg rounded-xl flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-lg shadow-primary/25">
+                    Next Step
+                    <span class="material-symbols-outlined text-[22px]">arrow_forward</span>
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- iOS Home Indicator -->
+    <div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-slate-300 dark:bg-slate-600 rounded-full"></div>
+</div>
+{% endblock %}

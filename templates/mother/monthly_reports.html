@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Monthly Performance | Matritwa{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chart-container { position: relative; }
+    .bar { transition: height 0.3s ease; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+{% endblock %}
+
+{% block body_class %}bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-background-light dark:bg-background-dark border-b border-primary/10 px-4 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+        <a href="{% url 'main:dashboard' %}" class="text-primary cursor-pointer">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <h1 class="text-xl font-bold tracking-tight">Monthly Performance</h1>
+    </div>
+    <div class="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-semibold">
+        <span class="material-symbols-outlined text-sm">calendar_month</span>
+        {{ current_month_label }}
+    </div>
+</header>
+
+<main class="p-4 space-y-6 pb-24">
+    <!-- Period Selector Tabs -->
+    <div class="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
+        <span class="shrink-0 px-4 py-2 bg-primary text-white rounded-full text-sm font-bold">{{ current_month_label }}</span>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="col-span-2 bg-white dark:bg-surface-dark p-5 rounded-xl border border-primary/10 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Total Registrations</p>
+                <h3 class="text-3xl font-bold mt-1">{{ new_registrations }}</h3>
+                <p class="text-primary text-xs font-bold flex items-center mt-1">
+                    <span class="material-symbols-outlined text-xs">trending_up</span> This month
+                </p>
+            </div>
+            <div class="bg-primary/10 p-3 rounded-full">
+                <span class="material-symbols-outlined text-primary text-3xl">person_add</span>
+            </div>
+        </div>
+        <div class="bg-white dark:bg-surface-dark p-4 rounded-xl border border-primary/10 shadow-sm">
+            <span class="material-symbols-outlined text-primary mb-2">event_available</span>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">ANC Visits</p>
+            <h3 class="text-xl font-bold">{{ total_anc_visits }}</h3>
+        </div>
+        <div class="bg-white dark:bg-surface-dark p-4 rounded-xl border border-primary/10 shadow-sm">
+            <span class="material-symbols-outlined text-red-500 mb-2">warning</span>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">High-Risk Cases</p>
+            <h3 class="text-xl font-bold">{{ high_risk_count }}</h3>
+        </div>
+    </div>
+
+    <!-- Weekly Registrations Bar Chart -->
+    <section class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-primary/10 shadow-sm">
+        <h4 class="font-bold mb-4 flex items-center justify-between">
+            Weekly Registrations
+            <span class="text-xs font-normal text-slate-500">Units: Mothers</span>
+        </h4>
+        <div class="flex items-end justify-between h-32 gap-2 mt-6">
+            {% for week in weekly_chart_data %}
+            <div class="flex-1 flex flex-col items-center gap-2">
+                <div class="w-full bg-primary{% if forloop.counter == 1 %}/20{% elif forloop.counter == 2 %}/40{% elif forloop.counter == 4 %}/60{% endif %} rounded-t-lg" style="height: {{ week.percentage }}%"></div>
+                <span class="text-[10px] text-slate-500">{{ week.week }}</span>
+            </div>
+            {% empty %}
+            <div class="flex-1 flex flex-col items-center gap-2">
+                <div class="w-full bg-primary/20 rounded-t-lg" style="height: 10%"></div>
+                <span class="text-[10px] text-slate-500">W1</span>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Risk Distribution Ring Chart -->
+    <section class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-primary/10 shadow-sm">
+        <h4 class="font-bold mb-4">Risk Level Distribution</h4>
+        <div class="flex items-center gap-8">
+            <div class="relative w-32 h-32">
+                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#e2e8f0" stroke-width="4"></circle>
+                    <circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#f472b6" stroke-dasharray="{{ risk_distribution.stable_pct }}, 100" stroke-width="4"></circle>
+                    <circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#fbd38d" stroke-dasharray="{{ risk_distribution.observation_pct }}, 100" stroke-dashoffset="-{{ risk_distribution.stable_pct }}" stroke-width="4"></circle>
+                    <circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#ef4444" stroke-dasharray="{{ risk_distribution.high_risk_pct }}, 100" stroke-dashoffset="-{{ risk_distribution.stable_plus_obs_pct }}" stroke-width="4"></circle>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span class="text-xl font-bold">{{ total_cases }}</span>
+                    <span class="text-[10px] text-slate-500">Total Cases</span>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-primary"></div>
+                    <span class="text-xs font-medium">Stable ({{ risk_distribution.stable_pct }}%)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-orange-200"></div>
+                    <span class="text-xs font-medium">Observation ({{ risk_distribution.observation_pct }}%)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <span class="text-xs font-medium">High Risk ({{ risk_distribution.high_risk_pct }}%)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOS Alerts Count -->
+    <section class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-primary/10 shadow-sm">
+        <h4 class="font-bold mb-4 flex items-center justify-between">
+            SOS Alerts This Month
+            <span class="material-symbols-outlined text-red-500 text-sm">emergency</span>
+        </h4>
+        <div class="flex items-center gap-4">
+            <div class="bg-red-100 dark:bg-red-900/30 p-4 rounded-full">
+                <span class="material-symbols-outlined text-red-500 text-3xl">sos</span>
+            </div>
+            <div>
+                <p class="text-3xl font-bold text-red-600">{{ sos_count }}</p>
+                <p class="text-xs text-slate-500">Emergency alerts triggered</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Goal Progress -->
+    <section class="bg-primary/5 dark:bg-primary/10 p-5 rounded-xl border border-primary/20">
+        <div class="flex justify-between items-center mb-4">
+            <h4 class="font-bold">Goal Progress</h4>
+            <span class="text-primary font-bold">{{ goal_progress }}%</span>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-800 h-3 rounded-full overflow-hidden mb-3">
+            <div class="bg-primary h-full rounded-full" style="width: {{ goal_progress }}%"></div>
+        </div>
+        <div class="flex justify-between text-xs font-medium text-slate-500 dark:text-slate-400">
+            <span>Completed: {{ completed_visits }} visits</span>
+            <span>Monthly Target: {{ visit_target }}</span>
+        </div>
+    </section>
+</main>
+
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-surface-light dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 z-50 pb-safe">
+    <div class="flex h-16 max-w-xl mx-auto relative">
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'dashboard' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:dashboard' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'dashboard' %}fill-icon{% endif %}">home</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'mother_list' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:mother_list' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'mother_list' %}fill-icon{% endif %}">group</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Mothers</span>
+        </a>
+        
+        <!-- Central Add Button -->
+        <div class="flex flex-1 flex-col items-center justify-start relative">
+            <a href="{% url 'main:register_mother' %}" class="absolute -top-5 flex items-center justify-center size-14 rounded-full bg-primary text-white shadow-lg shadow-primary/40 hover:bg-primary-dark transition-transform active:scale-95">
+                <span class="material-symbols-outlined text-3xl">add</span>
+            </a>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-10">Register</span>
+        </div>
+
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'awareness_program' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:awareness_program' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'awareness_program' %}fill-icon{% endif %}">campaign</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Awareness</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'monthly_reports' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:monthly_reports' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'monthly_reports' %}fill-icon{% endif %}">bar_chart</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Reports</span>
+        </a>
+    </div>
+</nav>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="{% block html_class %}{% endblock %}">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#dc2626" />
+    <link rel="manifest" href="{% static 'manifest.json' %}" />
+    <title>{% block title %}Matritwa{% endblock %}</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <!-- Brand config -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary":           "#f472b6",
+                        "primary-dark":      "#db2777",
+                        "accent-peach":      "#fce7f3",
+                        "background-light":  "#fdf2f8",
+                        "background-dark":   "#1e0a1e", 
+                        "surface-light":     "#ffffff",
+                        "surface-dark":      "#2d1030",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg":      "1rem",
+                        "xl":      "1.5rem",
+                        "2xl":     "2rem",
+                        "full":    "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Base styles -->
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            min-height: max(884px, 100dvh);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon { font-variation-settings: 'FILL' 1; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Django messages */
+        .messages { list-style: none; padding: 0; margin: 0; }
+        .messages li { padding: .75rem 1rem; font-size: .875rem; text-align: center; }
+        .messages li.success { background: #fce7f3; color: #9d174d; }
+        .messages li.error   { background: #fee2e2; color: #991b1b; }
+        .messages li.warning { background: #fef3c7; color: #92400e; }
+        .messages li.info    { background: #fdf4ff; color: #86198f; }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased {% block body_class %}{% endblock %}">
+
+    {% if messages %}
+    <ul class="messages fixed top-0 inset-x-0 z-50">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    {% block extra_js %}{% endblock %}
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js", { scope: "/" })
+                .then(function (reg) { console.log("[SW] registered:", reg.scope); })
+                .catch(function (err) { console.warn("[SW] registration failed:", err); });
+
+            // Listen for sync requests from SW
+            navigator.serviceWorker.addEventListener("message", function (e) {
+                if (e.data && e.data.type === "SOS_SYNC_REQUEST" && window.SOS) {
+                    window.SOS.syncQueue();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

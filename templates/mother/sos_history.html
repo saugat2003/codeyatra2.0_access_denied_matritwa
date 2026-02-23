@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}SOS History — {{ mother.full_name }} | Matritwa{% endblock %}
+{% block body_class %}min-h-screen flex flex-col{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+        <a href="{% url 'main:mother_profile' mother.pk %}" class="flex items-center justify-center size-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors no-underline">
+            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </a>
+        <div>
+            <h1 class="text-sm font-bold leading-tight">SOS History</h1>
+            <p class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">{{ mother.full_name }}</p>
+        </div>
+    </div>
+    {% if active_count > 0 %}
+    <span class="inline-flex items-center gap-1 bg-red-100 dark:bg-red-900/30 text-red-600 text-xs font-bold px-2.5 py-1 rounded-full">
+        <span class="size-2 rounded-full bg-red-500 animate-pulse"></span>
+        {{ active_count }} Active
+    </span>
+    {% endif %}
+</header>
+
+<main class="flex-1 overflow-y-auto p-4 space-y-4 pb-28">
+
+    <!-- Trigger SOS Link -->
+    <a href="{% url 'main:sos_trigger_page' mother.pk %}" class="w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-3 py-3 rounded-xl shadow-lg shadow-red-500/20 active:scale-[0.98] transition-all no-underline">
+        <span class="material-symbols-outlined text-xl">emergency_share</span>
+        <span class="text-sm font-black uppercase tracking-widest">Trigger New SOS</span>
+    </a>
+
+    <!-- SOS Records -->
+    {% for sos in emergencies %}
+    <div class="bg-white dark:bg-surface-dark rounded-xl border {% if sos.is_active %}border-red-300 dark:border-red-700{% else %}border-slate-200 dark:border-slate-700{% endif %} shadow-sm overflow-hidden">
+        <!-- Status bar -->
+        <div class="flex items-center justify-between px-4 py-2 {% if sos.status == 'ACTIVE' %}bg-red-50 dark:bg-red-900/20{% elif sos.status == 'RESPONDING' %}bg-amber-50 dark:bg-amber-900/20{% elif sos.status == 'RESOLVED' %}bg-emerald-50 dark:bg-emerald-900/20{% else %}bg-slate-50 dark:bg-slate-800{% endif %}">
+            <div class="flex items-center gap-2">
+                {% if sos.status == 'ACTIVE' %}
+                <span class="size-2 rounded-full bg-red-500 animate-pulse"></span>
+                <span class="text-xs font-bold text-red-600 uppercase">Active</span>
+                {% elif sos.status == 'RESPONDING' %}
+                <span class="size-2 rounded-full bg-amber-500 animate-pulse"></span>
+                <span class="text-xs font-bold text-amber-600 uppercase">Responding</span>
+                {% elif sos.status == 'RESOLVED' %}
+                <span class="material-symbols-outlined text-emerald-600 text-sm">check_circle</span>
+                <span class="text-xs font-bold text-emerald-600 uppercase">Resolved</span>
+                {% else %}
+                <span class="material-symbols-outlined text-slate-400 text-sm">cancel</span>
+                <span class="text-xs font-bold text-slate-500 uppercase">Cancelled</span>
+                {% endif %}
+            </div>
+            <span class="text-[10px] text-slate-500 font-medium">{{ sos.time_ago }}</span>
+        </div>
+
+        <!-- Body -->
+        <div class="px-4 py-3 space-y-2">
+            <div class="flex items-center justify-between">
+                <!-- Risk badge -->
+                {% if sos.risk_level == 'CRITICAL' %}
+                <span class="inline-flex items-center gap-1 bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                    <span class="material-symbols-outlined text-xs">warning</span> Critical
+                </span>
+                {% elif sos.risk_level == 'HIGH' %}
+                <span class="inline-flex items-center gap-1 bg-orange-100 text-orange-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                    <span class="material-symbols-outlined text-xs">priority_high</span> High
+                </span>
+                {% elif sos.risk_level == 'MODERATE' %}
+                <span class="inline-flex items-center gap-1 bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                    <span class="material-symbols-outlined text-xs">info</span> Moderate
+                </span>
+                {% else %}
+                <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                    <span class="material-symbols-outlined text-xs">check</span> Low
+                </span>
+                {% endif %}
+
+                <!-- Sync status -->
+                {% if sos.is_synced %}
+                <span class="text-[10px] text-emerald-500 flex items-center gap-0.5">
+                    <span class="material-symbols-outlined text-xs">cloud_done</span> Synced
+                </span>
+                {% else %}
+                <span class="text-[10px] text-amber-500 flex items-center gap-0.5">
+                    <span class="material-symbols-outlined text-xs">cloud_off</span> Pending
+                </span>
+                {% endif %}
+            </div>
+
+            {% if sos.note %}
+            <p class="text-sm text-slate-700 dark:text-slate-300">{{ sos.note }}</p>
+            {% endif %}
+
+            <div class="flex items-center gap-4 text-xs text-slate-500">
+                <span class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">schedule</span>
+                    {{ sos.triggered_at|date:"M d, Y h:i A" }}
+                </span>
+                {% if sos.latitude and sos.longitude %}
+                <a href="https://maps.google.com/?q={{ sos.latitude }},{{ sos.longitude }}" target="_blank" rel="noopener" class="flex items-center gap-1 text-primary no-underline hover:underline">
+                    <span class="material-symbols-outlined text-xs">location_on</span> GPS
+                </a>
+                {% endif %}
+            </div>
+
+            {% if sos.triggered_by %}
+            <p class="text-xs text-slate-400">Triggered by {{ sos.triggered_by.get_full_name|default:sos.triggered_by.username }}</p>
+            {% endif %}
+
+            {% if sos.status == 'RESOLVED' and sos.resolved_by %}
+            <div class="mt-2 border-t border-slate-100 dark:border-slate-700 pt-2">
+                <p class="text-xs text-emerald-600 font-semibold">
+                    Resolved by {{ sos.resolved_by.get_full_name|default:sos.resolved_by.username }}
+                    {% if sos.resolved_at %} — {{ sos.resolved_at|date:"M d, h:i A" }}{% endif %}
+                </p>
+                {% if sos.resolution_note %}
+                <p class="text-xs text-slate-500 mt-1">{{ sos.resolution_note }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="bg-white dark:bg-surface-dark p-8 rounded-xl border border-slate-200 dark:border-slate-700 text-center">
+        <span class="material-symbols-outlined text-slate-300 text-5xl mb-3">emergency</span>
+        <p class="text-slate-500 text-sm">No SOS emergencies recorded for this mother.</p>
+    </div>
+    {% endfor %}
+</main>
+
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-surface-light dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 z-50 pb-safe">
+    <div class="flex h-16 max-w-xl mx-auto relative">
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'dashboard' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:dashboard' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'dashboard' %}fill-icon{% endif %}">home</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'mother_list' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:mother_list' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'mother_list' %}fill-icon{% endif %}">group</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Mothers</span>
+        </a>
+        
+        <!-- Central Add Button -->
+        <div class="flex flex-1 flex-col items-center justify-start relative">
+            <a href="{% url 'main:register_mother' %}" class="absolute -top-5 flex items-center justify-center size-14 rounded-full bg-primary text-white shadow-lg shadow-primary/40 hover:bg-primary-dark transition-transform active:scale-95">
+                <span class="material-symbols-outlined text-3xl">add</span>
+            </a>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-10">Register</span>
+        </div>
+
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'awareness_program' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:awareness_program' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'awareness_program' %}fill-icon{% endif %}">campaign</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Awareness</span>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'monthly_reports' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:monthly_reports' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'monthly_reports' %}fill-icon{% endif %}">bar_chart</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Reports</span>
+        </a>
+    </div>
+</nav>
+{% endblock %}

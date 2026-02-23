@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}ANC Visit Update | Matritwa{% endblock %}
+
+{% block extra_css %}
+<style>
+    .danger-checkbox:checked + label {
+        background-color: #fee2e2;
+        border-color: #ef4444;
+        color: #b91c1c;
+    }
+    .dark .danger-checkbox:checked + label {
+        background-color: #450a0a;
+        border-color: #f87171;
+        color: #fca5a5;
+    }
+</style>
+{% endblock %}
+
+{% block body_class %}min-h-screen{% endblock %}
+
+{% block content %}
+<div class="relative flex h-auto min-h-screen w-full flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-xl">
+    <!-- Top Navigation -->
+    <div class="flex items-center p-4 pb-2 justify-between sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-10">
+        <a href="{% url 'main:mother_profile' profile.pk %}" class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back</span>
+        </a>
+        <div class="flex-1 text-center pr-10">
+            <h2 class="text-lg font-bold leading-tight tracking-tight">ANC Visit Update</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">{{ profile.full_name }} &middot; Visit #{{ visit_number }}</p>
+        </div>
+    </div>
+
+    <form method="post" action="">
+    {% csrf_token %}
+    <div class="px-4 py-4 space-y-6 pb-32">
+        <!-- Vitals Section -->
+        <section class="space-y-4">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">monitor_heart</span>
+                <h3 class="text-lg font-bold leading-tight tracking-tight">Enter Vitals</h3>
+            </div>
+            <div class="space-y-4">
+                <label class="flex flex-col w-full">
+                    <p class="text-sm font-medium leading-normal pb-1.5 text-slate-600 dark:text-slate-400">Weight (kg)</p>
+                    <input name="weight_kg" value="{{ form.weight_kg.value|default:'' }}" class="form-input flex w-full rounded-xl text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary/50 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 h-14 placeholder:text-slate-400 p-4 text-base font-normal transition-all" placeholder="e.g. 65.5" step="0.1" type="number" />
+                </label>
+                <label class="flex flex-col w-full">
+                    <p class="text-sm font-medium leading-normal pb-1.5 text-slate-600 dark:text-slate-400">Blood Pressure (mmHg) <span class="text-xs italic opacity-70">(Optional)</span></p>
+                    <input name="blood_pressure" value="{{ form.blood_pressure.value|default:'' }}" class="form-input flex w-full rounded-xl text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary/50 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 h-14 placeholder:text-slate-400 p-4 text-base font-normal transition-all" placeholder="e.g. 120/80" type="text" />
+                </label>
+            </div>
+        </section>
+
+        <hr class="border-slate-200 dark:border-slate-800" />
+
+        <!-- Symptoms Section -->
+        <section class="space-y-4">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">checklist</span>
+                <h3 class="text-lg font-bold leading-tight tracking-tight">Select Symptoms</h3>
+            </div>
+            <p class="text-sm text-slate-500 dark:text-slate-400 -mt-2">Identify any symptoms present since the last visit.</p>
+            <div class="grid grid-cols-1 gap-3">
+                <!-- Normal Symptom -->
+                <div class="relative">
+                    <input name="symptoms" value="mild_nausea" class="peer hidden" id="symp1" type="checkbox" />
+                    <label class="flex items-center p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer transition-all hover:border-primary/40 peer-checked:border-primary peer-checked:bg-primary/5" for="symp1">
+                        <span class="flex-1 font-medium">Mild Nausea</span>
+                        <span class="material-symbols-outlined text-primary opacity-0 peer-checked:opacity-100 transition-opacity">check_circle</span>
+                    </label>
+                </div>
+
+                <!-- Danger Sign 1 -->
+                <div class="relative">
+                    <input name="symptoms" value="severe_headache" class="danger-checkbox peer hidden" id="symp2" type="checkbox" />
+                    <label class="flex items-center p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer transition-all hover:border-red-400 peer-checked:border-red-500" for="symp2">
+                        <div class="flex-1">
+                            <span class="font-bold flex items-center gap-2">
+                                Severe Headache
+                                <span class="material-symbols-outlined text-red-500 text-sm">warning</span>
+                            </span>
+                            <p class="text-xs opacity-70">Potential Danger Sign</p>
+                        </div>
+                        <span class="material-symbols-outlined text-red-600 opacity-0 peer-checked:opacity-100 transition-opacity">error</span>
+                    </label>
+                </div>
+
+                <!-- Danger Sign 2 -->
+                <div class="relative">
+                    <input name="symptoms" value="blurred_vision" class="danger-checkbox peer hidden" id="symp3" type="checkbox" />
+                    <label class="flex items-center p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer transition-all hover:border-red-400 peer-checked:border-red-500" for="symp3">
+                        <div class="flex-1">
+                            <span class="font-bold flex items-center gap-2">
+                                Blurred Vision
+                                <span class="material-symbols-outlined text-red-500 text-sm">warning</span>
+                            </span>
+                            <p class="text-xs opacity-70">Potential Danger Sign</p>
+                        </div>
+                        <span class="material-symbols-outlined text-red-600 opacity-0 peer-checked:opacity-100 transition-opacity">error</span>
+                    </label>
+                </div>
+
+                <!-- Danger Sign 3 -->
+                <div class="relative">
+                    <input name="symptoms" value="fever_chills" class="danger-checkbox peer hidden" id="symp4" type="checkbox" />
+                    <label class="flex items-center p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer transition-all hover:border-red-400 peer-checked:border-red-500" for="symp4">
+                        <div class="flex-1">
+                            <span class="font-bold flex items-center gap-2">
+                                Fever / Chills
+                                <span class="material-symbols-outlined text-red-500 text-sm">warning</span>
+                            </span>
+                            <p class="text-xs opacity-70">Potential Danger Sign</p>
+                        </div>
+                        <span class="material-symbols-outlined text-red-600 opacity-0 peer-checked:opacity-100 transition-opacity">error</span>
+                    </label>
+                </div>
+
+                <div class="relative">
+                    <input name="symptoms" value="swollen_feet" class="peer hidden" id="symp5" type="checkbox" />
+                    <label class="flex items-center p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer transition-all hover:border-primary/40 peer-checked:border-primary peer-checked:bg-primary/5" for="symp5">
+                        <span class="flex-1 font-medium">Swollen Feet</span>
+                        <span class="material-symbols-outlined text-primary opacity-0 peer-checked:opacity-100 transition-opacity">check_circle</span>
+                    </label>
+                </div>
+
+                <div class="relative">
+                    <input name="symptoms" value="none" class="peer hidden" id="symp-none" type="checkbox" />
+                    <label class="flex items-center p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer transition-all hover:border-primary/40 peer-checked:border-primary peer-checked:bg-primary/5" for="symp-none">
+                        <span class="flex-1 font-medium">No Symptoms Observed</span>
+                        <span class="material-symbols-outlined text-primary opacity-0 peer-checked:opacity-100 transition-opacity">check_circle</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-200 dark:border-slate-800" />
+
+        <!-- Notes Section -->
+        <section class="space-y-3">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">notes</span>
+                <h3 class="text-lg font-bold leading-tight tracking-tight">Notes</h3>
+            </div>
+            <textarea name="notes" rows="3" placeholder="Additional observations..." class="form-input w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/50 transition-all resize-none">{{ form.notes.value|default:'' }}</textarea>
+        </section>
+
+        <!-- Alert Card (Visible when danger signs are selected) -->
+        <div class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-start gap-3">
+            <span class="material-symbols-outlined text-red-600 dark:text-red-400 mt-0.5">report</span>
+            <div>
+                <p class="text-sm font-bold text-red-800 dark:text-red-300 uppercase tracking-wide">Action Required</p>
+                <p class="text-sm text-red-700 dark:text-red-400">Danger signs detected. Please refer to specialist immediately after saving this visit.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sticky Footer Action -->
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md p-4 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-slate-800">
+        <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-slate-900 font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-transform active:scale-95 flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined">save</span>
+            Save Visit Update
+        </button>
+    </div>
+    </form>
+</div>
+{% endblock %}

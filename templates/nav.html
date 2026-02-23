@@ -1,0 +1,33 @@
+{% load static %}
+{# Mobile app-style bottom navigation bar — {% include "nav.html" %} inside the iOS frame #}
+<nav class="h-20 bg-surface-light dark:bg-surface-dark border-t border-slate-100 dark:border-slate-800 grid grid-cols-4 items-center px-2 shrink-0">
+
+    {# Home #}
+    <a href="{% url 'main:index' %}"
+       class="flex flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'index' %}text-primary{% else %}text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300{% endif %}">
+        <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'index' %}fill-icon{% endif %}">home</span>
+        <span class="text-[10px] font-medium">Home</span>
+    </a>
+
+    {# Reports #}
+    <a href="#"
+       class="flex flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
+        <span class="material-symbols-outlined">assignment</span>
+        <span class="text-[10px] font-medium">Reports</span>
+    </a>
+
+    {# Chat #}
+    <a href="#"
+       class="flex flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
+        <span class="material-symbols-outlined">forum</span>
+        <span class="text-[10px] font-medium">Chat</span>
+    </a>
+
+    {# Profile #}
+    <a href="#"
+       class="flex flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
+        <span class="material-symbols-outlined">person</span>
+        <span class="text-[10px] font-medium">Profile</span>
+    </a>
+
+</nav>

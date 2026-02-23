@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+{% block title %}Alerts & Notifications | Matritwa{% endblock %}
+
+{% block extra_css %}
+<style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .fill-1 { font-variation-settings: 'FILL' 1; }
+</style>
+{% endblock %}
+
+{% block body_class %}bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen{% endblock %}
+
+{% block content %}
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+    <!-- Header Section -->
+    <header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 p-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="{% url 'main:dashboard' %}" class="flex items-center justify-center h-10 w-10 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </a>
+                <h1 class="text-xl font-bold tracking-tight">Alerts &amp; Notifications</h1>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <span class="material-symbols-outlined">filter_list</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Urgency Filter Tabs -->
+        <div class="mt-4 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+            <a href="{% url 'main:priority_alerts' %}" class="whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold no-underline transition-colors {% if filter_type == 'all' %}bg-primary text-white shadow-lg shadow-primary/20{% else %}bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700{% endif %}">All ({{ total_alerts }})</a>
+            <a href="{% url 'main:priority_alerts' %}?filter=emergency" class="whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold no-underline transition-colors {% if filter_type == 'emergency' %}bg-red-600 text-white shadow-lg shadow-red-600/20{% else %}bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700{% endif %}">Emergency ({{ emergency_count }})</a>
+            <a href="{% url 'main:priority_alerts' %}?filter=high_risk" class="whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold no-underline transition-colors {% if filter_type == 'high_risk' %}bg-orange-500 text-white shadow-lg shadow-orange-500/20{% else %}bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700{% endif %}">High-Risk ({{ high_risk_count }})</a>
+            <a href="{% url 'main:priority_alerts' %}?filter=missed" class="whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold no-underline transition-colors {% if filter_type == 'missed' %}bg-amber-500 text-white shadow-lg shadow-amber-500/20{% else %}bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700{% endif %}">Missed ({{ missed_count }})</a>
+        </div>
+    </header>
+
+    <main class="flex-1 p-4 space-y-6 pb-24">
+        <!-- Emergency SOS Section -->
+        {% if filter_type == 'all' or filter_type == 'emergency' %}
+        {% if emergency_alert %}
+        <section class="space-y-3">
+            <div class="flex items-center gap-2 text-red-600 dark:text-red-500">
+                <span class="material-symbols-outlined fill-1">emergency</span>
+                <h2 class="text-sm font-bold uppercase tracking-wider">Emergency SOS</h2>
+            </div>
+            <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-surface-dark border-2 border-red-500 shadow-xl p-4 transition-all">
+                <div class="flex justify-between items-start gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+                            <p class="text-xs font-bold text-red-500">CRITICAL • {{ emergency_alert.time_ago }}</p>
+                        </div>
+                        <h3 class="text-lg font-bold">{{ emergency_alert.mother.full_name }} - {{ emergency_alert.title }}</h3>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">{{ emergency_alert.message }}</p>
+                    </div>
+                    <div class="h-12 w-12 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600">
+                        <span class="material-symbols-outlined text-3xl">ambulance</span>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-3">
+                    {% if emergency_alert.mother.emergency_contact %}
+                    <a href="tel:{{ emergency_alert.mother.emergency_contact }}" class="flex items-center justify-center gap-2 rounded-lg bg-red-600 py-3 text-sm font-bold text-white hover:bg-red-700 transition-colors no-underline">
+                        <span class="material-symbols-outlined text-lg">call</span>
+                        Call Family
+                    </a>
+                    {% else %}
+                    <span class="flex items-center justify-center gap-2 rounded-lg bg-slate-300 py-3 text-sm font-bold text-slate-500 cursor-not-allowed">
+                        <span class="material-symbols-outlined text-lg">call</span>
+                        No Contact
+                    </span>
+                    {% endif %}
+                    <a href="{% url 'main:mother_profile' emergency_alert.mother.pk %}" class="flex items-center justify-center gap-2 rounded-lg bg-slate-900 dark:bg-white dark:text-slate-900 py-3 text-sm font-bold text-white hover:opacity-90 transition-colors no-underline">
+                        <span class="material-symbols-outlined text-lg">visibility</span>
+                        View Profile
+                    </a>
+                </div>
+                <!-- Resolve button -->
+                <form method="POST" action="{% url 'main:resolve_alert' emergency_alert.pk %}" class="mt-3">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-red-300 dark:border-red-700 py-2.5 text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                        <span class="material-symbols-outlined text-lg">check_circle</span>
+                        Mark as Resolved
+                    </button>
+                </form>
+            </div>
+        </section>
+        {% else %}
+        <section class="space-y-3">
+            <div class="flex items-center gap-2 text-slate-400">
+                <span class="material-symbols-outlined">emergency</span>
+                <h2 class="text-sm font-bold uppercase tracking-wider">No Emergency Alerts</h2>
+            </div>
+            <div class="rounded-xl bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-900/30 p-6 text-center">
+                <span class="material-symbols-outlined text-primary text-4xl mb-2">check_circle</span>
+                <p class="text-pink-700 dark:text-pink-300 font-medium">All patients are safe. No emergency alerts at this time.</p>
+            </div>
+        </section>
+        {% endif %}
+        {% endif %}
+
+        <!-- High-Risk Notifications -->
+        {% if filter_type == 'all' or filter_type == 'high_risk' %}
+        <section class="space-y-3">
+            <div class="flex items-center gap-2 text-primary">
+                <span class="material-symbols-outlined">warning</span>
+                <h2 class="text-sm font-bold uppercase tracking-wider">High-Risk Monitoring ({{ high_risk_alerts|length }})</h2>
+            </div>
+            <div class="space-y-3">
+                {% for alert in high_risk_alerts %}
+                <div class="flex flex-col gap-4 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+                    <div class="flex items-start justify-between">
+                        <div class="flex gap-3">
+                            <div class="h-12 w-12 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center">
+                                <span class="text-primary font-bold text-lg">{{ alert.initials }}</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-primary">{{ alert.mother.full_name }}</h4>
+                                <p class="text-xs font-medium text-slate-500">Gestational Age: {{ alert.weeks|default:"--" }} Weeks</p>
+                                <div class="mt-1 flex items-center gap-1 rounded bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary w-fit">
+                                    <span class="material-symbols-outlined text-[12px]">monitor_heart</span>
+                                    {% if alert.symptoms %}{{ alert.symptoms|join:", " }}{% else %}DANGER SIGNS{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-medium text-slate-400">{{ alert.time_ago }}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <a href="{% url 'main:mother_profile' alert.mother.pk %}" class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary text-primary py-2 text-xs font-bold hover:bg-primary/5 no-underline">
+                            <span class="material-symbols-outlined text-base">visibility</span>
+                            View Profile
+                        </a>
+                        {% if alert.mother.phone %}
+                        <a href="tel:{{ alert.mother.phone }}" class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-white py-2 text-xs font-bold shadow-md shadow-primary/20 no-underline">
+                            <span class="material-symbols-outlined text-base">call</span>
+                            Call Patient
+                        </a>
+                        {% else %}
+                        <span class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-slate-200 text-slate-500 py-2 text-xs font-bold cursor-not-allowed">
+                            <span class="material-symbols-outlined text-base">call</span>
+                            No Phone
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 p-6 text-center">
+                    <span class="material-symbols-outlined text-slate-400 text-3xl mb-2">check_circle</span>
+                    <p class="text-slate-500 text-sm">No high-risk patients currently being monitored.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Missed Appointments -->
+        {% if filter_type == 'all' or filter_type == 'missed' %}
+        <section class="space-y-3">
+            <div class="flex items-center gap-2 text-slate-500">
+                <span class="material-symbols-outlined">event_busy</span>
+                <h2 class="text-sm font-bold uppercase tracking-wider">Missed Appointments ({{ missed_appointments|length }})</h2>
+            </div>
+            {% if missed_appointments %}
+            <div class="rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800 shadow-sm overflow-hidden">
+                {% for apt in missed_appointments %}
+                <div class="p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
+                            <span class="text-slate-600 dark:text-slate-400 font-bold text-sm">{{ apt.initials }}</span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold">{{ apt.mother.full_name }}</h4>
+                            <p class="text-[10px] text-slate-500">{{ apt.visit_type|title }} Visit • {{ apt.scheduled_ago }}</p>
+                        </div>
+                    </div>
+                    <a href="{% url 'main:mother_profile' apt.mother.pk %}" class="h-8 w-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary/10 no-underline">
+                        <span class="material-symbols-outlined text-lg">visibility</span>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="rounded-xl bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800 p-6 text-center">
+                <span class="material-symbols-outlined text-primary text-3xl mb-2">event_available</span>
+                <p class="text-pink-700 dark:text-pink-300 text-sm font-medium">All appointments are on track!</p>
+            </div>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        <!-- System Updates -->
+        {% if filter_type == 'all' %}
+        <section class="space-y-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 text-slate-500">
+                    <span class="material-symbols-outlined text-lg">notifications</span>
+                    <h2 class="text-sm font-bold uppercase tracking-wider">System &amp; Updates</h2>
+                </div>
+            </div>
+            <div class="rounded-xl bg-slate-100 dark:bg-slate-800/50 p-4 border border-dashed border-slate-300 dark:border-slate-700">
+                <div class="flex gap-3">
+                    <span class="material-symbols-outlined text-primary">inventory_2</span>
+                    <div>
+                        <p class="text-sm font-bold italic">Reminder</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-400">Remember to regularly update patient records and schedule follow-up visits.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-surface-light dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 z-50 pb-safe">
+        <div class="flex h-16 max-w-xl mx-auto relative">
+            <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'dashboard' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:dashboard' %}">
+                <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'dashboard' %}fill-icon{% endif %}">home</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+            </a>
+            <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'mother_list' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:mother_list' %}">
+                <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'mother_list' %}fill-icon{% endif %}">group</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Mothers</span>
+            </a>
+            
+            <!-- Central Add Button -->
+            <div class="flex flex-1 flex-col items-center justify-start relative">
+                <a href="{% url 'main:register_mother' %}" class="absolute -top-5 flex items-center justify-center size-14 rounded-full bg-primary text-white shadow-lg shadow-primary/40 hover:bg-primary-dark transition-transform active:scale-95">
+                    <span class="material-symbols-outlined text-3xl">add</span>
+                </a>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-10">Register</span>
+            </div>
+    
+            <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'awareness_program' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:awareness_program' %}">
+                <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'awareness_program' %}fill-icon{% endif %}">campaign</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Awareness</span>
+            </a>
+            <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'monthly_reports' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:monthly_reports' %}">
+                <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'monthly_reports' %}fill-icon{% endif %}">bar_chart</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Reports</span>
+            </a>
+        </div>
+    </nav>
+</div>
+{% endblock %}

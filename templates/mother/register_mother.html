@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Register Mother | Matritwa{% endblock %}
+
+{% block body_class %}min-h-screen flex flex-col{% endblock %}
+
+{% block content %}
+<!-- Top Header -->
+<header class="sticky top-0 z-40 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center gap-3">
+    <a href="{% url 'main:dashboard' %}" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-surface-dark flex items-center justify-center">
+        <span class="material-symbols-outlined text-xl">arrow_back</span>
+    </a>
+    <h1 class="text-base font-bold tracking-tight">Register New Mother</h1>
+</header>
+
+<main class="flex-1 overflow-y-auto p-4 pb-10">
+    <form method="POST" id="registerForm" enctype="multipart/form-data" class="space-y-6 max-w-lg mx-auto">
+        {% csrf_token %}
+
+        <!-- Section: Photo -->
+        <section class="space-y-3">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">photo_camera</span>
+                Profile Photo <span class="font-normal text-slate-400 normal-case tracking-normal">(Optional)</span>
+            </h2>
+            <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 p-4 flex flex-col items-center gap-4">
+                <!-- Preview circle -->
+                <div id="photo-preview-wrap" class="relative">
+                    <div id="photo-placeholder" class="w-24 h-24 rounded-full bg-primary/10 border-2 border-dashed border-primary/40 flex flex-col items-center justify-center text-primary gap-1">
+                        <span class="material-symbols-outlined text-3xl">person</span>
+                        <span class="text-[10px] font-semibold">No photo</span>
+                    </div>
+                    <img id="photo-preview" src="" alt="Preview" class="w-24 h-24 rounded-full object-cover border-4 border-primary/30 hidden" />
+                    <label for="id_photo" class="absolute -bottom-1 -right-1 bg-primary text-white p-1.5 rounded-full cursor-pointer shadow-md hover:bg-primary-dark transition-colors">
+                        <span class="material-symbols-outlined text-sm block">add_a_photo</span>
+                    </label>
+                </div>
+                <label for="id_photo" class="text-sm text-primary font-semibold cursor-pointer hover:underline">Tap to choose photo</label>
+                <input id="id_photo" name="photo" type="file" accept="image/*" capture="environment" class="hidden"
+                    onchange="(function(i){var r=new FileReader();r.onload=function(e){var p=document.getElementById('photo-preview'),h=document.getElementById('photo-placeholder');p.src=e.target.result;p.classList.remove('hidden');h.classList.add('hidden')};r.readAsDataURL(i.files[0])})(this)" />
+            </div>
+        </section>
+
+        <!-- Section: Identity -->
+        <section class="space-y-3">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">person</span>
+                Identity
+            </h2>
+            <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" for="id_full_name">Full Name *</label>
+                    {{ form.full_name }}
+                    {% if form.full_name.errors %}<p class="text-red-500 text-xs mt-1">{{ form.full_name.errors.0 }}</p>{% endif %}
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1" for="id_age">Age</label>
+                        {{ form.age }}
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1" for="id_phone">Phone</label>
+                        {{ form.phone }}
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" for="id_emergency_contact">
+                        <span class="material-symbols-outlined text-xs align-middle text-red-500">emergency</span>
+                        Emergency Contact
+                    </label>
+                    {{ form.emergency_contact }}
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Pregnancy Details -->
+        <section class="space-y-3">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">pregnant_woman</span>
+                Pregnancy Details
+            </h2>
+            <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1" for="id_pregnancy_week">Week (1-42)</label>
+                        {{ form.pregnancy_week }}
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1" for="id_lmp_date">LMP Date</label>
+                        {{ form.lmp_date }}
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" for="id_blood_group">Blood Group</label>
+                    {{ form.blood_group }}
+                </div>
+                <div class="flex items-center gap-6">
+                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                        {{ form.is_first_pregnancy }}
+                        <span>First Pregnancy</span>
+                    </label>
+                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                        {{ form.has_previous_complications }}
+                        <span>Previous Complications</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Medical History -->
+        <section class="space-y-3">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">medical_information</span>
+                Medical History
+            </h2>
+            <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+                <label class="block text-xs font-semibold text-slate-500 mb-1" for="id_medical_notes">Notes</label>
+                {{ form.medical_notes }}
+            </div>
+        </section>
+
+        <!-- Section: Location -->
+        <section class="space-y-3">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">location_on</span>
+                Location
+            </h2>
+            <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" for="id_ward">Ward / Municipality</label>
+                    {{ form.ward }}
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" for="id_address">Address</label>
+                    {{ form.address }}
+                </div>
+                <!-- GPS auto-capture -->
+                {{ form.latitude }}
+                {{ form.longitude }}
+                <div id="gps-status" class="flex items-center gap-2 text-xs text-slate-400">
+                    <span class="material-symbols-outlined text-sm animate-pulse">my_location</span>
+                    <span id="gps-text">Detecting GPS location…</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Submit -->
+        <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-slate-900 font-bold text-base rounded-xl py-4 flex items-center justify-center gap-2 shadow-xl shadow-primary/20 active:scale-[0.98] transition-all">
+            <span class="material-symbols-outlined text-xl">how_to_reg</span>
+            Register Mother
+        </button>
+    </form>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    /* Auto-capture GPS location via browser geolocation API */
+    (function() {
+        const latField  = document.getElementById("id_latitude");
+        const lngField  = document.getElementById("id_longitude");
+        const gpsText   = document.getElementById("gps-text");
+        const gpsStatus = document.getElementById("gps-status");
+
+        if (!navigator.geolocation) {
+            gpsText.textContent = "Geolocation not supported";
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            function(pos) {
+                latField.value = pos.coords.latitude.toFixed(6);
+                lngField.value = pos.coords.longitude.toFixed(6);
+                gpsText.textContent = `Location captured (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})`;
+                gpsStatus.classList.remove("text-slate-400");
+                gpsStatus.classList.add("text-green-600");
+            },
+            function(err) {
+                gpsText.textContent = "Could not detect location — will proceed without GPS";
+                gpsStatus.classList.remove("text-slate-400");
+                gpsStatus.classList.add("text-amber-500");
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    })();
+</script>
+{% endblock %}
