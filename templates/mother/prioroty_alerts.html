@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Alerts & Notifications | Matritwa{% endblock %}
+
+{% block extra_css %}
+<style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .fill-1 { font-variation-settings: 'FILL' 1; }
+</style>
+{% endblock %}
+
+{% block body_class %}bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen{% endblock %}
+
+{% block content %}
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+    <!-- Header Section -->
+    <header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 p-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="{% url 'main:dashboard' %}" class="flex items-center justify-center h-10 w-10 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </a>
+                <h1 class="text-xl font-bold tracking-tight">Alerts &amp; Notifications</h1>
+            </div>
+            <div class="flex items-center gap-2">
+                <button class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+                <button class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <span class="material-symbols-outlined">more_vert</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Urgency Filter Tabs -->
+        <div class="mt-4 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+            <button class="whitespace-nowrap rounded-full bg-primary px-4 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20">All (12)</button>
+            <button class="whitespace-nowrap rounded-full bg-slate-200 dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400">Emergency</button>
+            <button class="whitespace-nowrap rounded-full bg-slate-200 dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400">High-Risk</button>
+            <button class="whitespace-nowrap rounded-full bg-slate-200 dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400">Missed</button>
+        </div>
+    </header>
+
+    <main class="flex-1 p-4 space-y-6 pb-24">
+        <!-- Emergency SOS Section -->
+        <section class="space-y-3">
+            <div class="flex items-center gap-2 text-red-600 dark:text-red-500">
+                <span class="material-symbols-outlined fill-1">emergency</span>
+                <h2 class="text-sm font-bold uppercase tracking-wider">Emergency SOS</h2>
+            </div>
+            <div class="group relative overflow-hidden rounded-xl bg-white dark:bg-surface-dark border-2 border-red-500 shadow-xl p-4 transition-all">
+                <div class="flex justify-between items-start gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+                            <p class="text-xs font-bold text-red-500">CRITICAL • 2 MINS AGO</p>
+                        </div>
+                        <h3 class="text-lg font-bold">Sita Sharma - Active Labor Complication</h3>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Immediate transportation required. Patient reporting severe bleeding.</p>
+                    </div>
+                    <div class="h-12 w-12 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600">
+                        <span class="material-symbols-outlined text-3xl">ambulance</span>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-3">
+                    <button class="flex items-center justify-center gap-2 rounded-lg bg-red-600 py-3 text-sm font-bold text-white hover:bg-red-700 transition-colors">
+                        <span class="material-symbols-outlined text-lg">call</span>
+                        Call Family
+                    </button>
+                    <button class="flex items-center justify-center gap-2 rounded-lg bg-slate-900 dark:bg-white dark:text-slate-900 py-3 text-sm font-bold text-white hover:opacity-90 transition-colors">
+                        <span class="material-symbols-outlined text-lg">local_hospital</span>
+                        Call Hospital
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- High-Risk Notifications -->
+        <section class="space-y-3">
+            <div class="flex items-center gap-2 text-primary">
+                <span class="material-symbols-outlined">warning</span>
+                <h2 class="text-sm font-bold uppercase tracking-wider">High-Risk Monitoring</h2>
+            </div>
+            <div class="space-y-3">
+                <!-- Notification Card 1 -->
+                <div class="flex flex-col gap-4 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+                    <div class="flex items-start justify-between">
+                        <div class="flex gap-3">
+                            <div class="h-12 w-12 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center">
+                                <span class="text-primary font-bold text-lg">MD</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-primary">Maya Devi</h4>
+                                <p class="text-xs font-medium text-slate-500">Gestational Age: 32 Weeks</p>
+                                <div class="mt-1 flex items-center gap-1 rounded bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary w-fit">
+                                    <span class="material-symbols-outlined text-[12px]">monitor_heart</span>
+                                    HIGH BP (150/95)
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-medium text-slate-400">1 hour ago</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary text-primary py-2 text-xs font-bold hover:bg-primary/5">
+                            <span class="material-symbols-outlined text-base">visibility</span>
+                            View Profile
+                        </button>
+                        <button class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-white py-2 text-xs font-bold shadow-md shadow-primary/20">
+                            <span class="material-symbols-outlined text-base">call</span>
+                            Call Patient
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Notification Card 2 -->
+                <div class="flex flex-col gap-4 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+                    <div class="flex items-start justify-between">
+                        <div class="flex gap-3">
+                            <div class="h-12 w-12 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center">
+                                <span class="text-primary font-bold text-lg">AT</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-primary">Anjali Tamang</h4>
+                                <p class="text-xs font-medium text-slate-500">Postnatal Day 3</p>
+                                <div class="mt-1 flex items-center gap-1 rounded bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary w-fit">
+                                    <span class="material-symbols-outlined text-[12px]">thermometer</span>
+                                    FEVER REPORTED
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-medium text-slate-400">3 hours ago</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="flex flex-1 items-center justify-center gap-2 rounded-lg border border-primary text-primary py-2 text-xs font-bold hover:bg-primary/5">
+                            <span class="material-symbols-outlined text-base">visibility</span>
+                            View Profile
+                        </button>
+                        <button class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-white py-2 text-xs font-bold shadow-md shadow-primary/20">
+                            <span class="material-symbols-outlined text-base">call</span>
+                            Call Patient
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Missed Appointments -->
+        <section class="space-y-3">
+            <div class="flex items-center gap-2 text-slate-500">
+                <span class="material-symbols-outlined">event_busy</span>
+                <h2 class="text-sm font-bold uppercase tracking-wider">Missed Appointments</h2>
+            </div>
+            <div class="rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800 shadow-sm overflow-hidden">
+                <div class="p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
+                            <span class="text-slate-600 dark:text-slate-400 font-bold text-sm">PK</span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold">Priya K.C.</h4>
+                            <p class="text-[10px] text-slate-500">ANC Visit 2 • Scheduled Yesterday</p>
+                        </div>
+                    </div>
+                    <button class="h-8 w-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary/10">
+                        <span class="material-symbols-outlined text-lg">call</span>
+                    </button>
+                </div>
+                <div class="p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
+                            <span class="text-slate-600 dark:text-slate-400 font-bold text-sm">SG</span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold">Sunita Gurung</h4>
+                            <p class="text-[10px] text-slate-500">PNC Visit 1 • Scheduled 2 days ago</p>
+                        </div>
+                    </div>
+                    <button class="h-8 w-8 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary/10">
+                        <span class="material-symbols-outlined text-lg">call</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Updates -->
+        <section class="space-y-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 text-slate-500">
+                    <span class="material-symbols-outlined text-lg">notifications</span>
+                    <h2 class="text-sm font-bold uppercase tracking-wider">System &amp; Updates</h2>
+                </div>
+                <button class="text-xs font-bold text-primary">Clear All</button>
+            </div>
+            <div class="rounded-xl bg-slate-100 dark:bg-slate-800/50 p-4 border border-dashed border-slate-300 dark:border-slate-700">
+                <div class="flex gap-3">
+                    <span class="material-symbols-outlined text-primary">inventory_2</span>
+                    <div>
+                        <p class="text-sm font-bold italic">Stock Reminder</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-400">Your Iron/Folic Acid supplies are running low. Please visit the health post for refill.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 z-20 bg-white dark:bg-surface-dark border-t border-slate-200 dark:border-slate-800 px-6 pb-6 pt-3 flex items-center justify-between max-w-full">
+        <a class="flex flex-col items-center gap-1 text-slate-400" href="{% url 'main:dashboard' %}">
+            <span class="material-symbols-outlined">grid_view</span>
+            <span class="text-[10px] font-bold uppercase">Dashboard</span>
+        </a>
+        <a class="flex flex-col items-center gap-1 text-primary" href="#">
+            <div class="relative">
+                <span class="material-symbols-outlined fill-1">notifications</span>
+                <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-white border-2 border-white dark:border-surface-dark">12</span>
+            </div>
+            <span class="text-[10px] font-bold uppercase">Alerts</span>
+        </a>
+        <a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+            <span class="material-symbols-outlined">groups</span>
+            <span class="text-[10px] font-bold uppercase">Patients</span>
+        </a>
+        <a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+            <span class="material-symbols-outlined">account_circle</span>
+            <span class="text-[10px] font-bold uppercase">Profile</span>
+        </a>
+    </nav>
+</div>
+{% endblock %}
