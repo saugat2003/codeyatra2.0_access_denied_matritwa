@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from .models import MotherProfile, User
@@ -22,6 +23,7 @@ def login_view(request):
     return render(request, "accounts/login_page.html")
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect("accounts:login")
@@ -170,8 +172,4 @@ def register_step3(request):
 
 def _redirect_by_role(user):
     """Send the user to the appropriate dashboard after login."""
-    if user.role == User.Role.HEALTHCARE_WORKER:
-        return redirect("main:dashboard")
-    elif user.role == User.Role.MOTHER:
-        return redirect("main:mother_profile", pk=user.pk)
     return redirect("main:dashboard")
