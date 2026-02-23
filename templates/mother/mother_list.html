@@ -116,9 +116,9 @@
             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-10">Register</span>
         </div>
 
-        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'priority_alerts' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:priority_alerts' %}">
-            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'priority_alerts' %}fill-icon{% endif %}">notifications</span>
-            <span class="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'awareness_program' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:awareness_program' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'awareness_program' %}fill-icon{% endif %}">campaign</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Awareness</span>
         </a>
         <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'monthly_reports' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:monthly_reports' %}">
             <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'monthly_reports' %}fill-icon{% endif %}">bar_chart</span>

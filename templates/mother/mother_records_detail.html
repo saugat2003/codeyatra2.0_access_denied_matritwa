@@ -23,8 +23,8 @@
             <h1 class="text-xl font-bold tracking-tight">Detailed Records</h1>
         </div>
         <div class="flex items-center gap-4">
-            <a href="{% url 'main:priority_alerts' %}" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
-                <span class="material-symbols-outlined">notifications</span>
+            <a href="{% url 'main:awareness_program' %}" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
+                <span class="material-symbols-outlined">campaign</span>
             </a>
             <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
                 <span class="text-primary text-xs font-bold">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper|default:"U" }}</span>
@@ -170,9 +170,9 @@
             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-10">Register</span>
         </div>
 
-        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'priority_alerts' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:priority_alerts' %}">
-            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'priority_alerts' %}fill-icon{% endif %}">notifications</span>
-            <span class="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'awareness_program' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:awareness_program' %}">
+            <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'awareness_program' %}fill-icon{% endif %}">campaign</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider">Awareness</span>
         </a>
         <a class="flex flex-1 flex-col items-center justify-center gap-1 {% if request.resolver_match.url_name == 'monthly_reports' %}text-primary{% else %}text-slate-400 hover:text-primary{% endif %} transition-colors" href="{% url 'main:monthly_reports' %}">
             <span class="material-symbols-outlined {% if request.resolver_match.url_name == 'monthly_reports' %}fill-icon{% endif %}">bar_chart</span>
