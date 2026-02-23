@@ -17,6 +17,8 @@ class MotherRegistrationForm(forms.ModelForm):
             "full_name",
             "age",
             "phone",
+            "emergency_contact",
+            "photo",
             "pregnancy_week",
             "lmp_date",
             "is_first_pregnancy",
@@ -46,6 +48,12 @@ class MotherRegistrationForm(forms.ModelForm):
             "phone": forms.TextInput(
                 attrs={
                     "placeholder": "Phone (optional)",
+                    "class": "w-full rounded-xl px-4 py-3.5",
+                }
+            ),
+            "emergency_contact": forms.TextInput(
+                attrs={
+                    "placeholder": "Emergency contact number",
                     "class": "w-full rounded-xl px-4 py-3.5",
                 }
             ),

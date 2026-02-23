@@ -24,14 +24,14 @@
     </div>
     <div class="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-semibold">
         <span class="material-symbols-outlined text-sm">calendar_month</span>
-        {{ current_month|date:"F Y" }}
+        {{ current_month_label }}
     </div>
 </header>
 
 <main class="p-4 space-y-6 pb-24">
     <!-- Period Selector Tabs -->
     <div class="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
-        <span class="shrink-0 px-4 py-2 bg-primary text-white rounded-full text-sm font-bold">{{ current_month|date:"F Y" }}</span>
+        <span class="shrink-0 px-4 py-2 bg-primary text-white rounded-full text-sm font-bold">{{ current_month_label }}</span>
     </div>
 
     <!-- Key Metrics Grid -->
@@ -69,8 +69,8 @@
         <div class="flex items-end justify-between h-32 gap-2 mt-6">
             {% for week in weekly_chart_data %}
             <div class="flex-1 flex flex-col items-center gap-2">
-                <div class="w-full bg-primary{% if forloop.counter == 1 %}/20{% elif forloop.counter == 2 %}/40{% elif forloop.counter == 4 %}/60{% endif %} rounded-t-lg" style="height: {{ week.pct }}%"></div>
-                <span class="text-[10px] text-slate-500">W{{ week.week }}</span>
+                <div class="w-full bg-primary{% if forloop.counter == 1 %}/20{% elif forloop.counter == 2 %}/40{% elif forloop.counter == 4 %}/60{% endif %} rounded-t-lg" style="height: {{ week.percentage }}%"></div>
+                <span class="text-[10px] text-slate-500">{{ week.week }}</span>
             </div>
             {% empty %}
             <div class="flex-1 flex flex-col items-center gap-2">
@@ -88,9 +88,9 @@
             <div class="relative w-32 h-32">
                 <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                     <circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#e2e8f0" stroke-width="4"></circle>
-                    <circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#2bee6c" stroke-dasharray="{{ risk_distribution.stable_pct }}, 100" stroke-width="4"></circle>
+                    <circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#f472b6" stroke-dasharray="{{ risk_distribution.stable_pct }}, 100" stroke-width="4"></circle>
                     <circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#fbd38d" stroke-dasharray="{{ risk_distribution.observation_pct }}, 100" stroke-dashoffset="-{{ risk_distribution.stable_pct }}" stroke-width="4"></circle>
-                    <circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#ef4444" stroke-dasharray="{{ risk_distribution.high_risk_pct }}, 100" stroke-dashoffset="-{% widthratio risk_distribution.stable_pct|add:risk_distribution.observation_pct 1 1 %}" stroke-width="4"></circle>
+                    <circle cx="18" cy="18" fill="transparent" r="15.9" stroke="#ef4444" stroke-dasharray="{{ risk_distribution.high_risk_pct }}, 100" stroke-dashoffset="-{{ risk_distribution.stable_plus_obs_pct }}" stroke-width="4"></circle>
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
                     <span class="text-xl font-bold">{{ total_cases }}</span>

@@ -15,6 +15,9 @@ class User(AbstractUser):
         default=Role.HEALTHCARE_WORKER,
     )
     phone = models.CharField(max_length=20, blank=True)
+    organization = models.CharField(max_length=255, blank=True, help_text="Hospital or organization name")
+    education = models.CharField(max_length=255, blank=True, help_text="Highest education qualification")
+    age = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.get_full_name() or self.username} ({self.get_role_display()})"
@@ -41,6 +44,17 @@ class MotherProfile(models.Model):
     full_name = models.CharField(max_length=255)
     age = models.PositiveIntegerField(null=True, blank=True)
     phone = models.CharField(max_length=20, blank=True, help_text="Optional")
+    emergency_contact = models.CharField(
+        max_length=20,
+        blank=True,
+        help_text="Family / emergency contact phone number",
+    )
+    photo = models.ImageField(
+        upload_to="mothers/photos/",
+        null=True,
+        blank=True,
+        help_text="Profile photo",
+    )
 
     # ── Pregnancy Details ──────────────────────────────────────────
     pregnancy_week = models.PositiveIntegerField(

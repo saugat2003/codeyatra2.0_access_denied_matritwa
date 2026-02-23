@@ -9,36 +9,38 @@ from mother.models import ANCVisit, AwarenessProgram, HospitalConsultation
 @login_required
 def dashboard(request):
     """Healthcare worker dashboard with aggregate statistics."""
-    mothers = MotherProfile.objects.filter(registration_completed=True)
+    mothers = MotherProfile.objects.filter(registration_completed=True, registered_by=request.user)
     total_mothers = mothers.count()
+    volunteer_mother_ids = mothers.values_list("pk", flat=True)
 
     # High-risk count
     high_risk_ids = (
-        ANCVisit.objects.filter(has_danger_signs=True)
+        ANCVisit.objects.filter(has_danger_signs=True, mother_id__in=volunteer_mother_ids)
         .values_list("mother_id", flat=True)
         .distinct()
     )
     high_risk_count = mothers.filter(pk__in=high_risk_ids).count()
 
     # Total ANC visits
-    total_visits = ANCVisit.objects.count()
+    total_visits = ANCVisit.objects.filter(mother_id__in=volunteer_mother_ids).count()
 
     # Total consultations
-    total_consultations = HospitalConsultation.objects.count()
+    total_consultations = HospitalConsultation.objects.filter(mother_id__in=volunteer_mother_ids).count()
 
     # Total awareness programs
-    total_programs = AwarenessProgram.objects.count()
+    total_programs = AwarenessProgram.objects.filter(created_by=request.user).count()
 
     # Recent danger-sign visits
     danger_visits = (
-        ANCVisit.objects.filter(has_danger_signs=True)
+        ANCVisit.objects.filter(has_danger_signs=True, mother_id__in=volunteer_mother_ids)
         .select_related("mother")
         .order_by("-created_at")[:5]
     )
 
     # Recent consultations
     recent_consultations = (
-        HospitalConsultation.objects.select_related("mother")
+        HospitalConsultation.objects.filter(mother_id__in=volunteer_mother_ids)
+        .select_related("mother")
         .order_by("-created_at")[:5]
     )
 

@@ -186,6 +186,21 @@ class Alert(TimeStampedModel):
     def __str__(self):
         return f"[{self.get_priority_display()}] {self.title}"
 
+    @property
+    def time_ago(self):
+        from django.utils import timezone
+        now = timezone.now()
+        diff = now - self.created_at
+        if diff.days > 0:
+            return f"{diff.days} day{'s' if diff.days > 1 else ''} ago"
+        hours = diff.seconds // 3600
+        if hours > 0:
+            return f"{hours} hour{'s' if hours > 1 else ''} ago"
+        minutes = diff.seconds // 60
+        if minutes > 0:
+            return f"{minutes} min{'s' if minutes > 1 else ''} ago"
+        return "Just now"
+
 
 class ScheduledVisit(TimeStampedModel):
     """Scheduled ANC/PNC visits for mothers."""

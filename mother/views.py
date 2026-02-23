@@ -29,26 +29,29 @@ def index(request):
 @login_required
 def dashboard(request):
     """Main FCHV dashboard with summary statistics."""
-    mothers = MotherProfile.objects.filter(registration_completed=True)
+    mothers = MotherProfile.objects.filter(registration_completed=True, registered_by=request.user)
     total_mothers = mothers.count()
+    volunteer_mother_ids = mothers.values_list("pk", flat=True)
 
     # High-risk: mothers who have had any ANC visit with danger signs
     high_risk_ids = set(
-        ANCVisit.objects.filter(has_danger_signs=True)
+        ANCVisit.objects.filter(has_danger_signs=True, mother_id__in=volunteer_mother_ids)
         .values_list("mother_id", flat=True)
         .distinct()
     )
     high_risk_count = mothers.filter(pk__in=high_risk_ids).count()
 
-    # Recent ANC visits
+    # Recent ANC visits (for this volunteer's mothers only)
     recent_visits = (
-        ANCVisit.objects.select_related("mother")
+        ANCVisit.objects.filter(mother_id__in=volunteer_mother_ids)
+        .select_related("mother")
         .order_by("-created_at")[:5]
     )
 
-    # Monthly goal progress (simple: percentage of mothers with ≥1 visit)
+    # Monthly goal progress (percentage of this volunteer's mothers with ≥1 visit)
     mothers_with_visits = (
-        ANCVisit.objects.values("mother_id").distinct().count()
+        ANCVisit.objects.filter(mother_id__in=volunteer_mother_ids)
+        .values("mother_id").distinct().count()
     )
     goal_progress = (
         int((mothers_with_visits / total_mothers) * 100)
@@ -90,7 +93,7 @@ def register_mother(request):
     from .forms import MotherRegistrationForm
 
     if request.method == "POST":
-        form = MotherRegistrationForm(request.POST)
+        form = MotherRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             profile = form.save(commit=False)
             profile.registered_by = request.user
@@ -106,6 +109,28 @@ def register_mother(request):
 
     return render(request, "mother/register_mother.html", {"form": form})
 
+# ── Update Profile Photo ──────────────────────────────────────────
+
+
+@login_required
+def update_photo(request, pk):
+    """Update the profile photo for a mother."""
+    if request.user.is_staff:
+        profile = get_object_or_404(MotherProfile, pk=pk)
+    else:
+        profile = get_object_or_404(MotherProfile, pk=pk, registered_by=request.user)
+
+    if request.method == "POST" and request.FILES.get("photo"):
+        # Delete old photo file if it exists
+        if profile.photo:
+            profile.photo.delete(save=False)
+        profile.photo = request.FILES["photo"]
+        profile.save(update_fields=["photo"])
+        messages.success(request, "Profile photo updated.")
+    elif request.method == "POST":
+        messages.error(request, "No image file was received.")
+
+    return redirect("main:mother_profile", pk=pk)
 
 # ── Mother List ─────────────────────────────────────────────────
 
@@ -113,7 +138,7 @@ def register_mother(request):
 @login_required
 def mother_list(request):
     """List all registered mothers with search & risk-filter support."""
-    mothers = MotherProfile.objects.filter(registration_completed=True)
+    mothers = MotherProfile.objects.filter(registration_completed=True, registered_by=request.user)
 
     # Search
     q = request.GET.get("q", "").strip()
@@ -177,7 +202,10 @@ def mother_list(request):
 @login_required
 def mother_profile(request, pk):
     """Detailed profile view for a single mother."""
-    profile = get_object_or_404(MotherProfile, pk=pk)
+    if request.user.is_staff:
+        profile = get_object_or_404(MotherProfile, pk=pk)
+    else:
+        profile = get_object_or_404(MotherProfile, pk=pk, registered_by=request.user)
 
     visits = profile.anc_visits.order_by("visit_number")
     total_visits = visits.count()
@@ -203,6 +231,7 @@ def mother_profile(request, pk):
         "profile": profile,
         "visits": visits,
         "total_visits": total_visits,
+        "anc_progress_pct": min(100, int((total_visits / 8) * 100)),
         "weeks": weeks,
         "due_date": due_date,
         "initials": initials,
@@ -219,7 +248,10 @@ def mother_profile(request, pk):
 @login_required
 def update_anc_visit(request, pk):
     """Record a new ANC visit for the given mother profile."""
-    profile = get_object_or_404(MotherProfile, pk=pk)
+    if request.user.is_staff:
+        profile = get_object_or_404(MotherProfile, pk=pk)
+    else:
+        profile = get_object_or_404(MotherProfile, pk=pk, registered_by=request.user)
 
     # Determine next visit number
     last_visit = profile.anc_visits.order_by("-visit_number").first()
@@ -260,7 +292,7 @@ def update_anc_visit(request, pk):
 @login_required
 def awareness_program(request):
     """Create a new community awareness event."""
-    mothers = MotherProfile.objects.filter(registration_completed=True)
+    mothers = MotherProfile.objects.filter(registration_completed=True, registered_by=request.user)
 
     if request.method == "POST":
         form = AwarenessProgramForm(request.POST)
@@ -292,7 +324,10 @@ def awareness_program(request):
 @login_required
 def hospital_consultation(request, pk):
     """View / create a hospital consultation referral for a mother."""
-    profile = get_object_or_404(MotherProfile, pk=pk)
+    if request.user.is_staff:
+        profile = get_object_or_404(MotherProfile, pk=pk)
+    else:
+        profile = get_object_or_404(MotherProfile, pk=pk, registered_by=request.user)
     visits = profile.anc_visits.order_by("-visit_number")
     latest_visit = visits.first()
     weeks = _pregnancy_weeks(profile)
@@ -389,8 +424,8 @@ def monthly_reports(request):
     else:
         month_end = date(current_year, current_month + 1, 1) - timedelta(days=1)
 
-    # All mothers
-    all_mothers = MotherProfile.objects.filter(registration_completed=True)
+    # All mothers registered by this volunteer
+    all_mothers = MotherProfile.objects.filter(registration_completed=True, registered_by=request.user)
     total_mothers = all_mothers.count()
 
     # New registrations this month
@@ -399,24 +434,27 @@ def monthly_reports(request):
         created_at__date__lte=month_end,
     ).count()
 
-    # ANC visits this month
+    # ANC visits this month (for mothers registered by this volunteer)
+    volunteer_mother_ids = all_mothers.values_list("pk", flat=True)
     month_visits = ANCVisit.objects.filter(
+        mother_id__in=volunteer_mother_ids,
         visit_date__gte=month_start,
         visit_date__lte=month_end,
     )
     total_anc_visits = month_visits.count()
 
-    # High-risk cases
+    # High-risk cases (scoped to this volunteer's mothers)
     danger_mother_ids = set(
-        ANCVisit.objects.filter(has_danger_signs=True)
+        ANCVisit.objects.filter(has_danger_signs=True, mother_id__in=volunteer_mother_ids)
         .values_list("mother_id", flat=True)
     )
     high_risk_count = all_mothers.filter(pk__in=danger_mother_ids).count()
     stable_count = total_mothers - high_risk_count
-    
+
     # Observation cases (mothers with some symptoms but not danger)
     observation_ids = set(
-        ANCVisit.objects.exclude(symptoms=[])
+        ANCVisit.objects.filter(mother_id__in=volunteer_mother_ids)
+        .exclude(symptoms=[])
         .exclude(has_danger_signs=True)
         .values_list("mother_id", flat=True)
     )
@@ -449,10 +487,14 @@ def monthly_reports(request):
 
     # Risk distribution percentages
     total_for_dist = total_mothers or 1
+    stable_pct = int((stable_count / total_for_dist) * 100)
+    observation_pct = int((observation_count / total_for_dist) * 100)
+    high_risk_pct = int((high_risk_count / total_for_dist) * 100)
     risk_distribution = {
-        "stable_pct": int((stable_count / total_for_dist) * 100),
-        "observation_pct": int((observation_count / total_for_dist) * 100),
-        "high_risk_pct": int((high_risk_count / total_for_dist) * 100),
+        "stable_pct": stable_pct,
+        "observation_pct": observation_pct,
+        "high_risk_pct": high_risk_pct,
+        "stable_plus_obs_pct": stable_pct + observation_pct,
     }
 
     # Goal progress
@@ -484,6 +526,16 @@ def monthly_reports(request):
         "months_list": months_list,
         "current_month": current_month,
         "current_year": current_year,
+        "current_month_label": date(current_year, current_month, 1).strftime("%B %Y"),
+        "total_cases": total_mothers,
+        "sos_count": Alert.objects.filter(
+            alert_type=Alert.AlertType.EMERGENCY_SOS,
+            created_at__year=current_year,
+            created_at__month=current_month,
+            mother_id__in=MotherProfile.objects.filter(
+                registered_by=request.user
+            ).values_list("pk", flat=True),
+        ).count(),
     }
     return render(request, "mother/monthly_reports.html", context)
 
@@ -496,9 +548,15 @@ def priority_alerts(request):
     """Display emergency SOS, high-risk monitoring, and missed appointments."""
     filter_type = request.GET.get("filter", "all")
 
+    # Scope everything to this volunteer's mothers
+    volunteer_mother_ids = MotherProfile.objects.filter(
+        registration_completed=True, registered_by=request.user
+    ).values_list("pk", flat=True)
+
     # Build queryset based on filter
     alerts_qs = Alert.objects.select_related("mother").filter(
-        is_resolved=False
+        is_resolved=False,
+        mother_id__in=volunteer_mother_ids,
     )
 
     if filter_type == "emergency":
@@ -508,24 +566,25 @@ def priority_alerts(request):
     elif filter_type == "missed":
         alerts_qs = alerts_qs.filter(alert_type=Alert.AlertType.MISSED_VISIT)
 
-    # Emergency SOS alerts (most recent critical)
+    # Emergency SOS alerts (most recent critical, scoped)
     emergency_alert = (
         Alert.objects.filter(
             alert_type=Alert.AlertType.EMERGENCY_SOS,
             is_resolved=False,
+            mother_id__in=volunteer_mother_ids,
         )
         .select_related("mother")
         .order_by("-created_at")
         .first()
     )
 
-    # High-risk mother alerts
+    # High-risk mother alerts (scoped to this volunteer's mothers)
     high_risk_alerts = []
     danger_mother_ids = set(
-        ANCVisit.objects.filter(has_danger_signs=True)
+        ANCVisit.objects.filter(has_danger_signs=True, mother_id__in=volunteer_mother_ids)
         .values_list("mother_id", flat=True)
     )
-    
+
     high_risk_mothers = (
         MotherProfile.objects.filter(pk__in=danger_mother_ids)
         .order_by("-updated_at")[:5]
@@ -548,12 +607,13 @@ def priority_alerts(request):
             "time_ago": _time_ago(latest_visit.created_at) if latest_visit else "",
         })
 
-    # Missed appointments
+    # Missed appointments (scoped to this volunteer's mothers)
     today = date.today()
     missed_visits = (
         ScheduledVisit.objects.filter(
             scheduled_date__lt=today,
             is_completed=False,
+            mother_id__in=volunteer_mother_ids,
         )
         .select_related("mother")
         .order_by("-scheduled_date")[:5]
@@ -575,16 +635,18 @@ def priority_alerts(request):
             "scheduled_ago": time_str,
         })
 
-    # Alert counts
+    # Alert counts (scoped to this volunteer's mothers)
     total_alerts = alerts_qs.count()
     emergency_count = Alert.objects.filter(
         alert_type=Alert.AlertType.EMERGENCY_SOS,
         is_resolved=False,
+        mother_id__in=volunteer_mother_ids,
     ).count()
     high_risk_count = len(danger_mother_ids)
     missed_count = ScheduledVisit.objects.filter(
         scheduled_date__lt=today,
         is_completed=False,
+        mother_id__in=volunteer_mother_ids,
     ).count()
 
     context = {
@@ -628,7 +690,8 @@ def _time_ago(dt):
 def records_detail(request):
     """Detailed mother records with search, filter, and pagination."""
     mothers = MotherProfile.objects.filter(
-        registration_completed=True
+        registration_completed=True,
+        registered_by=request.user,
     )
 
     # Search
@@ -642,16 +705,18 @@ def records_detail(request):
 
     # Risk filter
     risk_filter = request.GET.get("risk", "all")
-    
-    # Get danger signs for risk classification
+
+    # Scope danger/observation to this volunteer's mothers
+    volunteer_mother_ids = mothers.values_list("pk", flat=True)
     danger_mother_ids = set(
-        ANCVisit.objects.filter(has_danger_signs=True)
+        ANCVisit.objects.filter(has_danger_signs=True, mother_id__in=volunteer_mother_ids)
         .values_list("mother_id", flat=True)
     )
-    
+
     # Observation: has symptoms but not danger
     observation_ids = set(
-        ANCVisit.objects.exclude(symptoms=[])
+        ANCVisit.objects.filter(mother_id__in=volunteer_mother_ids)
+        .exclude(symptoms=[])
         .exclude(has_danger_signs=True)
         .values_list("mother_id", flat=True)
     ) - danger_mother_ids
@@ -745,3 +810,52 @@ def records_detail(request):
     }
     return render(request, "mother/mother_records_detail.html", context)
 
+
+# ── SOS Views ───────────────────────────────────────────────────
+
+
+@login_required
+def trigger_sos(request, pk):
+    """Create an EMERGENCY_SOS alert for a mother."""
+    if request.user.is_staff:
+        profile = get_object_or_404(MotherProfile, pk=pk)
+    else:
+        profile = get_object_or_404(MotherProfile, pk=pk, registered_by=request.user)
+
+    if request.method == "POST":
+        note = request.POST.get("note", "").strip()
+        Alert.objects.create(
+            mother=profile,
+            alert_type=Alert.AlertType.EMERGENCY_SOS,
+            priority=Alert.Priority.CRITICAL,
+            title="Emergency SOS Triggered",
+            message=note
+            or f"SOS triggered by {request.user.get_full_name() or request.user.username} for {profile.full_name}.",
+            assigned_to=request.user,
+        )
+        messages.success(request, f"SOS alert triggered for {profile.full_name}. Emergency services notified.")
+        return redirect("main:priority_alerts")
+
+    return redirect("main:mother_profile", pk=pk)
+
+
+@login_required
+def resolve_alert(request, pk):
+    """Mark an alert as resolved."""
+    alert = get_object_or_404(Alert, pk=pk)
+
+    # Only the assigned volunteer or admin or the mother's volunteer can resolve
+    can_resolve = request.user.is_staff or alert.assigned_to == request.user
+    if not can_resolve and alert.mother:
+        can_resolve = alert.mother.registered_by == request.user
+
+    if not can_resolve:
+        messages.error(request, "You don't have permission to resolve this alert.")
+        return redirect("main:priority_alerts")
+
+    if request.method == "POST":
+        alert.is_resolved = True
+        alert.save(update_fields=["is_resolved"])
+        messages.success(request, "Alert marked as resolved.")
+
+    return redirect("main:priority_alerts")

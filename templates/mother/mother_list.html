@@ -32,7 +32,7 @@
                     <span class="size-2 rounded-full {% if risk_filter == 'high' %}bg-white{% else %}bg-red-500{% endif %} mr-1"></span>High Risk
                 </a>
                 <a href="?risk=stable{% if search_query %}&q={{ search_query }}{% endif %}" class="flex h-8 shrink-0 items-center justify-center gap-1 rounded-full px-4 text-sm font-medium no-underline {% if risk_filter == 'stable' %}bg-primary text-slate-900{% else %}bg-slate-100 dark:bg-surface-dark border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300{% endif %}">
-                    <span class="size-2 rounded-full {% if risk_filter == 'stable' %}bg-slate-900{% else %}bg-green-500{% endif %} mr-1"></span>Stable
+                    <span class="size-2 rounded-full {% if risk_filter == 'stable' %}bg-slate-900{% else %}bg-emerald-500{% endif %} mr-1"></span>Stable
                 </a>
             </div>
         </form>
@@ -44,14 +44,21 @@
     {% for m in mothers %}
     <a href="{% url 'main:mother_profile' m.profile.pk %}" class="flex items-center gap-4 bg-white dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm transition-transform active:scale-[0.98] no-underline">
         <div class="relative">
+            {% if m.profile.photo %}
+            <img src="{{ m.profile.photo.url }}" alt="{{ m.profile.full_name }}" class="size-14 rounded-full object-cover border-2 {% if m.risk == 'high' %}border-red-500/40{% else %}border-primary/30{% endif %}" />
+            {% else %}
             {% if m.risk == 'high' %}
             <div class="size-14 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 font-bold border-2 border-red-500/30">{{ m.initials }}</div>
+            {% else %}
+            <div class="size-14 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">{{ m.initials }}</div>
+            {% endif %}
+            {% endif %}
+            {% if m.risk == 'high' %}
             <div class="absolute -bottom-1 -right-1 size-5 rounded-full bg-red-500 border-2 border-white dark:border-surface-dark flex items-center justify-center">
                 <span class="material-symbols-outlined text-white text-[12px] font-bold">priority_high</span>
             </div>
             {% else %}
-            <div class="size-14 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">{{ m.initials }}</div>
-            <div class="absolute -bottom-1 -right-1 size-5 rounded-full bg-green-500 border-2 border-white dark:border-surface-dark flex items-center justify-center">
+            <div class="absolute -bottom-1 -right-1 size-5 rounded-full bg-emerald-500 border-2 border-white dark:border-surface-dark flex items-center justify-center">
                 <span class="material-symbols-outlined text-white text-[12px] font-bold">check</span>
             </div>
             {% endif %}
@@ -64,7 +71,7 @@
                 {% if m.risk == 'high' %}
                 <span class="text-sm text-red-500 font-semibold uppercase tracking-wider">High Risk</span>
                 {% else %}
-                <span class="text-sm text-green-500 font-semibold uppercase tracking-wider">Stable</span>
+                <span class="text-sm text-emerald-500 font-semibold uppercase tracking-wider">Stable</span>
                 {% endif %}
             </div>
         </div>

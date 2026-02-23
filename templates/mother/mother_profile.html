@@ -18,11 +18,24 @@
     <!-- Profile Identity Section -->
     <section class="p-6 flex flex-col items-center gap-4">
         <div class="relative">
+            {% if profile.photo %}
+            <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}" class="w-32 h-32 rounded-full object-cover border-4 border-primary/30 shadow-lg" />
+            {% else %}
             <div class="w-32 h-32 rounded-full border-4 border-primary/20 bg-primary/10 flex items-center justify-center text-primary text-4xl font-bold">{{ initials }}</div>
-            <div class="absolute bottom-1 right-1 bg-primary text-slate-900 p-1.5 rounded-full border-2 border-white dark:border-background-dark">
-                <span class="material-symbols-outlined text-sm block">edit</span>
-            </div>
+            {% endif %}
+            <!-- Photo update trigger -->
+            <label for="profile-photo-input" class="absolute bottom-1 right-1 bg-primary text-white p-1.5 rounded-full border-2 border-white dark:border-background-dark cursor-pointer hover:bg-primary-dark transition-colors shadow-md">
+                <span class="material-symbols-outlined text-sm block">photo_camera</span>
+            </label>
         </div>
+
+        <!-- Hidden photo update form -->
+        <form id="photo-update-form" method="POST" action="{% url 'main:update_photo' profile.pk %}" enctype="multipart/form-data" class="hidden">
+            {% csrf_token %}
+            <input id="profile-photo-input" name="photo" type="file" accept="image/*" capture="environment"
+                onchange="document.getElementById('photo-update-form').submit()" />
+        </form>
+
         <div class="text-center">
             <h2 class="text-2xl font-bold">{{ profile.full_name }}</h2>
             <div class="mt-1 flex items-center justify-center gap-2">
@@ -32,6 +45,30 @@
             </div>
         </div>
     </section>
+
+    <!-- Contact Info Bar -->
+    {% if profile.phone or profile.emergency_contact %}
+    <section class="px-4 mb-4 flex flex-wrap gap-3">
+        {% if profile.phone %}
+        <a href="tel:{{ profile.phone }}" class="flex items-center gap-2 flex-1 min-w-0 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 shadow-sm no-underline hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-xl text-primary shrink-0">phone</span>
+            <div class="min-w-0">
+                <p class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Phone</p>
+                <p class="text-sm font-semibold truncate">{{ profile.phone }}</p>
+            </div>
+        </a>
+        {% endif %}
+        {% if profile.emergency_contact %}
+        <a href="tel:{{ profile.emergency_contact }}" class="flex items-center gap-2 flex-1 min-w-0 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3 shadow-sm no-underline hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+            <span class="material-symbols-outlined text-xl text-red-500 shrink-0">emergency</span>
+            <div class="min-w-0">
+                <p class="text-[10px] font-bold uppercase text-red-400 tracking-wider">Emergency</p>
+                <p class="text-sm font-semibold truncate text-red-700 dark:text-red-300">{{ profile.emergency_contact }}</p>
+            </div>
+        </a>
+        {% endif %}
+    </section>
+    {% endif %}
 
     <!-- Stats Grid -->
     <section class="px-4 grid grid-cols-2 gap-4">
@@ -64,7 +101,7 @@
                 <span class="text-sm font-medium text-primary">{{ total_visits }} of 8 completed</span>
             </div>
             <div class="relative w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                <div class="absolute top-0 left-0 h-full bg-primary rounded-full" style="width: {% widthratio total_visits 8 100 %}%"></div>
+                <div class="absolute top-0 left-0 h-full bg-primary rounded-full" style="width: {{ anc_progress_pct }}%"></div>
             </div>
             <div class="flex flex-wrap gap-x-3 gap-y-1 mt-3">
                 {% for v in visits %}
@@ -101,11 +138,56 @@
 
     <!-- SOS Button Container -->
     <section class="p-4 mt-6">
-        <button class="w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-3 py-4 rounded-xl shadow-lg shadow-red-500/20 active:scale-[0.98] transition-all">
+        <button type="button" onclick="document.getElementById('sos-modal').classList.remove('hidden')"
+            class="w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-3 py-4 rounded-xl shadow-lg shadow-red-500/20 active:scale-[0.98] transition-all">
             <span class="material-symbols-outlined font-bold text-2xl">emergency_share</span>
             <span class="text-lg font-black uppercase tracking-widest">Trigger SOS</span>
         </button>
     </section>
+
+    <!-- SOS Confirmation Modal -->
+    <div id="sos-modal" class="hidden fixed inset-0 z-50 flex items-end justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="w-full max-w-lg bg-white dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
+            <!-- Modal Header -->
+            <div class="bg-red-600 px-5 py-4 flex items-center gap-3">
+                <span class="material-symbols-outlined text-white text-3xl">emergency_share</span>
+                <div>
+                    <h3 class="text-white font-black text-lg uppercase tracking-wider">Trigger Emergency SOS</h3>
+                    <p class="text-red-100 text-xs">{{ profile.full_name }}</p>
+                </div>
+            </div>
+            <!-- Modal Body -->
+            <form method="POST" action="{% url 'main:trigger_sos' profile.pk %}" class="p-5 space-y-4">
+                {% csrf_token %}
+                <p class="text-sm text-slate-600 dark:text-slate-400">This will create a <strong class="text-red-600">CRITICAL</strong> emergency alert visible to all assigned health workers. Use only in a real emergency.</p>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" for="sos-note">Emergency Note <span class="text-slate-400 font-normal">(optional)</span></label>
+                    <textarea id="sos-note" name="note" rows="3"
+                        placeholder="Describe the emergency situation..."
+                        class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-surface-light dark:bg-background-dark px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+                </div>
+                {% if profile.emergency_contact %}
+                <div class="flex items-center gap-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-2">
+                    <span class="material-symbols-outlined text-red-500 text-lg">call</span>
+                    <div>
+                        <p class="text-xs font-bold text-red-600">Emergency Contact</p>
+                        <a href="tel:{{ profile.emergency_contact }}" class="text-sm font-semibold text-slate-800 dark:text-white">{{ profile.emergency_contact }}</a>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" onclick="document.getElementById('sos-modal').classList.add('hidden')"
+                        class="py-3 rounded-xl border-2 border-slate-300 dark:border-slate-600 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-black uppercase tracking-wider shadow-lg shadow-red-500/30 transition-colors">
+                        Confirm SOS
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </main>
 
 <!-- Bottom Navigation -->

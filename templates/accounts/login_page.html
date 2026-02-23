@@ -15,7 +15,7 @@
     <header class="flex items-center justify-between px-6 py-2 shrink-0">
         <div class="flex items-center gap-3">
             <div class="flex items-center justify-center size-10 rounded-full bg-primary/20 text-primary-dark dark:text-primary">
-                <span class="material-symbols-outlined text-[28px]">spa</span>
+                <span class="material-symbols-outlined text-[28px]">favorite</span>
             </div>
             <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Matritwa</h1>
         </div>
@@ -85,9 +85,12 @@
             <div class="h-px flex-1 bg-slate-200 dark:bg-slate-700"></div>
         </div>
 
-        <!-- Contact Admin -->
+        <!-- Sign Up -->  
         <div class="text-center">
-            <p class="text-xs text-slate-400 dark:text-slate-500">Contact your administrator if you need an account.</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+                Don't have an account?
+                <a href="{% url 'accounts:register' %}" class="font-bold text-primary hover:text-primary-dark transition-colors">Create Account</a>
+            </p>
         </div>
 
     </main>

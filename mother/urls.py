@@ -19,6 +19,11 @@ urlpatterns = [
     path("mothers/<int:pk>/", views.mother_profile, name="mother_profile"),
     path("mothers/<int:pk>/anc/", views.update_anc_visit, name="update_anc_visit"),
     path("mothers/<int:pk>/consult/", views.hospital_consultation, name="hospital_consultation"),
+    path("mothers/<int:pk>/photo/", views.update_photo, name="update_photo"),
+    path("mothers/<int:pk>/sos/", views.trigger_sos, name="trigger_sos"),
+    
+    # Alert management
+    path("alerts/<int:pk>/resolve/", views.resolve_alert, name="resolve_alert"),
     
     # Records & Reports
     path("records/", views.records_detail, name="records_detail"),
