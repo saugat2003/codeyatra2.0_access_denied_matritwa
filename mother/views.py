@@ -81,13 +81,39 @@ def dashboard(request):
     return render(request, "mother/dashboard.html", context)
 
 
+# ── Register Mother (FCHV only) ────────────────────────────────
+
+
+@login_required
+def register_mother(request):
+    """Single-page form for FCHV to register a new pregnant woman."""
+    from .forms import MotherRegistrationForm
+
+    if request.method == "POST":
+        form = MotherRegistrationForm(request.POST)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.registered_by = request.user
+            profile.registration_completed = True
+            profile.save()
+            messages.success(
+                request,
+                f"{profile.full_name} has been registered successfully!",
+            )
+            return redirect("main:dashboard")
+    else:
+        form = MotherRegistrationForm()
+
+    return render(request, "mother/register_mother.html", {"form": form})
+
+
 # ── Mother List ─────────────────────────────────────────────────
 
 
 @login_required
 def mother_list(request):
     """List all registered mothers with search & risk-filter support."""
-    mothers = MotherProfile.objects.filter(registration_completed=True).select_related("user")
+    mothers = MotherProfile.objects.filter(registration_completed=True)
 
     # Search
     q = request.GET.get("q", "").strip()
@@ -95,7 +121,7 @@ def mother_list(request):
         mothers = mothers.filter(
             Q(full_name__icontains=q)
             | Q(ward__icontains=q)
-            | Q(user__phone__icontains=q)
+            | Q(phone__icontains=q)
         )
 
     # Risk filter
@@ -471,7 +497,7 @@ def priority_alerts(request):
     filter_type = request.GET.get("filter", "all")
 
     # Build queryset based on filter
-    alerts_qs = Alert.objects.select_related("mother", "mother__user").filter(
+    alerts_qs = Alert.objects.select_related("mother").filter(
         is_resolved=False
     )
 
@@ -502,7 +528,6 @@ def priority_alerts(request):
     
     high_risk_mothers = (
         MotherProfile.objects.filter(pk__in=danger_mother_ids)
-        .select_related("user")
         .order_by("-updated_at")[:5]
     )
     
@@ -604,7 +629,7 @@ def records_detail(request):
     """Detailed mother records with search, filter, and pagination."""
     mothers = MotherProfile.objects.filter(
         registration_completed=True
-    ).select_related("user")
+    )
 
     # Search
     q = request.GET.get("q", "").strip()
@@ -612,7 +637,7 @@ def records_detail(request):
         mothers = mothers.filter(
             Q(full_name__icontains=q)
             | Q(ward__icontains=q)
-            | Q(user__phone__icontains=q)
+            | Q(phone__icontains=q)
         )
 
     # Risk filter

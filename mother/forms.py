@@ -1,7 +1,95 @@
 """Forms for the main app."""
 
 from django import forms
+from accounts.models import MotherProfile
 from .models import ANCVisit, AwarenessProgram, HospitalConsultation
+
+
+# ── Mother Registration (single-page by FCHV) ──────────────────
+
+
+class MotherRegistrationForm(forms.ModelForm):
+    """Single-page form for FCHV to register a pregnant woman."""
+
+    class Meta:
+        model = MotherProfile
+        fields = [
+            "full_name",
+            "age",
+            "phone",
+            "pregnancy_week",
+            "lmp_date",
+            "is_first_pregnancy",
+            "has_previous_complications",
+            "blood_group",
+            "medical_notes",
+            "ward",
+            "latitude",
+            "longitude",
+            "address",
+        ]
+        widgets = {
+            "full_name": forms.TextInput(
+                attrs={
+                    "placeholder": "Full name",
+                    "class": "w-full rounded-xl px-4 py-3.5",
+                }
+            ),
+            "age": forms.NumberInput(
+                attrs={
+                    "placeholder": "Age",
+                    "min": "10",
+                    "max": "60",
+                    "class": "w-full rounded-xl px-4 py-3.5",
+                }
+            ),
+            "phone": forms.TextInput(
+                attrs={
+                    "placeholder": "Phone (optional)",
+                    "class": "w-full rounded-xl px-4 py-3.5",
+                }
+            ),
+            "pregnancy_week": forms.NumberInput(
+                attrs={
+                    "placeholder": "Current week (1-42)",
+                    "min": "1",
+                    "max": "42",
+                    "class": "w-full rounded-xl px-4 py-3.5",
+                }
+            ),
+            "lmp_date": forms.DateInput(
+                attrs={
+                    "type": "date",
+                    "class": "w-full rounded-xl px-4 py-3.5",
+                }
+            ),
+            "blood_group": forms.Select(
+                attrs={
+                    "class": "w-full rounded-xl px-4 py-3.5 appearance-none",
+                }
+            ),
+            "medical_notes": forms.Textarea(
+                attrs={
+                    "rows": 3,
+                    "placeholder": "Pre-existing conditions, allergies…",
+                    "class": "w-full rounded-xl px-4 py-3",
+                }
+            ),
+            "ward": forms.TextInput(
+                attrs={
+                    "placeholder": "Ward / Municipality",
+                    "class": "w-full rounded-xl px-4 py-3.5",
+                }
+            ),
+            "address": forms.TextInput(
+                attrs={
+                    "placeholder": "Village / Tole / Address",
+                    "class": "w-full rounded-xl px-4 py-3.5",
+                }
+            ),
+            "latitude": forms.HiddenInput(),
+            "longitude": forms.HiddenInput(),
+        }
 
 
 class ANCVisitForm(forms.ModelForm):
